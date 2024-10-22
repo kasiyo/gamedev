@@ -9,7 +9,7 @@
 #include "ObjectManager.h"
 #include "Settings.h"
 #include "Player.h"
-#include "Camera.h"
+#include "PlayerCamera.h"
 
 /// \brief The game class.
 ///
@@ -43,7 +43,7 @@ class CGame:
     void FollowCamera(); ///< Make camera follow player character.
     void ProcessGameState(); ///< Process game state.
 
-    Camera camera;
+    PlayerCamera camera;
 
   public:
     ~CGame(); ///< Destructor.

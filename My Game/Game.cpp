@@ -34,7 +34,7 @@ void CGame::Initialize(){
 
   m_pParticleEngine = new LParticleEngine2D(m_pRenderer);
 
-  camera = Camera();
+  camera = PlayerCamera();
 
   BeginGame();
 } //Initialize
@@ -149,6 +149,12 @@ void CGame::KeyboardHandler(){
   }
   if(m_pKeyboard->TriggerDown(VK_BACK)) //start game
     BeginGame();
+
+  bool cursorIsInBounds = false;
+
+  if (m_pKeyboard->TriggerDown(VK_LBUTTON)) {
+      //
+  }
 
     /// camera movement
   Vector2 upVector(0, -1);      //  pan up

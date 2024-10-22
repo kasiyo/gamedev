@@ -18,4 +18,5 @@ class CRenderer: public LSpriteRenderer{
     void LoadImages(); ///< Load images.
     HWND GetWindow();
     LBaseCamera* GetCamera();
+
     }; //CRenderer
