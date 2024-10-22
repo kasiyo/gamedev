@@ -21,13 +21,13 @@ CTurret::CTurret(const Vector2& p): CObject(eSprite::Turret, p){
 /// there is one, and rotate the turret at a constant speed otherwise.
 
 void CTurret::move(){
-  if(m_pPlayer){ //safety
+  /*if (m_pPlayer) { //safety
     const float r = ((CTurret*)m_pPlayer)->m_fRadius; //player radius
 
     if(m_pTileManager->Visible(m_vPos, m_pPlayer->m_vPos, r)) //player visible
       RotateTowards(m_pPlayer->m_vPos);
     //else m_fRotSpeed = 0.4f; //no target visible, so scan
-  } //if
+  } //if*/
 
   m_fRoll += 0.2f*m_fRotSpeed*XM_2PI*m_pTimer->GetFrameTime(); //rotate
   NormalizeAngle(m_fRoll); //normalize to [-pi, pi] for accuracy

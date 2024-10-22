@@ -9,7 +9,7 @@
 //forward declarations to make the compiler less stroppy
 
 class CObjectManager; 
-class LSpriteRenderer;
+class CRenderer;
 class LParticleEngine2D;
 class CTileManager;
 class CPlayer;
@@ -24,7 +24,7 @@ class CPlayer;
 
 class CCommon{
   protected:  
-    static LSpriteRenderer* m_pRenderer; ///< Pointer to renderer.
+    static CRenderer* m_pRenderer; ///< Pointer to renderer.
     static CObjectManager* m_pObjectManager; ///< Pointer to object manager.
     static LParticleEngine2D* m_pParticleEngine; ///< Pointer to particle engine.
     static CTileManager* m_pTileManager; ///< Pointer to tile manager. 
@@ -33,7 +33,7 @@ class CCommon{
     static bool m_bGodMode; ///< God mode flag.
 
     static Vector2 m_vWorldSize; ///< World height and width.
-    static CPlayer* m_pPlayer; ///< Pointer to player character.
+//    static CPlayer* m_pPlayer; ///< Pointer to player character.
 }; //CCommon
 
 #endif //__L4RC_GAME_COMMON_H__

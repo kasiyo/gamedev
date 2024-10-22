@@ -4,7 +4,7 @@
 #include "Game.h"
 #include "Window.h"
 
-//#define USE_DEBUG_CONSOLE ///< Define to use a console window for debug messages.
+#define USE_DEBUG_CONSOLE ///< Define to use a console window for debug messages.
 
 static LWindow g_cWindow; ///< The window class.
 static CGame g_cGame; ///< The game class.

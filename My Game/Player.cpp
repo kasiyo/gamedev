@@ -19,16 +19,16 @@ CPlayer::CPlayer(const Vector2& p): CObject(eSprite::Player, p){
 /// rotation speed is proportional to the frame time.
 
 void CPlayer::move(){
-  const float t = m_pTimer->GetFrameTime(); //time
+  const float deltaTime = m_pTimer->GetFrameTime(); //time
   const Vector2 view = GetViewVector(); //view vector
-  m_vPos += m_fSpeed*t*view; //move forwards
-  m_fRoll += m_fRotSpeed*t; //rotate
+  m_vPos += m_fSpeed*deltaTime*view; //move forwards
+  m_fRoll += m_fRotSpeed*deltaTime; //rotate
   NormalizeAngle(m_fRoll); //normalize to [-pi, pi] for accuracy
 
   //strafe
     
   const Vector2 norm = VectorNormalCC(view); //normal to view vector
-  const float delta = 40.0f*t; //change in position for strafing
+  const float delta = 40.0f*deltaTime; //change in position for strafing
 
   if(m_bStrafeRight)m_vPos += delta*norm; //strafe right
   else if(m_bStrafeLeft)m_vPos -= delta*norm; //strafe left
@@ -56,7 +56,7 @@ void CPlayer::CollisionResponse(const Vector2& norm, float d, CObject* pObj){
       m_pAudio->play(eSound::Boom); //explosion
       m_bDead = true; //flag for deletion from object list
       DeathFX(); //particle effects
-      m_pPlayer = nullptr; //clear common player pointer
+      //m_pPlayer = nullptr; //clear common player pointer
     } //if
 
     else{ //not a death blow

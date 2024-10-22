@@ -21,11 +21,16 @@ CRenderer::CRenderer():
 void CRenderer::LoadImages(){  
   BeginResourceUpload();
 
-  Load(eSprite::Background, "background"); 
-  Load(eSprite::Brick, "brick"); 
-  Load(eSprite::Ball, "ball");  
-  Load(eSprite::Paddle, "paddle"); 
+  Load(eSprite::Background, "background");  
 
 
   EndResourceUpload();
 } //LoadImages
+
+HWND CRenderer::GetWindow() {
+	return m_Hwnd;
+}
+
+LBaseCamera* CRenderer::GetCamera() {
+	return m_pCamera;
+}

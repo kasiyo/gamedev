@@ -11,6 +11,7 @@
 #include "Helpers.h"
 #include "GameDefines.h"
 #include "TileManager.h"
+#include "Renderer.h"
 
 /// Create an object and put a pointer to it at the back of the object list
 /// `m_stdObjectList`, which it inherits from `LBaseObjectManager`.

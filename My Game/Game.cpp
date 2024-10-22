@@ -8,7 +8,7 @@
 #include "ComponentIncludes.h"
 #include "ParticleEngine.h"
 #include "TileManager.h"
-
+#include "Renderer.h"
 #include "shellapi.h"
 
 /// Delete the renderer, the object manager, and the tile manager. The renderer
@@ -24,7 +24,7 @@ CGame::~CGame(){
 /// images and sounds, and begin the game.
 
 void CGame::Initialize(){
-  m_pRenderer = new LSpriteRenderer(eSpriteMode::Batched2D); 
+  m_pRenderer = new CRenderer();
   m_pRenderer->Initialize(eSprite::Size); 
   LoadImages(); //load images from xml file list
   
@@ -33,6 +33,8 @@ void CGame::Initialize(){
   LoadSounds(); //load the sounds for this game
 
   m_pParticleEngine = new LParticleEngine2D(m_pRenderer);
+
+  camera = Camera();
 
   BeginGame();
 } //Initialize
@@ -87,7 +89,7 @@ void CGame::CreateObjects(){
   Vector2 playerpos; //player positions
   m_pTileManager->GetObjects(turretpos, playerpos); //get positions
   
-  m_pPlayer = (CPlayer*)m_pObjectManager->create(eSprite::Player, playerpos);
+  //m_pPlayer = (CPlayer*)m_pObjectManager->create(eSprite::Player, playerpos);
 
   for(const Vector2& pos: turretpos)
     m_pObjectManager->create(eSprite::Turret, pos);
@@ -115,6 +117,10 @@ void CGame::BeginGame(){
   m_pAudio->play(eSound::Start); //play start-of-game sound
   m_eGameState = eGameState::Playing; //now playing
 } //BeginGame
+
+void CGame::MouseHandler() {
+
+}
 
 /// Poll the keyboard state and respond to the key presses that happened since
 /// the last frame.
@@ -144,40 +150,29 @@ void CGame::KeyboardHandler(){
   if(m_pKeyboard->TriggerDown(VK_BACK)) //start game
     BeginGame();
 
-  if(m_pPlayer){ //safety
-    if(m_pKeyboard->TriggerDown(VK_UP)) //move forwards
-      m_pPlayer->SetSpeed(100.0f);
+  //if (m_pKeyboard->TriggerDown(VK_LBUTTON))
 
-    if(m_pKeyboard->TriggerUp(VK_UP)) //stop
-      m_pPlayer->SetSpeed(0.0f);
+  Vector2 rightVector(1, 0);
+  if (m_pKeyboard->Down('A') || m_pKeyboard->Down(VK_LEFT)) //strafe left
+      camera.SetPos(camera.GetPos() + rightVector);
 
-    if(m_pKeyboard->Down(VK_DOWN)) //strafe back
-      m_pPlayer->StrafeBack();
+  Vector2 leftVector(-1, 0);
+  if (m_pKeyboard->Down('D') || m_pKeyboard->Down(VK_RIGHT)) //strafe right
+      camera.SetPos(camera.GetPos() + leftVector);
+
+  Vector2 upVector(0, 1);
+  if (m_pKeyboard->Down('S') || m_pKeyboard->Down(VK_DOWN)) //move down
+      camera.SetPos(camera.GetPos() + upVector);
+
+  Vector2 downVector(0, -1);
+  if (m_pKeyboard->Down('W') || m_pKeyboard->Down(VK_UP)) //move up
+      camera.SetPos(camera.GetPos() + downVector);
+
   
-    if(m_pKeyboard->TriggerDown(VK_RIGHT)) //rotate clockwise
-      m_pPlayer->SetRotSpeed(-1.0f);
 
-    if(m_pKeyboard->TriggerUp(VK_RIGHT)) //stop rotating clockwise
-      m_pPlayer->SetRotSpeed(0.0f);
-  
-    if(m_pKeyboard->TriggerDown(VK_LEFT)) //rotate counterclockwise
-      m_pPlayer->SetRotSpeed(1.0f);
+  //if (m_pKeyboard->Down('Q'))
 
-    if(m_pKeyboard->TriggerUp(VK_LEFT)) //stop rotating counterclockwise
-      m_pPlayer->SetRotSpeed(0.0f);
 
-    if(m_pKeyboard->TriggerDown(VK_SPACE)) //fire gun
-      m_pObjectManager->FireGun(m_pPlayer, eSprite::Bullet);
-
-    if(m_pKeyboard->Down('D')) //strafe right
-      m_pPlayer->StrafeRight();
-  
-    if(m_pKeyboard->Down('A')) //strafe left
-      m_pPlayer->StrafeLeft();
-
-    if(m_pKeyboard->TriggerDown('G')) //toggle god mode
-      m_bGodMode = !m_bGodMode;
-  } //if
 } //KeyboardHandler
 
 /// Poll the XBox controller state and respond to the controls there.
@@ -187,7 +182,7 @@ void CGame::ControllerHandler(){
 
   m_pController->GetState(); //get state of controller's controls 
   
-  if(m_pPlayer){ //safety
+  /*if (m_pPlayer) { //safety
     m_pPlayer->SetSpeed(100*m_pController->GetRTrigger());
     m_pPlayer->SetRotSpeed(-2.0f*m_pController->GetRThumb().x);
 
@@ -202,7 +197,7 @@ void CGame::ControllerHandler(){
 
     if(m_pController->GetDPadDown()) //strafe back
       m_pPlayer->StrafeBack();
-  } //if
+  } //if*/
 } //ControllerHandler
 
 /// Draw the current frame rate to a hard-coded position in the window.
@@ -228,7 +223,17 @@ void CGame::DrawGodModeText(){
 /// pipelining jiggery-pokery.
 
 void CGame::RenderFrame(){
+
   m_pRenderer->BeginFrame(); //required before rendering
+
+  /// get window size for zoom
+  RECT windowRect;
+  if (GetWindowRect(m_pRenderer->GetWindow(), &windowRect)) {
+      //printf("%ld %ld %ld %ld\n", windowRect.top, windowRect.bottom, windowRect.left, windowRect.right);
+      m_pRenderer->GetCamera()->SetOrthographic(
+          std::abs(windowRect.right - windowRect.left),
+          std::abs(windowRect.top - windowRect.bottom), 0.1, 100);
+  }
 
   m_pObjectManager->draw(); //draw objects
   m_pParticleEngine->Draw(); //draw particles
@@ -243,23 +248,9 @@ void CGame::RenderFrame(){
 /// center everything.
 
 void CGame::FollowCamera(){
-  if(m_pPlayer == nullptr)return; //safety
+  Vector3 newPos(camera.GetPos());
 
-  Vector3 vCameraPos(m_pPlayer->GetPos()); //player position
-
-  if(m_vWorldSize.x > m_nWinWidth){ //world wider than screen
-    vCameraPos.x = std::max(vCameraPos.x, m_nWinWidth/2.0f); //stay away from the left edge
-    vCameraPos.x = std::min(vCameraPos.x, m_vWorldSize.x - m_nWinWidth/2.0f);  //stay away from the right edge
-  } //if
-  else vCameraPos.x = m_vWorldSize.x/2.0f; //center horizontally.
-  
-  if(m_vWorldSize.y > m_nWinHeight){ //world higher than screen
-    vCameraPos.y = std::max(vCameraPos.y, m_nWinHeight/2.0f);  //stay away from the bottom edge
-    vCameraPos.y = std::min(vCameraPos.y, m_vWorldSize.y - m_nWinHeight/2.0f); //stay away from the top edge
-  } //if
-  else vCameraPos.y = m_vWorldSize.y/2.0f; //center vertically
-
-  m_pRenderer->SetCameraPos(vCameraPos); //camera to player
+  m_pRenderer->SetCameraPos(newPos); //camera to player
 } //FollowCamera
 
 /// This function will be called regularly to process and render a frame
@@ -293,7 +284,7 @@ void CGame::ProcessGameState(){
 
   switch(m_eGameState){
     case eGameState::Playing:
-      if(m_pPlayer == nullptr || m_pObjectManager->GetNumTurrets() == 0){
+      if(/*m_pPlayer == nullptr || */ m_pObjectManager->GetNumTurrets() == 0) {
         m_eGameState = eGameState::Waiting; //now waiting
         t = m_pTimer->GetTime(); //start wait timer
       } //if

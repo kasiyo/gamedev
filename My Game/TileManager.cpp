@@ -7,6 +7,8 @@
 #define STBI_ASSERT(x)
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#include "Renderer.h"
+
 
 /// Construct a tile manager using square tiles, given the width and height
 /// of each tile.

@@ -9,6 +9,7 @@
 #include "ObjectManager.h"
 #include "Settings.h"
 #include "Player.h"
+#include "Camera.h"
 
 /// \brief The game class.
 ///
@@ -32,6 +33,7 @@ class CGame:
     void LoadImages(); ///< Load images.
     void LoadSounds(); ///< Load sounds.
     void BeginGame(); ///< Begin playing the game.
+    void MouseHandler(); ///< the mouse handler.
     void KeyboardHandler(); ///< The keyboard handler.
     void ControllerHandler(); ///< The controller handler.
     void RenderFrame(); ///< Render an animation frame.
@@ -40,6 +42,8 @@ class CGame:
     void CreateObjects(); ///< Create game objects.
     void FollowCamera(); ///< Make camera follow player character.
     void ProcessGameState(); ///< Process game state.
+
+    Camera camera;
 
   public:
     ~CGame(); ///< Destructor.
