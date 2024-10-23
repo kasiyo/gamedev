@@ -10,6 +10,7 @@
 #include "Settings.h"
 #include "Player.h"
 #include "PlayerCamera.h"
+#include "Math.h"
 
 /// \brief The game class.
 ///

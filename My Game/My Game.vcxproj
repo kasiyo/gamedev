@@ -176,6 +176,7 @@
     <ClCompile Include="Turret.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Math.h" />
     <ClInclude Include="PlayerCamera.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Game.h" />

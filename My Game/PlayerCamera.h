@@ -1,7 +1,7 @@
 #pragma once
 #include "Defines.h"
 #include "SpriteRenderer.h"
-
+#include "Math.h"
 
 class PlayerCamera
 {
@@ -13,12 +13,13 @@ class PlayerCamera
 		void SetPos(Vector2 newPos);	///	set new position
 		
 		LBaseCamera* GetCamera();
-		LBaseCamera* MoveToCursor();
-		HWND GetWindow();
-
+		
+		void MoveCamera(Vector2 moveDirection, float deltaTime);
 	private:
 		Vector2 position;
 		POINT gameCursor;
 		bool gameCursorInBounds = false;
+		Vector2 currentVelocity;
+		Vector2 currentAcceleration;
 };
 
