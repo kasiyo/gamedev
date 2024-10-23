@@ -3,7 +3,7 @@
 <!-- Game settings -->
 
 <settings>
-  <game name="Top Down Tiled Game Prototype With Death" />
+  <game name="I Do Not Know Yet" />
   <renderer width="1024" height="768"/>
    
   <font file="Media\Fonts\AverageSans_24.spritefont"/>
