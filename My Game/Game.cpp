@@ -159,22 +159,22 @@ void CGame::KeyboardHandler(){
   Vector2 moveDirection;
 
     /// camera movement
-  Vector2 downVector(0, -1);      //  pan down
+  Vector2 downVector(0, 1);      //  pan down
   if (m_pKeyboard->Down('W') || m_pKeyboard->Down(VK_UP)) {
       moveDirection += downVector;
   }
 
-  Vector2 rightVector(1, 0);     //  pan right
+  Vector2 rightVector(-1, 0);     //  pan right
   if (m_pKeyboard->Down('A') || m_pKeyboard->Down(VK_LEFT)) {
       moveDirection += rightVector;
   }
 
-  Vector2 leftVector(-1, 0);   //  pan left
+  Vector2 leftVector(1, 0);   //  pan left
   if (m_pKeyboard->Down('D') || m_pKeyboard->Down(VK_RIGHT)) {
-      moveDirection += rightVector;
+      moveDirection += leftVector;
   }
 
-  Vector2 upVector(0, 1);     //  pan up
+  Vector2 upVector(0, -1);     //  pan up
   if (m_pKeyboard->Down('S') || m_pKeyboard->Down(VK_DOWN)) {
       moveDirection += upVector;
   }
