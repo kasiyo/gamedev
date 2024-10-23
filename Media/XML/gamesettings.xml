@@ -18,7 +18,12 @@
     <sprite name="bullet2" file="bullet2.png"/>
     <sprite name="smoke" file="graysmoke.png"/>
     <sprite name="spark" file="spark.png"/>
-     <sprite name="greenline" file="greenline.png"/>
+    <sprite name="greenline" file="greenline.png"/>
+    <sprite name="Overworld - Forest" file="Overworld - Forest - Flat 256x128.png" ext="png" frames="18"/>
+    <sprite name="Overworld - Terrain 1" file="Overworld - Terrain 1 - Flat 256x128.png" ext="png" frames="18"/>
+    <sprite name="Overworld - Terrain 2" file="Overworld - Terrain 2 - Flat 256x128.png" ext="png" frames="18"/>
+    <sprite name="Overworld - Terrain 3" file="Overworld - Terrain 3 - Falt 256x128.png" ext="png" frames="18"/>
+    <sprite name="Overworld - Water" file="Overworld - Water - Flat 256x128.png" ext="png" frames="18"/>
   </sprites>
 
   <!-- sound -->
