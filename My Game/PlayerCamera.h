@@ -6,13 +6,10 @@
 class PlayerCamera
 {
 	public:
-		//LBaseCamera::GetPos(); //do get and set position.
-		//LBaseCamera::SetOrthographic(float width, float ht, float nearz, float farz);
+		//	TODO: set orthographic maybe.
 		
 		Vector2 GetPos();				///	get current position
 		void SetPos(Vector2 newPos);	///	set new position
-		
-		LBaseCamera* GetCamera();
 		
 		void MoveCamera(Vector2 moveDirection, float deltaTime);
 	private:
