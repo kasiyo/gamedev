@@ -19,7 +19,12 @@ namespace Math
 
 
 //	smoother camera movement.
-//	SOURCE: https://discussions.unity.com/t/formula-behind-smoothdamp/6483
+//	FROM UNITY 6 DOCUMENTATION: https://docs.unity3d.com/ScriptReference/Mathf.SmoothDamp.html
+//		smooth damp "gradually moves the current value towards a target value,
+//	  over a specified time and at a specified velocity. this method smoothes
+//	  the current value towards a target value with a spring-damper like algorithm.
+
+//	ALGORITHM SOURCE: https://discussions.unity.com/t/formula-behind-smoothdamp/6483
 static float Math::SmoothDamp(float current, float target, float *currentVelocity, float smoothTime, float maxSpeed, float deltaTime) {
 	smoothTime = std::max(0.0001f, smoothTime);
 	float num = 2.f / smoothTime;
