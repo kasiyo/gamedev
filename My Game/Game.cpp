@@ -90,6 +90,7 @@ void CGame::CreateObjects(){
   Vector2 cameraPos = camera.GetPos();
   Vector2 basePos((m_nWinWidth / 4), ((m_nWinHeight / 4) + 50));
   camera.SetPos(basePos);   // start camera at center of map
+  camera.SetBasePos(basePos);
 
   m_pTileManager->GetObjects(turretpos, cameraPos); //get positions
   
@@ -157,8 +158,71 @@ void CGame::KeyboardHandler(){
   if(m_pKeyboard->TriggerDown(VK_BACK)) //start game
     BeginGame();
 
-  Vector2 moveDirection;
+  Vector2 moveDirection = Vector2(0, 0);
+  bool cursorIsInBounds = false;
+  POINT p;
+  
+  RECT windowRect;
+  Vector3 cameraPos = m_pRenderer->GetCameraPos();
+  
+  GetWindowRect(m_pRenderer->GetWindow(), &windowRect);
+  float windowWidth = std::abs(windowRect.right - windowRect.left);
+  float windowHeight = std::abs(windowRect.bottom - windowRect.top);
+  Vector2 windowPos = Vector2(windowWidth, windowHeight);
 
+  /*if (m_pKeyboard->TriggerDown(VK_RBUTTON)) {
+      GetCursorPos(&p);
+      printf("GetCursorPos(&p) (x, y): %d %d\n", p.x, p.y);
+      HWND window = m_pRenderer->GetWindow();
+      ScreenToClient(window, &p);
+     // Vector3 snapPos(p.x, p.y, 0);
+      Vector2 p_camPos = camera.GetPos();
+      //m_pRenderer->GetCamera()->MoveTo(snapPos);
+      printf("playercamera position (x, y): %1.f, %1.f\n", p_camPos.x, p_camPos.y);
+      printf("cameraPos %1.f %1.f %1.f\n", cameraPos.x, cameraPos.y, cameraPos.z);
+      printf("window width, height (x, y): %d %d\n", m_nWinWidth, m_nWinHeight);
+      printf("window center (x, y): %1.f %1.f\n", windowPos.x, windowPos.y);
+      printf("cursor coordinates (x, y): %ld %ld\n", p.x, p.y);
+      printf("window coordinates (top, bottom, left, right): %ld %ld %ld %ld\n",
+          windowRect.top, windowRect.bottom, windowRect.left, windowRect.right);
+      //camera.SetCursorPos(p);
+
+      // if cursorPos.y > currentPos.y
+      float newYCoord = 0;
+      float newXCoord = 0;
+      
+      // if cursor clicks lower than current camera y-position
+      if (p.y > p_camPos.y) {
+          printf("p.y %d is greater than p_camPos.y %1.f\n", p.y, p_camPos.y);
+          //newYCoord += (p_camPos.y + ((p_camPos.y - p.y) / 4));
+          newYCoord += (p_camPos.y - ((p.y - p_camPos.y) / 4));
+          printf("newYCoord = %1.f\n", newYCoord);
+      }
+
+      // if cursor clicks higher than current camera y-position
+      if (p.y < p_camPos.y) {
+          printf("p.y %d is less than p_camPos.y %1.f\n", p.y, p_camPos.y);
+          newYCoord += (p_camPos.y + p.y);
+          printf("newYCoord = %1.f\n", newYCoord);
+      }
+      
+      if (p.x > p_camPos.x) {
+          printf("p.x %d is greater than p_camPos.x %1.f\n", p.x, p_camPos.x);
+          newXCoord += (p_camPos.x + (p.x - p_camPos.x) / 4);
+          printf("newXCoord = %1.f\n", newXCoord);
+      }
+      if (p.x < p_camPos.x) {
+          printf("p.x %d is less than p_camPos.x %1.f\n", p.x, p_camPos.x);
+          newXCoord += (p_camPos.x + (p.x - p_camPos.x) / 4);
+          printf("newXCoord = %1.f\n", newXCoord);
+      }
+
+      Vector2 snapPos(newXCoord, newYCoord);
+      moveDirection = snapPos;
+      camera.SetPos(moveDirection);
+      //camera.MoveCamera()
+      //camera.MoveCamera(moveDirection * 1000.f, m_pTimer->GetFrameTime());
+  }*/
 
     /// camera movement
   Vector2 downVector(0, 1);      //  pan down
@@ -182,6 +246,10 @@ void CGame::KeyboardHandler(){
   }
 
   camera.MoveCamera(moveDirection * 50.f, m_pTimer->GetFrameTime());
+
+  if (m_pKeyboard->TriggerDown(VK_SPACE)) {
+      camera.SetPos(camera.GetBasePos());
+  }
 
   //if (m_pKeyboard->Down('Q'))
 

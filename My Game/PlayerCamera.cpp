@@ -10,6 +10,14 @@ void PlayerCamera::SetPos(Vector2 newPos) {
 	position = newPos;
 }
 
+Vector2 PlayerCamera::GetBasePos() {
+	return basePos;
+}
+
+void PlayerCamera::SetBasePos(Vector2 newBasePos) {
+	basePos = newBasePos;
+}
+
 void PlayerCamera::MoveCamera(Vector2 moveDirection, float deltaTime) {
 	float smoothTime = 0.1f;
 	float maxSpeed = 500.f;
