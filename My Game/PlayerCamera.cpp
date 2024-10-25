@@ -21,3 +21,7 @@ void PlayerCamera::MoveCamera(Vector2 moveDirection, float deltaTime) {
 
 	position += currentVelocity * deltaTime;	// moves camera by velocity
 }
+
+void PlayerCamera::SetCursorPos(POINT newCursorPos) {
+	gameCursor = newCursorPos;
+}

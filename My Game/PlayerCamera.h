@@ -12,6 +12,8 @@ class PlayerCamera
 		void SetPos(Vector2 newPos);	///	set new position
 		
 		void MoveCamera(Vector2 moveDirection, float deltaTime);
+		
+		void SetCursorPos(POINT newCursorPos);
 	private:
 		Vector2 position;
 		POINT gameCursor;

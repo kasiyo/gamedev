@@ -19,4 +19,6 @@ class CRenderer: public LSpriteRenderer{
     HWND GetWindow();
     LBaseCamera* GetCamera();
 
+  private:
+      HWND currWindow;
     }; //CRenderer

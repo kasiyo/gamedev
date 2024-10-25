@@ -87,9 +87,15 @@ void CGame::Release(){
 void CGame::CreateObjects(){
   std::vector<Vector2> turretpos; //vector of turret positions
   Vector2 playerpos; //player positions
-  m_pTileManager->GetObjects(turretpos, playerpos); //get positions
+  Vector2 cameraPos = camera.GetPos();
+  Vector2 basePos((m_nWinWidth / 4), ((m_nWinHeight / 4) + 50));
+  camera.SetPos(basePos);   // start camera at center of map
+
+  m_pTileManager->GetObjects(turretpos, cameraPos); //get positions
   
   //m_pPlayer = (CPlayer*)m_pObjectManager->create(eSprite::Player, playerpos);
+
+
 
   for(const Vector2& pos: turretpos)
     m_pObjectManager->create(eSprite::Turret, pos);
@@ -103,14 +109,15 @@ void CGame::CreateObjects(){
 void CGame::BeginGame(){  
   m_pParticleEngine->clear(); //clear old particles
   
-  switch(m_nNextLevel){
+  /*switch (m_nNextLevel) {
     case 0: m_pTileManager->LoadMap("Media\\Maps\\tiny.txt"); break;
     case 1: m_pTileManager->LoadMap("Media\\Maps\\small.txt"); break;
     case 2: m_pTileManager->LoadMap("Media\\Maps\\map.txt"); break;
     case 3: m_pTileManager->LoadMapFromImageFile("Media\\Maps\\maze.png");
       break;
-  } //switch
+  } //switch*/
 
+  m_pTileManager->LoadMap("Media\\Maps\\small.txt");
   m_pObjectManager->clear(); //clear old objects
   CreateObjects(); //create new objects (must be after map is loaded) 
   m_pAudio->stop(); //stop all  currently playing sounds
@@ -150,13 +157,8 @@ void CGame::KeyboardHandler(){
   if(m_pKeyboard->TriggerDown(VK_BACK)) //start game
     BeginGame();
 
-  bool cursorIsInBounds = false;
-
-  if (m_pKeyboard->TriggerDown(VK_LBUTTON)) {
-      //
-  }
-
   Vector2 moveDirection;
+
 
     /// camera movement
   Vector2 downVector(0, 1);      //  pan down
@@ -260,9 +262,6 @@ void CGame::RenderFrame(){
 
 void CGame::FollowCamera(){
   Vector3 newPos(camera.GetPos());
-
-
-
   m_pRenderer->SetCameraPos(newPos); //camera to player
 } //FollowCamera
 
