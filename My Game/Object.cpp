@@ -21,7 +21,7 @@ CObject::CObject(eSprite t, const Vector2& p):
 
   const float w = m_pRenderer->GetWidth(t); //sprite width
   const float h = m_pRenderer->GetHeight(t); //sprite height
-  m_fRadius = std::max(w, h)/2; //bounding circle radius
+  m_fRadius = std::max(w, h)/4; //bounding circle radius
 
   m_pGunFireEvent = new LEventTimer(1.0f); //timer for firing gun
 } //constructor

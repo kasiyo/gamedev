@@ -15,7 +15,7 @@
 /// \param n Width and height of square tile in pixels.
 
 CTileManager::CTileManager(size_t n):
-  m_fTileSize((float)n){
+    m_fTileSize((float) n * 1.25f) {
 } //constructor
 
 /// Delete the memory used for storing the map.
@@ -34,14 +34,17 @@ void CTileManager::MakeBoundingBoxes(){
   m_vecWalls.clear(); //no walls yet
 
   BoundingBox aabb; //current bounding box
-  const float t = m_fTileSize; //shorthand for tile width and height
+  const float t = m_fTileSize * 2; //shorthand for tile width and height
   const Vector3 vTileExtents = 0.5f*t*Vector3::One; //tile extents extended to 3D
   BoundingBox b; //single-tile bounding box
   b.Extents = vTileExtents; //bounding box extents cover a single tile
 
+  printf("m_fTileSize = %1.f\n", m_fTileSize);
+  printf("vTileExtents (x, y, z): %1.f %1.f %1.f\n", vTileExtents.x, vTileExtents.y, vTileExtents.z);
+
   //horizontal walls with more than one tile
 
-  const Vector2 vstart(t/2, t*(m_nHeight - 0.5f)); //start position
+  const Vector2 vstart(t/2, t*(m_nHeight - 1.5f)); //start position
   Vector2 pos = vstart; //set current position to start position
   
   for(size_t i=0; i<m_nHeight; i++){ //for each row
@@ -51,31 +54,31 @@ void CTileManager::MakeBoundingBoxes(){
     while(j < m_nWidth){ //for each column
       while(j < m_nWidth && m_chMap[i][j] != 'W'){ //skip over non-wall entries
         j++; //next column
-        pos.x += t; //move right by tile width
+        pos.x += (t * 0.5f); //move right by tile width
       } //while
 
       if(j < m_nWidth){ //found leftmost tile in a wall
         aabb.Center = Vector3(pos.x, pos.y, 0); //bounding box center
         aabb.Extents = vTileExtents; //bounding box extents
         j++; //next column
-        pos.x += t; //move right by tile width
+        pos.x += (t * 0.5f); //move right by tile width
       } //if
 
       bool bSingleTile = true; //as far as we know, this is a single-tile wall
 
       while(j < m_nWidth && m_chMap[i][j] == 'W'){ //for each adjacent wall tile
-        b.Center = Vector3(pos.x, pos.y, 0); //bounding box center
+        b.Center = Vector3(pos.x, pos.y, 0.5); //bounding box center
         BoundingBox::CreateMerged(aabb, aabb, b); //merge b into aabb
         bSingleTile = false; //the wall now has at least 2 tiles in it
         j++; //next column
-        pos.x += t; //move right by tile width
+        pos.x += (t * 0.5f); //move right by tile width
       } //while
 
       if(!bSingleTile) //skip this wall if it is a single tile
         m_vecWalls.push_back(aabb); //add horizontal wall to the list
     } //while
 
-    pos.y -= t; //next row
+    pos.y -= (t * 0.5f); //next row
   } //for
 
   //vertical walls, the single tiles get caught here
@@ -158,9 +161,10 @@ void CTileManager::LoadMap(char* filename){
   FILE *input; //input file handle
 
   fopen_s(&input, filename, "rb"); //open the map file
-  if(input == nullptr) //abort if it's missing
-    ABORT("Map &s not found.", filename); //panic
-
+  if (input == nullptr) {//abort if it's missing
+	  fprintf(stderr, "Map file not found\n");
+      ABORT("Map &s not found.", filename); //panic
+  }
   //read map file into a character buffer 
 
   fseek(input, 0, SEEK_END); //seek to end of map file
@@ -168,6 +172,12 @@ void CTileManager::LoadMap(char* filename){
   rewind(input); //seek to start of file
 
   char *buffer = new char[n + 1]; //temporary character buffer
+  if (buffer == nullptr) {
+	  fprintf(stderr, "Memory allocation failed\n");
+	  fclose(input);
+      return;
+  }
+
   fread(buffer, n, 1, input); //read the whole thing in a chunk
   fclose(input); //close the map file, we're done with it
 
@@ -210,7 +220,7 @@ void CTileManager::LoadMap(char* filename){
 
       if(c == 'T'){
         m_chMap[i][j] = 'F'; //floor tile
-        const Vector2 pos = m_fTileSize*Vector2(j + 0.5f, m_nHeight - i - 0.5f);
+        const Vector2 pos = m_fTileSize * Vector2((j + 0.5f) , m_nHeight - i -0.5f);
         m_vecTurrets.push_back(pos);
       } //if
 
@@ -315,19 +325,33 @@ void CTileManager::Draw(eSprite t){
   const int left = std::max(0, (int)round(origin.x/m_fTileSize) - 1); //index of left tile
   const int right = std::min(left + w, (int)m_nWidth - 1); //index of right tile
 
-  for(int i=top; i<=bottom; i++) //for each column
-    for(int j=left; j<=right; j++){ //for each row
-      desc.m_vPos.x = (j + 0.5f)*m_fTileSize; //horizontal component of tile position
-      desc.m_vPos.y = (m_nHeight - 1 - i + 0.5f)*m_fTileSize; //vertical component of tile position
+  for(int i=bottom; i >= top; i--) // for each column from bottom to top
+      for (int j = right; j >= left; j--) { // for each row from right to left
+         // make sure indices are within bounds.
+         if (i >= m_nHeight || j >= m_nWidth || i < 0 || j < 0) {
+             continue;
+         }
+         // calculate isometric coordinates for a tile based on grid position
+         // (j - i): shift tile positions diagonally
+         // * 0.5f: scale down the difference to fit the isometric grid
+		 // * (m_fTileSize * 1.5f): scale up the difference by 1.5x to fit the isometric grid
+		 // - (m_fTileSize * 0.25f): shift the x position to the left by 0.25x the tile size
+         float isoX = ((j - i) * 0.5f) * (m_fTileSize * 1.5f) - (m_fTileSize * 0.25f);
+		 // (j + i): shift tile positions diagonally
+		 // * 0.5f: scale down the difference to fit the isometric grid
+		 // * (m_fTileSize * 0.75f): scale down the difference to fit the isometric grid
+		 // + (m_fTileSize * 0.25f): shift the y position up by 0.25x the tile size
+         float isoY = ((j + i) * 0.5f) * (m_fTileSize * 0.75f) + (m_fTileSize * 0.25f);
+         desc.m_vPos.x = isoX;
+         desc.m_vPos.y = isoY;
+         switch(m_chMap[i][j]){ //select which frame of the tile sprite is to be drawn
+             case 'F': desc.m_nCurrentFrame = 0; break; //floor
+             case 'W': desc.m_nCurrentFrame = 1; break; //wall
+             default:  desc.m_nCurrentFrame = 2; break; //error tile
+         } //switch
 
-      switch(m_chMap[i][j]){ //select which frame of the tile sprite is to be drawn
-        case 'F': desc.m_nCurrentFrame = 0; break; //floor
-        case 'W': desc.m_nCurrentFrame = 1; break; //wall
-        default:  desc.m_nCurrentFrame = 2; break; //error tile
-      } //switch
-
-      m_pRenderer->Draw(&desc); //finally we can draw a tile
-    } //for
+         m_pRenderer->Draw(&desc); //finally we can draw a tile
+     } //for
 } //Draw
 
 /// Check whether a circle is visible from a point, that is, either the left

@@ -28,7 +28,7 @@ void CGame::Initialize(){
   m_pRenderer->Initialize(eSprite::Size); 
   LoadImages(); //load images from xml file list
   
-  m_pTileManager = new CTileManager((size_t)m_pRenderer->GetWidth(eSprite::Tile));
+  m_pTileManager = new CTileManager((size_t)m_pRenderer->GetWidth(eSprite::Tile)* 0.55f);
   m_pObjectManager = new CObjectManager; //set up the object manager 
   LoadSounds(); //load the sounds for this game
 
@@ -92,6 +92,9 @@ void CGame::CreateObjects(){
   camera.SetPos(basePos);   // start camera at center of map
 
   m_pTileManager->GetObjects(turretpos, cameraPos); //get positions
+
+  printf("camera view vector (x, y, z): %1.f %1.f, %1.f\n", m_pRenderer->GetCamera()->GetViewVector().x,
+      m_pRenderer->GetCamera()->GetViewVector().y, m_pRenderer->GetCamera()->GetViewVector().z);
   
   //m_pPlayer = (CPlayer*)m_pObjectManager->create(eSprite::Player, playerpos);
 
@@ -245,9 +248,9 @@ void CGame::RenderFrame(){
       //printf("%ld %ld %ld %ld\n", windowRect.top, windowRect.bottom, windowRect.left, windowRect.right);
       m_pRenderer->GetCamera()->SetOrthographic(
           std::abs(windowRect.right - windowRect.left),
-          std::abs(windowRect.top - windowRect.bottom), 0.1, 100);
-  }
-
+          std::abs(windowRect.top - windowRect.bottom), 0.25f, 45.0f);  // changing values from 0.1 to 0.25f
+  }                                                                     // and 100.0 to 45.0f works better after tile resizing
+                                                                        // for some reason...
   m_pObjectManager->draw(); //draw objects
   m_pParticleEngine->Draw(); //draw particles
   if(m_bDrawFrameRate)DrawFrameRateText(); //draw frame rate, if required

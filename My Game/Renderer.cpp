@@ -32,5 +32,5 @@ HWND CRenderer::GetWindow() {
 }
 
 LBaseCamera* CRenderer::GetCamera() {
-	return m_pCamera;
+	return this->m_pCamera;
 }
