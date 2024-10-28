@@ -3,7 +3,7 @@
 <!-- Game settings -->
 
 <settings>
-  <game name="Top Down Tiled Game Prototype With Death" />
+  <game name="kaia wanted to do a visual novel but ended up with an rts!" />
   <renderer width="1024" height="768"/>
    
   <font file="Media\Fonts\AverageSans_24.spritefont"/>
@@ -11,7 +11,8 @@
   <!-- sprites -->
    
   <sprites path="Media\Images">
-    <sprite name="tile" file="tile" ext ="png" frames="3"/>
+	  <!--<sprite name="tile" file="tile" ext ="png" frames="3"/>-->
+	<sprite name="tile" file="tile_024.png"/>
     <sprite name="player" file="player.png"/>
     <sprite name="turret" file="turret.png"/>
     <sprite name="bullet" file="bullet.png"/>
@@ -19,6 +20,7 @@
     <sprite name="smoke" file="graysmoke.png"/>
     <sprite name="spark" file="spark.png"/>
      <sprite name="greenline" file="greenline.png"/>
+
   </sprites>
 
   <!-- sound -->
