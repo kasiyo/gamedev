@@ -354,6 +354,28 @@ void CTileManager::Draw(eSprite t){
      } //for
 } //Draw
 
+float CTileManager::GetMapWidth() {
+	return m_vWorldSize.x;
+    //return m_nWidth;
+}
+
+float CTileManager::GetMapHeight() {
+    return m_vWorldSize.y;
+    //return m_nHeight;
+}
+
+float CTileManager::GetTileSize() {
+	return m_fTileSize;
+}
+
+const size_t CTileManager::GetWidth() {
+	return m_nWidth;
+} //GetWidth
+
+const size_t CTileManager::GetHeight() {
+	return m_nHeight;
+} //GetHeight
+
 /// Check whether a circle is visible from a point, that is, either the left
 /// or the right side of the object (from the perspective of the point)
 /// has no walls between it and the point. This gives some weird behavior

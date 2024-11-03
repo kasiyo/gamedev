@@ -35,6 +35,7 @@ class CObject:
     bool m_bStatic = true; ///< Is static (does not move).
     bool m_bIsTarget = true; ///< Is a target.
     bool m_bIsBullet = false; ///< Is a bullet.
+	bool m_bIsTile = false; ///< Is a tile.
 
     LEventTimer* m_pGunFireEvent = nullptr; ///< Gun fire event.
     
