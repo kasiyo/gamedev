@@ -162,6 +162,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GridTile.cpp" />
     <ClCompile Include="PlayerCamera.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -173,9 +174,11 @@
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="TileManager.cpp" />
+    <ClCompile Include="TileMap.cpp" />
     <ClCompile Include="Turret.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GridTile.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="PlayerCamera.h" />
     <ClInclude Include="Common.h" />
@@ -188,6 +191,7 @@
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="TileManager.h" />
+    <ClInclude Include="TileMap.h" />
     <ClInclude Include="Turret.h" />
   </ItemGroup>
   <ItemGroup>

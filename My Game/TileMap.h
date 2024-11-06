@@ -1,16 +1,44 @@
 #pragma once
+#include "BaseObject.h"
+#include "BaseObjectManager.h"
+#include "SpriteRenderer.h"
+#include "GameDefines.h"
 #include "GridTile.h"
 #include "Object.h"
+#include "Renderer.h"
 #include <map>
 #include <utility>
 #include <vector>
 #include <fstream>
+#include <ParticleEngine.h>
+#include "Common.cpp"
+#include "Common.h"
+#include "Sprite.h"
 
 
-typedef struct TileCell : public CObject {
-	TileCell(const Vector2& pos) : CObject(eSprite::Tile, pos) {}
+struct TileCell {
+	LSpriteDesc2D desc;
+	TileCell& operator=(const TileCell& rhs) {
+		if (this != &rhs) {
+			desc = rhs.desc;
+		}
+		return *this;
+	}
+	TileCell(eSprite t, const Vector2& pos) {
+		desc = LSpriteDesc2D(UINT(t), pos);
+	};
+	TileCell() {
+		desc = LSpriteDesc2D(UINT(eSprite::Tile), Vector2(0, 0));
+	};
+	
+	//TileCell() : LBaseObject(eSprite::Tile, Vector2(0, 0)) {};
+
 	const Vector2 position;
 	bool isSelected = false;
+	bool isWall = false;
+	int zIndex = -1;
+	size_t width;
+	size_t height;
 
 	void AddToTile() {
 		// Add to the tile.
@@ -35,31 +63,37 @@ typedef struct TileCell : public CObject {
 	void DeselectTile() {
 		isSelected = false;
 	}
-} TileCell;
+};
 
-class TileMap
-{
-public:
-	TileMap();				///< Constructor.
-	~TileMap();				///< Destructor.
+class TileMap /* : public LBaseObjectManager<TileCell>*/ {
+	public:
+		TileMap(size_t);				///< Constructor.
+		~TileMap();				///< Destructor.
 
-	void MapTiles(char*);	///< Map the tiles
-	void DrawMap();			///< Draw the map.
-	void AddToMap();		///< Add to the map.
-	void UpdateMap();		///< Update the map.
-	void ResetMap();		///< Reset the map.
-	
-	void SelectTile(TileCell* tile) {
-		tile->SelectTile();
-	};
-private:
-	int width = 0;			///< # of tiles wide.
-	int height = 0;			 ///< # of tiles tall.
-	//float tileMap[height][width];	///< Map of tiles.
-	std::map<Vector2, TileCell*> mapTiles;	///< Map of tiles.
+		void LoadMap(char*);	///< Map the tiles
+		void MakeBoundingBoxes();	///< Make bounding boxes for walls.
+		void DrawMap();			///< Draw the map.
+		void AddToMap();		///< Add to the map.
+		void UpdateMap();		///< Update the map.
+		void ResetMap();		///< Reset the map.
 
+		void SelectTile(TileCell* tile) {
+			tile->SelectTile();
+		};
 
+		size_t GetTileSize() {
+			return tileSize;
+		}
+	private:
+		size_t width = 0;			///< # of tiles wide.
+		size_t height = 0;			 ///< # of tiles tall.
+		//float tileMap[height][width];	///< Map of tiles.
+		std::map<Vector2, TileCell*> mapTiles;	///< Map of tiles.
+		std::vector<BoundingBox> walls;	///< AABBs for the walls.
+		TileCell** tileMap = nullptr;		///< Map of tiles.
 
-	std::vector<TileCell*> selectedTiles;
+		float tileSize = 0.0f;		///< Tile width and height.
+
+		std::vector<TileCell*> selectedTiles;
 };
 

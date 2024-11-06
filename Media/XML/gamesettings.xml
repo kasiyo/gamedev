@@ -13,6 +13,7 @@
   <sprites path="Media\Images">
 	  <!--<sprite name="tile" file="tile" ext ="png" frames="3"/>-->
 	<sprite name="tile" file="tile_024.png"/>
+	<sprite name="wall" file="tile_040.png"/>
     <sprite name="player" file="player.png"/>
     <sprite name="turret" file="turret.png"/>
     <sprite name="bullet" file="bullet.png"/>

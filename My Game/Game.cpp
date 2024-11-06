@@ -33,8 +33,10 @@ void CGame::Initialize(){
   LoadSounds(); //load the sounds for this game
 
   m_pParticleEngine = new LParticleEngine2D(m_pRenderer);
-
+  TileCell t;
+  float x = 0.0f, y = 0.0f;
   camera = PlayerCamera();
+  tileMap = TileMap(t.GetSize(eSprite::Tile, x, y));
 
   BeginGame();
 } //Initialize
@@ -50,6 +52,7 @@ void CGame::LoadImages(){
   m_pRenderer->BeginResourceUpload();
 
   m_pRenderer->Load(eSprite::Tile,    "tile"); 
+
   m_pRenderer->Load(eSprite::Player,  "player");
   m_pRenderer->Load(eSprite::Bullet,  "bullet");
   m_pRenderer->Load(eSprite::Bullet2, "bullet2");
@@ -98,8 +101,6 @@ void CGame::CreateObjects(){
   
   //m_pPlayer = (CPlayer*)m_pObjectManager->create(eSprite::Player, playerpos);
 
-
-
   for(const Vector2& pos: turretpos)
     m_pObjectManager->create(eSprite::Turret, pos);
 } //CreateObjects
@@ -120,9 +121,12 @@ void CGame::BeginGame(){
       break;
   } //switch*/
 
+  tileMap.LoadMap("Media\\Maps\\small.txt");
+
   m_pTileManager->LoadMap("Media\\Maps\\small.txt");
   m_pObjectManager->clear(); //clear old objects
   CreateObjects(); //create new objects (must be after map is loaded) 
+
   m_pAudio->stop(); //stop all  currently playing sounds
   m_pAudio->play(eSound::Start); //play start-of-game sound
   m_eGameState = eGameState::Playing; //now playing

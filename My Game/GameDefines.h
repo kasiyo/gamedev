@@ -14,6 +14,7 @@
 
 enum class eSprite: UINT{
   Background, Bullet, Bullet2, Player, Turret, Smoke, Spark, Tile, Line,
+  Wall,
   Size  //MUST BE LAST
 }; //eSprite
 
