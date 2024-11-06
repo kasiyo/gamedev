@@ -16,9 +16,8 @@
 /// The tile manager is responsible for the tile-based background.
 
 struct Tile {
-    int type;
-
-	Vector2 position;
+	eSprite sprite;
+    char type;
 };
 
 class CTileManager: 
@@ -31,9 +30,7 @@ class CTileManager:
 
     float m_fTileSize = 0.0f; ///< Tile width and height.
 
-    char** m_chMap = nullptr; ///< The level map.
-
-	Tile* tiles = nullptr;
+    Tile** m_chMap = nullptr; ///< The level map.
 
     std::vector<BoundingBox> m_vecWalls; ///< AABBs for the walls.
     std::vector<Vector2> m_vecTurrets; ///< Turret positions.

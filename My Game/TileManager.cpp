@@ -52,7 +52,7 @@ void CTileManager::MakeBoundingBoxes(){
     pos.x = vstart.x; //set start position x coordinate
 
     while(j < m_nWidth){ //for each column
-      while(j < m_nWidth && m_chMap[i][j] != 'W'){ //skip over non-wall entries
+      while(j < m_nWidth && m_chMap[i][j].type != 'W'){ //skip over non-wall entries
         j++; //next column
         pos.x += (t * 0.5f); //move right by tile width
       } //while
@@ -66,7 +66,7 @@ void CTileManager::MakeBoundingBoxes(){
 
       bool bSingleTile = true; //as far as we know, this is a single-tile wall
 
-      while(j < m_nWidth && m_chMap[i][j] == 'W'){ //for each adjacent wall tile
+      while(j < m_nWidth && m_chMap[i][j].type == 'W'){ //for each adjacent wall tile
         b.Center = Vector3(pos.x, pos.y, 0.5); //bounding box center
         BoundingBox::CreateMerged(aabb, aabb, b); //merge b into aabb
         bSingleTile = false; //the wall now has at least 2 tiles in it
@@ -90,7 +90,7 @@ void CTileManager::MakeBoundingBoxes(){
     pos.y = vstart.y; //set start position y coordinate
 
     while(i < m_nHeight){ //for each row
-      while(i < m_nHeight && m_chMap[i][j] != 'W'){ //skip over non-wall entries
+      while(i < m_nHeight && m_chMap[i][j].type != 'W'){ //skip over non-wall entries
         i++; //next row
         pos.y -= t; //move down by tile height
       } //while
@@ -104,7 +104,7 @@ void CTileManager::MakeBoundingBoxes(){
       
       bool bSingleTile = true; //as far as we know, this is a single-tile wall
 
-      while(i < m_nHeight && m_chMap[i][j] == 'W'){ //for each adjacent wall tile
+      while(i < m_nHeight && m_chMap[i][j].type == 'W'){ //for each adjacent wall tile
         b.Center = Vector3(pos.x, pos.y, 0); //bounding box center
         BoundingBox::CreateMerged(aabb, aabb, b); //merge b into aabb
         bSingleTile = false; //the wall now has at least 2 tiles in it
@@ -125,11 +125,11 @@ void CTileManager::MakeBoundingBoxes(){
   
   for(size_t i=0; i<m_nHeight; i++){ //for each row
     for(size_t j=0; j<m_nWidth; j++){ //for each column
-      if(m_chMap[i][j] == 'W' && //is a wall tile and
-        ((i == 0 || m_chMap[i - 1][j] != 'W') && //has non-wall tile below or is on edge
-         (i == m_nHeight - 1 || m_chMap[i + 1][j] != 'W') && //has non-wall tile above or is on edge
-         (j == 0 || m_chMap[i][j - 1] != 'W') && //has non-wall tile at left or is on edge
-         (j == m_nWidth - 1 || m_chMap[i][j + 1] != 'W') //has non-wall tile at right or is on edge
+      if(m_chMap[i][j].type == 'W' && //is a wall tile and
+        ((i == 0 || m_chMap[i - 1][j].type != 'W') && //has non-wall tile below or is on edge
+         (i == m_nHeight - 1 || m_chMap[i + 1][j].type != 'W') && //has non-wall tile above or is on edge
+         (j == 0 || m_chMap[i][j - 1].type != 'W') && //has non-wall tile at left or is on edge
+         (j == m_nWidth - 1 || m_chMap[i][j + 1].type != 'W') //has non-wall tile at right or is on edge
         )
       ){    
         b.Center = Vector3(pos.x, pos.y, 0); //bounding box center
@@ -205,10 +205,10 @@ void CTileManager::LoadMap(char* filename){
 
   //allocate space for the map 
   
-  m_chMap = new char*[m_nHeight];
+  m_chMap = new Tile*[m_nHeight];
 
   for(size_t i=0; i<m_nHeight; i++)
-    m_chMap[i] = new char[m_nWidth];
+    m_chMap[i] = new Tile[m_nWidth];
 
   //load the map information from the buffer to the map
 
@@ -219,17 +219,17 @@ void CTileManager::LoadMap(char* filename){
       const char c = buffer[index];
 
       if(c == 'T'){
-        m_chMap[i][j] = 'F'; //floor tile
+        m_chMap[i][j].type = 'F'; //floor tile
         const Vector2 pos = m_fTileSize * Vector2((j + 0.5f) , m_nHeight - i -0.5f);
         m_vecTurrets.push_back(pos);
       } //if
 
       else if(c == 'P'){
-        m_chMap[i][j] = 'F'; //floor tile
+        m_chMap[i][j].type = 'F'; //floor tile
         m_vPlayer = m_fTileSize*Vector2(j + 0.5f, m_nHeight - i - 0.5f);
       } //else if
 
-      else m_chMap[i][j] = c; //load character into map
+      else m_chMap[i][j].type = c; //load character into map
 
       index++; //next index
     } //for
@@ -265,10 +265,10 @@ void CTileManager::LoadMapFromImageFile(char* filename) {
 
     //allocate space for the map 
 
-    m_chMap = new char* [m_nHeight];
+    m_chMap = new Tile* [m_nHeight];
 
     for (int i = 0; i < m_nHeight; i++)
-        m_chMap[i] = new char[m_nWidth];
+        m_chMap[i] = new Tile[m_nWidth];
 
     //load the map information from the buffer to the map
 
@@ -276,7 +276,7 @@ void CTileManager::LoadMapFromImageFile(char* filename) {
 
     for (int i = 0; i < m_nHeight; i++)
         for (int j = 0; j < m_nWidth; j++) {
-            m_chMap[i][j] =
+            m_chMap[i][j].type =
                 (buffer[index] == 0 && buffer[index + 1] == 0 && buffer[index + 2] == 0) ? 'W' : 'F'; //load character into map
             if (buffer[index] == 0 && buffer[index + 1] == 255 && buffer[index + 2] == 0)
                 m_vecTurrets.push_back(Vector2((float)j, m_nHeight - (float)i) * m_fTileSize);
@@ -291,8 +291,9 @@ void CTileManager::LoadMapFromImageFile(char* filename) {
     stbi_image_free(buffer);
 } //LoadMapFromImageFile
 
-void CTileManager::GetObjects(std::vector<Vector2>& turrets, Vector2& player){
-  turrets = m_vecTurrets;
+void CTileManager::GetObjects(std::vector<Vector2>& walls, Vector2& player){
+  //turrets = m_vecTurrets;
+	walls = m_vecTurrets;
   player = m_vPlayer;
 } //GetObjects
 
@@ -311,7 +312,10 @@ void CTileManager::DrawBoundingBoxes(eSprite t){
  
 void CTileManager::Draw(eSprite t){
   LSpriteDesc2D desc; //sprite descriptor for tile
+
   desc.m_nSpriteIndex = (UINT)t; //sprite index for tile
+  desc.m_fXScale = 1.5f;
+  desc.m_fYScale = 1.5f;
 
   const int w = (int)ceil(m_nWinWidth/m_fTileSize) + 2; //width of window in tiles, with 2 extra
   const int h = (int)ceil(m_nWinHeight/m_fTileSize) + 2; //height of window in tiles, with 2 extra
@@ -344,7 +348,7 @@ void CTileManager::Draw(eSprite t){
          float isoY = ((j + i) * 0.5f) * (m_fTileSize * 0.75f) + (m_fTileSize * 0.25f);
          desc.m_vPos.x = isoX;
          desc.m_vPos.y = isoY;
-         switch(m_chMap[i][j]){ //select which frame of the tile sprite is to be drawn
+         switch(m_chMap[i][j].type){ //select which frame of the tile sprite is to be drawn
              case 'F': desc.m_nCurrentFrame = 0; break; //floor
              case 'W': desc.m_nCurrentFrame = 1; break; //wall
              default:  desc.m_nCurrentFrame = 2; break; //error tile

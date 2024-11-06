@@ -28,15 +28,14 @@ void CGame::Initialize(){
   m_pRenderer->Initialize(eSprite::Size); 
   LoadImages(); //load images from xml file list
   
-  m_pTileManager = new CTileManager((size_t)m_pRenderer->GetWidth(eSprite::Tile)* 0.55f);
+  m_pTileManager = new CTileManager((size_t)m_pRenderer->GetWidth(eSprite::GrassTile)* 0.55f);
   m_pObjectManager = new CObjectManager; //set up the object manager 
   LoadSounds(); //load the sounds for this game
 
   m_pParticleEngine = new LParticleEngine2D(m_pRenderer);
-  TileCell t;
+  //TileCell t;
   float x = 0.0f, y = 0.0f;
   camera = PlayerCamera();
-  tileMap = TileMap(t.GetSize(eSprite::Tile, x, y));
 
   BeginGame();
 } //Initialize
@@ -51,14 +50,15 @@ void CGame::Initialize(){
 void CGame::LoadImages(){  
   m_pRenderer->BeginResourceUpload();
 
-  m_pRenderer->Load(eSprite::Tile,    "tile"); 
+  //m_pRenderer->Load(eSprite::Tile,    "tile"); 
+  m_pRenderer->Load(eSprite::GrassTile, "grasstile");
 
   m_pRenderer->Load(eSprite::Player,  "player");
   m_pRenderer->Load(eSprite::Bullet,  "bullet");
   m_pRenderer->Load(eSprite::Bullet2, "bullet2");
   m_pRenderer->Load(eSprite::Smoke,   "smoke");
   m_pRenderer->Load(eSprite::Spark,   "spark");
-  m_pRenderer->Load(eSprite::Turret,  "turret");
+  
   m_pRenderer->Load(eSprite::Line,    "greenline"); 
 
   m_pRenderer->EndResourceUpload();
@@ -92,7 +92,7 @@ void CGame::CreateObjects(){
   Vector2 playerpos; //player positions
   Vector2 cameraPos = camera.GetPos();
   Vector2 basePos((m_nWinWidth / 4), ((m_nWinHeight / 4) + 50));
-  camera.SetPos(basePos);   // start camera at center of map
+  //camera.SetPos(basePos);   // start camera at center of map
 
   m_pTileManager->GetObjects(turretpos, cameraPos); //get positions
 
@@ -101,8 +101,8 @@ void CGame::CreateObjects(){
   
   //m_pPlayer = (CPlayer*)m_pObjectManager->create(eSprite::Player, playerpos);
 
-  for(const Vector2& pos: turretpos)
-    m_pObjectManager->create(eSprite::Turret, pos);
+  /*for (const Vector2& pos : turretpos)
+    m_pObjectManager->create(eSprite::Turret, pos);*/
 } //CreateObjects
 
 /// Call this function to start a new game. This should be re-entrant so that
@@ -121,7 +121,7 @@ void CGame::BeginGame(){
       break;
   } //switch*/
 
-  tileMap.LoadMap("Media\\Maps\\small.txt");
+  //tileMap.LoadMap("Media\\Maps\\small.txt");
 
   m_pTileManager->LoadMap("Media\\Maps\\small.txt");
   m_pObjectManager->clear(); //clear old objects
@@ -248,13 +248,14 @@ void CGame::RenderFrame(){
 
   /// get window size for zoom
   RECT windowRect;
-  if (GetWindowRect(m_pRenderer->GetWindow(), &windowRect)) {
+  /*if (GetWindowRect(m_pRenderer->GetWindow(), &windowRect)) {
       //printf("%ld %ld %ld %ld\n", windowRect.top, windowRect.bottom, windowRect.left, windowRect.right);
       m_pRenderer->GetCamera()->SetOrthographic(
           std::abs(windowRect.right - windowRect.left),
           std::abs(windowRect.top - windowRect.bottom), 0.25f, 45.0f);  // changing values from 0.1 to 0.25f
   }                                                                     // and 100.0 to 45.0f works better after tile resizing
                                                                         // for some reason...
+  */
   m_pObjectManager->draw(); //draw objects
   m_pParticleEngine->Draw(); //draw particles
   if(m_bDrawFrameRate)DrawFrameRateText(); //draw frame rate, if required
