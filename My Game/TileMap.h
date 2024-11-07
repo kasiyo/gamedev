@@ -3,7 +3,7 @@
 #include "BaseObjectManager.h"
 #include "SpriteRenderer.h"
 #include "GameDefines.h"
-#include "GridTile.h"
+
 #include "Object.h"
 #include "Renderer.h"
 #include <map>
@@ -11,7 +11,6 @@
 #include <vector>
 #include <fstream>
 #include <ParticleEngine.h>
-#include "Common.cpp"
 #include "Common.h"
 #include "Sprite.h"
 
@@ -28,7 +27,7 @@ struct TileCell {
 		desc = LSpriteDesc2D(UINT(t), pos);
 	};
 	TileCell() {
-		desc = LSpriteDesc2D(UINT(eSprite::Tile), Vector2(0, 0));
+		desc = LSpriteDesc2D(UINT(eSprite::GrassTile), Vector2(0, 0));
 	};
 	
 	//TileCell() : LBaseObject(eSprite::Tile, Vector2(0, 0)) {};
