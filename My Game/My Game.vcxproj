@@ -170,13 +170,13 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="TileManager.cpp" />
-    <ClCompile Include="Turret.cpp" />
+    <ClCompile Include="TileMap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerCamera.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Game.h" />
@@ -184,11 +184,9 @@
     <ClInclude Include="Helpers.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ObjectManager.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="Bullet.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="TileManager.h" />
-    <ClInclude Include="Turret.h" />
+    <ClInclude Include="TileMap.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="My Game.rc" />

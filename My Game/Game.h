@@ -11,6 +11,7 @@
 #include "Player.h"
 #include "PlayerCamera.h"
 #include "Math.h"
+//#include "TileMap.h"
 
 /// \brief The game class.
 ///
@@ -44,7 +45,8 @@ class CGame:
     void FollowCamera(); ///< Make camera follow player character.
     void ProcessGameState(); ///< Process game state.
 
-    PlayerCamera camera;
+	PlayerCamera camera; ///< The camera.
+	//TileMap tileMap; ///< The tile map.
 
   public:
     ~CGame(); ///< Destructor.

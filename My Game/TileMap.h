@@ -13,6 +13,7 @@
 #include "Common.h"
 #include "Sprite.h"
 
+
 struct TileCell {
 	LSpriteDesc2D desc;
 	TileCell& operator=(const TileCell& rhs) {
@@ -27,6 +28,8 @@ struct TileCell {
 	TileCell() {
 		desc = LSpriteDesc2D(UINT(eSprite::GrassTile), Vector2(0, 0));
 	};
+	
+	//TileCell() : LBaseObject(eSprite::Tile, Vector2(0, 0)) {};
 
 	const Vector2 position;
 	bool isSelected = false;

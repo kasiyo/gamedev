@@ -5,8 +5,6 @@
 #include "ComponentIncludes.h"
 
 #include "Player.h"
-#include "Turret.h"
-#include "Bullet.h"
 #include "ParticleEngine.h"
 #include "Helpers.h"
 #include "GameDefines.h"
@@ -24,9 +22,7 @@ CObject* CObjectManager::create(eSprite t, const Vector2& pos){
 
   switch(t){ //create object of type t
     case eSprite::Player:  pObj = new CPlayer(pos); break;
-    case eSprite::Turret:  pObj = new CTurret(pos); break;
-    case eSprite::Bullet:  pObj = new CBullet(eSprite::Bullet,  pos); break;
-    case eSprite::Bullet2: pObj = new CBullet(eSprite::Bullet2, pos); break;
+
     default: pObj = new CObject(t, pos);
   } //switch
   
@@ -37,7 +33,7 @@ CObject* CObjectManager::create(eSprite t, const Vector2& pos){
 /// Draw the tiled background and the objects in the object list.
 
 void CObjectManager::draw(){
-  m_pTileManager->Draw(eSprite::Tile); //draw tiled background
+  m_pTileManager->Draw(eSprite::GrassTile); //draw tiled background
 
   if(m_bDrawAABBs)
     m_pTileManager->DrawBoundingBoxes(eSprite::Line); //draw AABBs
@@ -133,8 +129,8 @@ const size_t CObjectManager::GetNumTurrets() const{
   size_t n = 0; //number of turrets
   
   for(CObject* pObj: m_stdObjectList) //for each object
-    if(pObj->m_nSpriteIndex == (UINT)eSprite::Turret)
-      n++;
+    /*if (pObj->m_nSpriteIndex == (UINT)eSprite::Turret)
+      n++;*/
 
   return n;
 } //GetNumTurrets

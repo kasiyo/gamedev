@@ -15,6 +15,11 @@
 ///
 /// The tile manager is responsible for the tile-based background.
 
+struct Tile {
+	eSprite sprite;
+    char type;
+};
+
 class CTileManager: 
   public CCommon, 
   public LSettings
@@ -25,13 +30,16 @@ class CTileManager:
 
     float m_fTileSize = 0.0f; ///< Tile width and height.
 
-    char** m_chMap = nullptr; ///< The level map.
+    Tile** m_chMap = nullptr; ///< The level map.
 
     std::vector<BoundingBox> m_vecWalls; ///< AABBs for the walls.
     std::vector<Vector2> m_vecTurrets; ///< Turret positions.
     Vector2 m_vPlayer; ///< Player location.
 
     void MakeBoundingBoxes(); ///< Make bounding boxes for walls.
+
+	float mapWidth = 0.0f;
+	float mapHeight = 0.0f;
 
   public:
     CTileManager(size_t); ///< Constructor.
@@ -42,6 +50,13 @@ class CTileManager:
     void Draw(eSprite); ///< Draw the map with a given tile.
     void DrawBoundingBoxes(eSprite); ///< Draw the bounding boxes.
     void GetObjects(std::vector<Vector2>&, Vector2&); ///< Get objects.
+
+    float GetMapWidth();
+    float GetMapHeight();
+	float GetTileSize();
+
+	const size_t GetWidth(); ///< Get width.
+	const size_t GetHeight(); ///< Get height.
     
     const bool Visible(const Vector2&, const Vector2&, float) const; ///< Check visibility.
     const bool CollideWithWall(BoundingSphere, Vector2&, float&) const; ///< Object-wall collision test.
