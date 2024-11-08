@@ -121,6 +121,7 @@ void CGame::BeginGame(){
   } //switch*/
 
   m_pTileManager->LoadMap("Media\\Maps\\small.txt");
+  //m_pTileManager->LoadMap("Media\\Maps\\basefloor.txt");
   m_pObjectManager->clear(); //clear old objects
   CreateObjects(); //create new objects (must be after map is loaded) 
   m_pAudio->stop(); //stop all  currently playing sounds

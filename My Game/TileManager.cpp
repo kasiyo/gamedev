@@ -16,6 +16,7 @@
 
 CTileManager::CTileManager(size_t n):
     m_fTileSize((float) n * 1.25f) {
+	printf("TileManager::TileManager(%1.f)\n", m_fTileSize);
 } //constructor
 
 /// Delete the memory used for storing the map.
@@ -342,9 +343,12 @@ void CTileManager::Draw(eSprite t){
 		 // * (m_fTileSize * 0.75f): scale down the difference to fit the isometric grid
 		 // + (m_fTileSize * 0.25f): shift the y position up by 0.25x the tile size
          float isoY = ((j + i) * 0.5f) * (m_fTileSize * 0.75f) + (m_fTileSize * 0.25f);
-         desc.m_vPos.x = isoX;
-         desc.m_vPos.y = isoY;
-         switch(m_chMap[i][j]){ //select which frame of the tile sprite is to be drawn
+         
+		 float scale = 1.5f; //scale of the tile
+		 //multiply the isometric coordinates by the scale
+         desc.m_vPos.x = isoX * scale;
+         desc.m_vPos.y = isoY * scale;
+         switch(m_chMap[i][j].type){ //select which frame of the tile sprite is to be drawn
              case 'F': desc.m_nCurrentFrame = 0; break; //floor
              case 'W': desc.m_nCurrentFrame = 1; break; //wall
              default:  desc.m_nCurrentFrame = 2; break; //error tile
