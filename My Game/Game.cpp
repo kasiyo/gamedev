@@ -92,17 +92,14 @@ void CGame::CreateObjects(){
   Vector2 playerpos; //player positions
   Vector2 cameraPos = camera.GetPos();
   Vector2 basePos((m_nWinWidth / 4), ((m_nWinHeight / 4) + 50));
-  //camera.SetPos(basePos);   // start camera at center of map
 
-  m_pTileManager->GetObjects(turretpos, cameraPos); //get positions
+  m_pTileManager->GetObjects(turretpos, playerpos); //get positions
 
-  printf("camera view vector (x, y, z): %1.f %1.f, %1.f\n", m_pRenderer->GetCamera()->GetViewVector().x,
-      m_pRenderer->GetCamera()->GetViewVector().y, m_pRenderer->GetCamera()->GetViewVector().z);
+  //printf("camera view vector (x, y, z): %1.f %1.f, %1.f\n", m_pRenderer->GetCamera()->GetViewVector().x,
+  //    m_pRenderer->GetCamera()->GetViewVector().y, m_pRenderer->GetCamera()->GetViewVector().z);
   
   //m_pPlayer = (CPlayer*)m_pObjectManager->create(eSprite::Player, playerpos);
 
-  /*for (const Vector2& pos : turretpos)
-    m_pObjectManager->create(eSprite::Turret, pos);*/
 } //CreateObjects
 
 /// Call this function to start a new game. This should be re-entrant so that

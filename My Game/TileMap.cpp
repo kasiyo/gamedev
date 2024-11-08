@@ -68,7 +68,7 @@ void TileMap::LoadMap(char* filename) {
 			
 			switch (c) {
 			case 'F': {	// Add a tile to the map.
-				TileCell tile = TileCell(eSprite::Tile, Vector2(j, i));
+				TileCell tile = TileCell(eSprite::GrassTile, Vector2(j, i));
 				//TileCell *tile = new TileCell();
 				//tile->SetPosition(Vector2(j, i));
 				//tileSize = tile->GetSize(eSprite::Tile, tile->GetTilePosition().x, tile->GetTilePosition().y);

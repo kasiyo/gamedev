@@ -39,8 +39,8 @@ void CTileManager::MakeBoundingBoxes(){
   BoundingBox b; //single-tile bounding box
   b.Extents = vTileExtents; //bounding box extents cover a single tile
 
-  printf("m_fTileSize = %1.f\n", m_fTileSize);
-  printf("vTileExtents (x, y, z): %1.f %1.f %1.f\n", vTileExtents.x, vTileExtents.y, vTileExtents.z);
+  //printf("m_fTileSize = %1.f\n", m_fTileSize);
+  //printf("vTileExtents (x, y, z): %1.f %1.f %1.f\n", vTileExtents.x, vTileExtents.y, vTileExtents.z);
 
   //horizontal walls with more than one tile
 
