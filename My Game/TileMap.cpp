@@ -82,7 +82,7 @@ void TileMap::LoadMap(char* filename) {
 			}
 			case 'W': {	// Add a wall to the map.
 				//TileCell* tile = new TileCell(Vector2(j, i));
-				TileCell* tile = new TileCell(eSprite::Wall, Vector2(j, i));
+				TileCell* tile = new TileCell(eSprite::GrassTile, Vector2(j, i));
 				//mapTiles.insert(std::make_pair(Vector2(j, i), tile));
 				printf("new wall Tile at (%d, %d)\n", j, i);
 				break;

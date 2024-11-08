@@ -3,7 +3,6 @@
 #include "BaseObjectManager.h"
 #include "SpriteRenderer.h"
 #include "GameDefines.h"
-
 #include "Object.h"
 #include "Renderer.h"
 #include <map>
@@ -13,7 +12,6 @@
 #include <ParticleEngine.h>
 #include "Common.h"
 #include "Sprite.h"
-
 
 struct TileCell {
 	LSpriteDesc2D desc;
@@ -29,8 +27,6 @@ struct TileCell {
 	TileCell() {
 		desc = LSpriteDesc2D(UINT(eSprite::GrassTile), Vector2(0, 0));
 	};
-	
-	//TileCell() : LBaseObject(eSprite::Tile, Vector2(0, 0)) {};
 
 	const Vector2 position;
 	bool isSelected = false;
@@ -86,7 +82,7 @@ class TileMap /* : public LBaseObjectManager<TileCell>*/ {
 	private:
 		size_t width = 0;			///< # of tiles wide.
 		size_t height = 0;			 ///< # of tiles tall.
-		//float tileMap[height][width];	///< Map of tiles.
+
 		std::map<Vector2, TileCell*> mapTiles;	///< Map of tiles.
 		std::vector<BoundingBox> walls;	///< AABBs for the walls.
 		TileCell** tileMap = nullptr;		///< Map of tiles.
