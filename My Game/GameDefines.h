@@ -5,6 +5,7 @@
 #define __L4RC_GAME_GAMEDEFINES_H__
 
 #include "Defines.h"
+#include <unordered_map>
 
 /// \brief Sprite enumerated type.
 ///
@@ -17,6 +18,12 @@ enum class eSprite: UINT{
   Wall, GrassTile, FloorTile,
   Size  //MUST BE LAST
 }; //eSprite
+
+std::unordered_map<char, eSprite> charToSprite = {
+	{'F', eSprite::FloorTile},
+	{'W', eSprite::Wall},
+	{'G', eSprite::GrassTile}
+};
 
 /// \brief Sound enumerated type.
 ///
