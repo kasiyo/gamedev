@@ -14,6 +14,8 @@
 /// Delete the renderer, the object manager, and the tile manager. The renderer
 /// needs to be deleted before this destructor runs so it will be done elsewhere.
 
+int sound = 0;
+
 CGame::~CGame(){
   delete m_pParticleEngine;
   delete m_pObjectManager;
@@ -49,8 +51,6 @@ void CGame::Initialize(){
 
 void CGame::LoadImages(){  
   m_pRenderer->BeginResourceUpload();
-
-  //m_pRenderer->Load(eSprite::Tile,    "tile"); 
   m_pRenderer->Load(eSprite::GrassTile, "grasstile");
 
   m_pRenderer->Load(eSprite::Player,  "player");
@@ -125,8 +125,12 @@ void CGame::BeginGame(){
   m_pObjectManager->clear(); //clear old objects
   CreateObjects(); //create new objects (must be after map is loaded) 
 
+  
   m_pAudio->stop(); //stop all  currently playing sounds
-  m_pAudio->play(eSound::Start); //play start-of-game sound
+  if (sound < 1) {
+	  m_pAudio->play(eSound::Start); //play start-of-game sound
+	  sound++;
+  }
   m_eGameState = eGameState::Playing; //now playing
 } //BeginGame
 
