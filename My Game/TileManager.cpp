@@ -315,14 +315,14 @@ void CTileManager::Draw(eSprite t){
   LSpriteDesc2D desc; //sprite descriptor for tile
 
   desc.m_nSpriteIndex = (UINT)t; //sprite index for tile
-  desc.m_fXScale = 1.5f;
-  desc.m_fYScale = 1.5f;
+  desc.m_fXScale = 1.0f;
+  desc.m_fYScale = 1.0f;
 
   const int w = (int)ceil(m_nWinWidth/m_fTileSize) + 2; //width of window in tiles, with 2 extra
   const int h = (int)ceil(m_nWinHeight/m_fTileSize) + 2; //height of window in tiles, with 2 extra
 
   const Vector2 campos = m_pRenderer->GetCameraPos(); //camera position
-  const Vector2 origin = campos + 0.5f*m_nWinWidth*Vector2(-1.0f, 1.0f); //position of top left corner of window
+  const Vector2 origin = campos + 1.0f*m_nWinWidth*Vector2(-1.0f, 1.0f); //position of top left corner of window
 
   const int top = std::max(0, (int)m_nHeight - (int)round(origin.y/m_fTileSize) + 1); //index of top tile
   const int bottom = std::min(top + h + 1, (int)m_nHeight - 1); //index of bottom tile
@@ -341,22 +341,44 @@ void CTileManager::Draw(eSprite t){
          // * 0.5f: scale down the difference to fit the isometric grid
 		 // * (m_fTileSize * 1.5f): scale up the difference by 1.5x to fit the isometric grid
 		 // - (m_fTileSize * 0.25f): shift the x position to the left by 0.25x the tile size
-         float isoX = ((j - i) * 0.5f) * (m_fTileSize * 1.5f) - (m_fTileSize * 0.25f);
+         float isoX = ((j - i) * 0.5f) * (m_fTileSize * 1.5f) - (m_fTileSize * 0.55f);
 		 // (j + i): shift tile positions diagonally
 		 // * 0.5f: scale down the difference to fit the isometric grid
 		 // * (m_fTileSize * 0.75f): scale down the difference to fit the isometric grid
 		 // + (m_fTileSize * 0.25f): shift the y position up by 0.25x the tile size
          float isoY = ((j + i) * 0.5f) * (m_fTileSize * .75f) + (m_fTileSize * 0.25f);
          
-		 float scale = 1.0f; //scale of the tile
+		 float scale = 0.65f; //scale of the tile
 		 //multiply the isometric coordinates by the scale
          desc.m_vPos.x = isoX * scale;
          desc.m_vPos.y = isoY * scale;
-         switch(m_chMap[i][j].type){ //select which frame of the tile sprite is to be drawn
-             case 'F': desc.m_nCurrentFrame = 0; break; //floor
-             case 'W': desc.m_nCurrentFrame = 1; break; //wall
-             default:  desc.m_nCurrentFrame = 2; break; //error tile
+         //t = charToSprite[m_chMap[i][j].type];
+         
+         switch (m_chMap[i][j].type) { //select which frame of the tile sprite is to be drawn
+             case 'B': {
+				 desc.m_nCurrentFrame = 4;
+				 break; //blank
+             }
+             case 'F': {
+                 //printf("FloorTile charToSprite['%s']\n", charToSprite[m_chMap[i][j].type]);
+                 desc.m_nCurrentFrame = 0;
+				 //desc.m_nSpriteIndex = (UINT)eSprite::FloorTile;
+                 break; //floor
+             }
+             case 'W': {
+                 //printf("Wall charToSprite['%s']\n", charToSprite[m_chMap[i][j].type]);
+                 //desc.m_nCurrentFrame = 1;
+                 desc.m_nCurrentFrame = 3;
+                 break; //wall
+             }
+             default:  {
+                 desc.m_nCurrentFrame = 2;
+                 break; //error tile
+             }
          } //switch
+		
+        
+		//desc.m_nSpriteIndex = (UINT)t;
 
          m_pRenderer->Draw(&desc); //finally we can draw a tile
      } //for

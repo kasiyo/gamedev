@@ -52,6 +52,7 @@ void CGame::Initialize(){
 void CGame::LoadImages(){  
   m_pRenderer->BeginResourceUpload();
   m_pRenderer->Load(eSprite::GrassTile, "grasstile");
+  //m_pRenderer->Load(eSprite::FloorTile, "floortile");
 
   m_pRenderer->Load(eSprite::Player,  "player");
   m_pRenderer->Load(eSprite::Bullet,  "bullet");
@@ -120,8 +121,9 @@ void CGame::BeginGame(){
 
   //tileMap.LoadMap("Media\\Maps\\small.txt");
 
-  m_pTileManager->LoadMap("Media\\Maps\\small.txt");
+  //m_pTileManager->LoadMap("Media\\Maps\\small.txt");
   //m_pTileManager->LoadMap("Media\\Maps\\basefloor.txt");
+  m_pTileManager->LoadMap("Media\\Maps\\bwfloor.txt");
   m_pObjectManager->clear(); //clear old objects
   CreateObjects(); //create new objects (must be after map is loaded) 
 
