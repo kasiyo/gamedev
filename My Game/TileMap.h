@@ -81,12 +81,11 @@ class TileMap /* : public LBaseObjectManager<TileCell>*/ {
 
 		size_t GetTileSize() {
 			return tileSize;
-		}
+		};
 	private:
 		size_t width = 0;			///< # of tiles wide.
 		size_t height = 0;			 ///< # of tiles tall.
 
-		std::map<Vector2, TileCell*> mapTiles;	///< Map of tiles.
 		std::vector<BoundingBox> walls;	///< AABBs for the walls.
 		TileCell** tileMap = nullptr;		///< Map of tiles.
 

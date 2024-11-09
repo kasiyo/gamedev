@@ -14,14 +14,6 @@ TileMap::TileMap(size_t n) {
 
 /// Destructor.
 TileMap::~TileMap() {
-	/*if (tileMap != nullptr) {
-		//tileMap.clear();
-		delete tileMap;
-		delete mapTiles;
-	}*/
-
-	//mapTiles.clear();
-
 	for (size_t i = 0; i < height; i++) {
 		delete[] tileMap[i];
 	}
@@ -69,21 +61,13 @@ void TileMap::LoadMap(char* filename) {
 			switch (c) {
 			case 'F': {	// Add a tile to the map.
 				TileCell tile = TileCell(eSprite::GrassTile, Vector2(j, i));
-				//TileCell *tile = new TileCell();
-				//tile->SetPosition(Vector2(j, i));
-				//tileSize = tile->GetSize(eSprite::Tile, tile->GetTilePosition().x, tile->GetTilePosition().y);
-				//mapTiles[i][j] = tile;
-				//mapTiles.insert(std::make_pair(Vector2(j, i), tile));
-				//tileMap[i][j] = new TileCell(eSprite::Tile, Vector2(j, i));
 				tileMap[i][j] = tile;
 
 				printf("new floor Tile at (%d, %d)\n", j, i);
 				break;
 			}
 			case 'W': {	// Add a wall to the map.
-				//TileCell* tile = new TileCell(Vector2(j, i));
 				TileCell* tile = new TileCell(eSprite::GrassTile, Vector2(j, i));
-				//mapTiles.insert(std::make_pair(Vector2(j, i), tile));
 				printf("new wall Tile at (%d, %d)\n", j, i);
 				break;
 			}
