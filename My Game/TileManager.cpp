@@ -15,7 +15,7 @@
 /// \param n Width and height of square tile in pixels.
 
 CTileManager::CTileManager(size_t n):
-    m_fTileSize((float) n * 1.25f) {
+    m_fTileSize((float) n) {
 	printf("TileManager::TileManager(%1.f)\n", m_fTileSize);
 } //constructor
 
@@ -346,9 +346,9 @@ void CTileManager::Draw(eSprite t){
 		 // * 0.5f: scale down the difference to fit the isometric grid
 		 // * (m_fTileSize * 0.75f): scale down the difference to fit the isometric grid
 		 // + (m_fTileSize * 0.25f): shift the y position up by 0.25x the tile size
-         float isoY = ((j + i) * 0.5f) * (m_fTileSize * 0.75f) + (m_fTileSize * 0.25f);
+         float isoY = ((j + i) * 0.5f) * (m_fTileSize * .75f) + (m_fTileSize * 0.25f);
          
-		 float scale = 1.5f; //scale of the tile
+		 float scale = 1.0f; //scale of the tile
 		 //multiply the isometric coordinates by the scale
          desc.m_vPos.x = isoX * scale;
          desc.m_vPos.y = isoY * scale;

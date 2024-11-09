@@ -30,7 +30,7 @@ void CGame::Initialize(){
   m_pRenderer->Initialize(eSprite::Size); 
   LoadImages(); //load images from xml file list
   
-  m_pTileManager = new CTileManager((size_t)m_pRenderer->GetWidth(eSprite::GrassTile)* 0.55f);
+  m_pTileManager = new CTileManager((size_t)m_pRenderer->GetWidth(eSprite::GrassTile));
   m_pObjectManager = new CObjectManager; //set up the object manager 
   LoadSounds(); //load the sounds for this game
 
