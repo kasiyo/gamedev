@@ -6,7 +6,7 @@ namespace Math
 	static float SmoothDamp(float current, float target, float* currentVelocity, float smoothTime, float maxSpeed, float deltaTime);
 	template <typename T>
 	T clamp(T value, T low, T high) {
-		return std::max(low, std::min(value, high));
+		return (std::max)(low, (std::min)(value, high));
 	}
 
 	template <typename T>
@@ -25,8 +25,8 @@ namespace Math
 //	  the current value towards a target value with a spring-damper like algorithm.
 
 //	ALGORITHM SOURCE: https://discussions.unity.com/t/formula-behind-smoothdamp/6483
-static float Math::SmoothDamp(float current, float target, float *currentVelocity, float smoothTime, float maxSpeed, float deltaTime) {
-	smoothTime = std::max(0.0001f, smoothTime);
+static float Math::SmoothDamp(float current, float target, float* currentVelocity, float smoothTime, float maxSpeed, float deltaTime) {
+	smoothTime = (std::max)(0.0001f, smoothTime);
 	float num = 2.f / smoothTime;
 	float num2 = num * deltaTime;
 	float num3 = 1.f / (1.f + num2 + 0.48f * num2 * num2 + 0.235f * num2 * num2 * num2);

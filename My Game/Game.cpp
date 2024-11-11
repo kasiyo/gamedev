@@ -39,6 +39,8 @@ void CGame::Initialize(){
   float x = 0.0f, y = 0.0f;
   camera = PlayerCamera();
 
+  //camera.SetPos(Vector2(camera.GetPos().x, m_nWinWidth * 0.25f));
+  // m_pTileManager->tileCamera = &camera;
   BeginGame();
 } //Initialize
 
@@ -52,7 +54,7 @@ void CGame::Initialize(){
 void CGame::LoadImages(){  
   m_pRenderer->BeginResourceUpload();
   m_pRenderer->Load(eSprite::GrassTile, "grasstile");
-  //m_pRenderer->Load(eSprite::FloorTile, "floortile");
+  m_pRenderer->Load(eSprite::Appliance, "appliance");
 
   m_pRenderer->Load(eSprite::Player,  "player");
   m_pRenderer->Load(eSprite::Bullet,  "bullet");
@@ -118,8 +120,6 @@ void CGame::BeginGame(){
     case 3: m_pTileManager->LoadMapFromImageFile("Media\\Maps\\maze.png");
       break;
   } //switch*/
-
-  //tileMap.LoadMap("Media\\Maps\\small.txt");
 
   //m_pTileManager->LoadMap("Media\\Maps\\small.txt");
   //m_pTileManager->LoadMap("Media\\Maps\\basefloor.txt");
@@ -275,6 +275,7 @@ void CGame::RenderFrame(){
 void CGame::FollowCamera(){
   Vector3 newPos(camera.GetPos());
   m_pRenderer->SetCameraPos(newPos); //camera to player
+
 } //FollowCamera
 
 /// This function will be called regularly to process and render a frame
@@ -288,9 +289,11 @@ void CGame::ProcessFrame(){
   ControllerHandler(); //handle controller input
   m_pAudio->BeginFrame(); //notify audio player that frame has begun
   
+  FollowCamera(); //make camera follow player
+
   m_pTimer->Tick([&](){ //all time-dependent function calls should go here
     m_pObjectManager->move(); //move all objects
-    FollowCamera(); //make camera follow player
+    
     m_pParticleEngine->step(); //advance particle animation
   });
 

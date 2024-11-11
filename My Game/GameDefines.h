@@ -14,15 +14,14 @@
 /// memory. `Size` must be last.
 
 enum class eSprite: UINT{
-  Background, Bullet, Bullet2, Player, Smoke, Spark, /*Tile,*/ Line,
-  Wall, GrassTile,
+  Background, Bullet, Bullet2, Player, Smoke, Spark, Line,
+  Wall, GrassTile, Appliance,
   Size  //MUST BE LAST
 }; //eSprite
 
 /*std::unordered_map<char, eSprite> charToSprite = {
-	{'F', eSprite::FloorTile},
 	{'W', eSprite::Wall},
-	{'G', eSprite::GrassTile}
+	{'G', eSprite::GrassTile},
 };*/
 
 /// \brief Sound enumerated type.

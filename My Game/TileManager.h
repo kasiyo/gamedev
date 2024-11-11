@@ -10,6 +10,8 @@
 #include "Settings.h"
 #include "Sprite.h"
 #include "GameDefines.h"
+#include "BaseCamera.h"
+#include "PlayerCamera.h"
 
 /// \brief The tile manager.
 ///

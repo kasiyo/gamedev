@@ -14,6 +14,7 @@
 	  <!--<sprite name="tile" file="tile" ext ="png" frames="3"/>-->
 	  <sprite name="grasstile" file="grasstile" ext ="png" frames="5"/>
 	  <!--<sprite name="floortile" file="floortile.png"/>-->
+	  <sprite name="appliance" file="appliance0.png" />
     <sprite name="player" file="player.png"/>
     <sprite name="turret" file="turret.png"/>
     <sprite name="bullet" file="bullet.png"/>
