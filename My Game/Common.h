@@ -13,6 +13,7 @@ class CRenderer;
 class LParticleEngine2D;
 class CTileManager;
 class CPlayer;
+class ApplianceManager;
 
 /// \brief The common variables class.
 ///
@@ -28,6 +29,8 @@ class CCommon{
     static CObjectManager* m_pObjectManager; ///< Pointer to object manager.
     static LParticleEngine2D* m_pParticleEngine; ///< Pointer to particle engine.
     static CTileManager* m_pTileManager; ///< Pointer to tile manager. 
+
+	static ApplianceManager* m_pApplianceManager; ///< Pointer to appliance manager.
 
     static bool m_bDrawAABBs; ///< Draw AABB flag.
     static bool m_bGodMode; ///< God mode flag.
