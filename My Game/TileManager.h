@@ -10,8 +10,6 @@
 #include "Settings.h"
 #include "Sprite.h"
 #include "GameDefines.h"
-#include "BaseCamera.h"
-#include "PlayerCamera.h"
 
 /// \brief The tile manager.
 ///
@@ -53,6 +51,7 @@ class CTileManager:
     void Draw(eSprite); ///< Draw the map with a given tile.
     void DrawBoundingBoxes(eSprite); ///< Draw the bounding boxes.
     void GetObjects(std::vector<Vector2>&, Vector2&); ///< Get objects.
+    bool GetTile(int x, int y, Tile** refval);
 
     float GetMapWidth();
     float GetMapHeight();

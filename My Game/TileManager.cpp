@@ -300,6 +300,15 @@ void CTileManager::GetObjects(std::vector<Vector2>& walls, Vector2& player){
   player = m_vPlayer;
 } //GetObjects
 
+/// Get the tile at a given position.
+bool CTileManager::GetTile(int x, int y, Tile** refval) {
+	if (x < 0 || x >= m_nWidth || y < 0 || y >= m_nHeight) {
+		return false;
+	}
+	*refval = &m_chMap[y][x];
+	return true;
+}
+
 /// This is for debug purposes so that you can verify that
 /// the collision shapes are in the right places.
 /// \param t Line sprite to be stretched to draw the line.
