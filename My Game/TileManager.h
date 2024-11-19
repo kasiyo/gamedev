@@ -18,6 +18,7 @@
 struct Tile {
 	eSprite sprite;
     char type;
+    TileInfo info;
     bool isOccupied = false;
 };
 

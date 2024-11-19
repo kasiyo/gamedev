@@ -19,10 +19,32 @@ enum class eSprite: UINT{
   Size  //MUST BE LAST
 }; //eSprite
 
-/*std::unordered_map<char, eSprite> charToSprite = {
-	{'W', eSprite::Wall},
-	{'G', eSprite::GrassTile},
-};*/
+struct TileInfo {
+	eSprite baseSprite;
+	int frameIndex;
+};
+
+static std::unordered_map<char, TileInfo> CHAR_TO_TILE = {
+	{ 'F', { eSprite::GrassTile, 0 } },
+	{ 'W', { eSprite::GrassTile, 1 } },
+	{ 'T', { eSprite::GrassTile, 1 } },
+	{ 'P', { eSprite::GrassTile, 1 } },
+	{ '0', { eSprite::Tile, 0 } },
+	{ '1', { eSprite::Tile, 1 } },
+	{ '2', { eSprite::Tile, 2 } },
+	{ '3', { eSprite::Tile, 3 } },
+	{ '4', { eSprite::Tile, 4 } },
+	{ '5', { eSprite::Tile, 5 } },
+	{ '6', { eSprite::Tile, 6 } },
+	{ '7', { eSprite::Tile, 7 } },
+	{ '8', { eSprite::Tile, 8 } },
+	{ '9', { eSprite::Tile, 9 } },
+	{ 'A', { eSprite::Tile, 10 } },
+	{ 'B', { eSprite::Tile, 11 } },
+	{ 'C', { eSprite::Tile, 12 } },
+	{ 'D', { eSprite::Tile, 13 } },
+	{ 'E', { eSprite::Tile, 14 } },
+};
 
 /// \brief Sound enumerated type.
 ///

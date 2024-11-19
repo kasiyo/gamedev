@@ -123,7 +123,8 @@ void CGame::BeginGame(){
 
   //m_pTileManager->LoadMap("Media\\Maps\\small.txt");
   //m_pTileManager->LoadMap("Media\\Maps\\basefloor.txt");
-  m_pTileManager->LoadMap("Media\\Maps\\bwfloor.txt");
+  //m_pTileManager->LoadMap("Media\\Maps\\bwfloor.txt");
+  m_pTileManager->LoadMap("Media\\Maps\\tilefloor.txt");
   m_pObjectManager->clear(); //clear old objects
   CreateObjects(); //create new objects (must be after map is loaded) 
 

@@ -221,7 +221,7 @@ void CTileManager::LoadMap(char* filename){
     for(size_t j=0; j<m_nWidth; j++){
       const char c = buffer[index];
 
-      if(c == 'T'){
+      /*if (c == 'T') {
         m_chMap[i][j].type = 'F'; //floor tile
         const Vector2 pos = m_fTileSize * Vector2((j + 0.5f) , m_nHeight - i -0.5f);
         m_vecTurrets.push_back(pos);
@@ -232,7 +232,15 @@ void CTileManager::LoadMap(char* filename){
         m_vPlayer = m_fTileSize*Vector2(j + 0.5f, m_nHeight - i - 0.5f);
       } //else if
 
-      else m_chMap[i][j].type = c; //load character into map
+      else m_chMap[i][j].type = c; //load character into map*/
+
+      if (CHAR_TO_TILE.count(c) > 0) {
+          m_chMap[i][j].info = CHAR_TO_TILE.at(c);
+      }
+      else {
+          m_chMap[i][j].info.baseSprite = eSprite::GrassTile;
+          m_chMap[i][j].info.frameIndex = 0;
+      }
 
       index++; //next index
     } //for
@@ -365,7 +373,7 @@ void CTileManager::Draw(eSprite t){
          desc.m_vPos.y = isoY * scale;
          //t = charToSprite[m_chMap[i][j].type];
          
-         switch (m_chMap[i][j].type) { //select which frame of the tile sprite is to be drawn
+         /*switch (m_chMap[i][j].type) { //select which frame of the tile sprite is to be drawn
              case 'B': {
 				 desc.m_nCurrentFrame = 4;
 				 break; //blank
@@ -388,7 +396,12 @@ void CTileManager::Draw(eSprite t){
                  desc.m_nCurrentFrame = 2;
                  break; //error tile
              }
-         } //switch
+         } //switch*/
+
+         Tile& t = m_chMap[i][j];
+
+         desc.m_nSpriteIndex = (UINT)t.info.baseSprite;
+         desc.m_nCurrentFrame = t.info.frameIndex;
 		
         
 		//desc.m_nSpriteIndex = (UINT)t;
