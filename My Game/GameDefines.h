@@ -14,7 +14,7 @@
 /// memory. `Size` must be last.
 
 enum class eSprite: UINT{
-  Background, Bullet, Bullet2, Player, Smoke, Spark, Line,
+  Background, Bullet, Bullet2, Player, Smoke, Tile, Spark, Line,
   Wall, GrassTile, Appliance,
   Size  //MUST BE LAST
 }; //eSprite
