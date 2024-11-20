@@ -47,6 +47,46 @@ void CGame::Initialize(){
   BeginGame();
 } //Initialize
 
+void CGame::HighlightTile() {
+    POINT p = {};//  get mouse position
+
+    GetCursorPos(&p);
+    ScreenToClient(m_pRenderer->GetWindow(), &p);
+
+    Vector2 mousePos((float)p.x - 500.0f, (float)p.y + 8.0f); //hardcode L
+
+    mousePos.x += camera.GetPos().x;
+    mousePos.y -= camera.GetPos().y;
+
+    float tileSizeX = (float)(int)((float)spriteSize * 1.5f);
+    float tileSizeY = (float)(int)((float)spriteSize * 0.75f);
+
+    Vector2 selected = Vector2(
+        (mousePos.y / tileSizeY) + (mousePos.x / tileSizeX),
+        (mousePos.y / tileSizeY) - (mousePos.x / tileSizeX)
+    );
+
+    int selectedX = (int)selected.x;
+    int selectedY = (int)selected.y;
+
+    /*printf("mousePos: %1.f %1.f\n", mousePos.x, mousePos.y);
+    printf("cameraPos: %1.f %1.f\n", camera.GetPos().x, camera.GetPos().y);
+    printf("tileX: %d tileY: %d\n", selectedX, selectedY);*/
+
+    Tile* highlightedTile = 0;
+    if (m_pTileManager->GetTile(selectedX, selectedY, &highlightedTile)) {
+        if (prevHighlightedTile && prevHighlightedTile != prevSelectedTile) {
+            prevHighlightedTile->tint = DEFAULT_TILE_TINT;
+        }
+
+        if (highlightedTile != prevSelectedTile) {
+            highlightedTile->tint = HIGHLIGHT_TILE_TINT;
+        }
+
+        prevHighlightedTile = highlightedTile;
+    }
+}
+
 /// Load the specific images needed for this game. This is where `eSprite`
 /// values from `GameDefines.h` get tied to the names of sprite tags in
 /// `gamesettings.xml`. Those sprite tags contain the name of the corresponding
@@ -169,7 +209,7 @@ void CGame::KeyboardHandler(){
   if(m_pKeyboard->TriggerDown(VK_BACK)) //start game
     BeginGame();
 
-  if (m_pKeyboard->TriggerDown(VK_LBUTTON)) { //left click
+  /*if (m_pKeyboard->TriggerDown(VK_LBUTTON)) { //left click
       POINT p = {};
 
       GetCursorPos(&p);
@@ -207,7 +247,9 @@ void CGame::KeyboardHandler(){
 
           prevHighlightedTile = highlightedTile;
       }
-  };
+  };*/
+
+  HighlightTile();
 
   Vector2 moveDirection;
 
