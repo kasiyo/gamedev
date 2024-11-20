@@ -19,6 +19,7 @@ struct Tile {
 	eSprite sprite;
     char type;
     TileInfo info;
+    XMFLOAT4 tint = DEFAULT_TILE_TINT;
     bool isOccupied = false;
 };
 
