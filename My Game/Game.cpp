@@ -15,6 +15,9 @@
 /// needs to be deleted before this destructor runs so it will be done elsewhere.
 
 int sound = 0;
+static size_t spriteSize = 0;
+static const float SPRITE_SCALE = 0.55f;
+
 
 CGame::~CGame(){
   delete m_pParticleEngine;
@@ -30,17 +33,17 @@ void CGame::Initialize(){
   m_pRenderer->Initialize(eSprite::Size); 
   LoadImages(); //load images from xml file list
   
-  m_pTileManager = new CTileManager((size_t)m_pRenderer->GetWidth(eSprite::GrassTile));
+  m_pTileManager = new CTileManager((size_t)m_pRenderer->GetWidth(eSprite::GrassTile) * SPRITE_SCALE);
   m_pObjectManager = new CObjectManager; //set up the object manager 
   LoadSounds(); //load the sounds for this game
 
+  spriteSize = m_pRenderer->GetWidth(eSprite::GrassTile);
+
   m_pParticleEngine = new LParticleEngine2D(m_pRenderer);
-  //TileCell t;
+
   float x = 0.0f, y = 0.0f;
   camera = PlayerCamera();
 
-  //camera.SetPos(Vector2(camera.GetPos().x, m_nWinWidth * 0.25f));
-  // m_pTileManager->tileCamera = &camera;
   BeginGame();
 } //Initialize
 
@@ -97,9 +100,6 @@ void CGame::CreateObjects(){
   Vector2 basePos((m_nWinWidth / 4), ((m_nWinHeight / 4) + 50));
 
   m_pTileManager->GetObjects(turretpos, playerpos); //get positions
-
-  //printf("camera view vector (x, y, z): %1.f %1.f, %1.f\n", m_pRenderer->GetCamera()->GetViewVector().x,
-  //    m_pRenderer->GetCamera()->GetViewVector().y, m_pRenderer->GetCamera()->GetViewVector().z);
   
   //m_pPlayer = (CPlayer*)m_pObjectManager->create(eSprite::Player, playerpos);
 
@@ -168,6 +168,33 @@ void CGame::KeyboardHandler(){
   }
   if(m_pKeyboard->TriggerDown(VK_BACK)) //start game
     BeginGame();
+
+  if (m_pKeyboard->TriggerDown(VK_LBUTTON)) { //left click
+      POINT p = {};
+
+      GetCursorPos(&p);
+      ScreenToClient(m_pRenderer->GetWindow(), &p);
+
+      Vector2 mousePos((float)p.x - 500.0f, (float)p.y + 8.0f); //hardcode L
+
+      mousePos.x += camera.GetPos().x;
+      mousePos.y -= camera.GetPos().y;
+
+      float tileSizeX = (float)(int)((float)spriteSize * 1.5f);
+      float tileSizeY = (float)(int)((float)spriteSize * 0.75f);
+
+      Vector2 selected = Vector2(
+          (mousePos.y / tileSizeY) + (mousePos.x / tileSizeX),
+          (mousePos.y / tileSizeY) - (mousePos.x / tileSizeX)
+      );
+
+      int selectedX = (int)selected.x;
+      int selectedY = (int)selected.y;
+
+      printf("mousePos: %1.f %1.f\n", mousePos.x, mousePos.y);
+      printf("cameraPos: %1.f %1.f\n", camera.GetPos().x, camera.GetPos().y);
+      printf("tileX: %d tileY: %d\n", selectedX, selectedY);
+  };
 
   Vector2 moveDirection;
 
@@ -261,6 +288,7 @@ void CGame::RenderFrame(){
   }                                                                     // and 100.0 to 45.0f works better after tile resizing
                                                                         // for some reason...
   */
+  m_pTileManager->Draw(eSprite::GrassTile); //draw tiles
   m_pObjectManager->draw(); //draw objects
   m_pParticleEngine->Draw(); //draw particles
   if(m_bDrawFrameRate)DrawFrameRateText(); //draw frame rate, if required

@@ -330,28 +330,31 @@ void CTileManager::DrawBoundingBoxes(eSprite t){
 /// agrees with the map text file viewed in NotePad.
 /// \param t Sprite type for a 3-frame sprite: 0 is floor, 1 is wall, 2 is an error tile.
  
+int count = 0;
 void CTileManager::Draw(eSprite t){
   LSpriteDesc2D desc; //sprite descriptor for tile
 
   desc.m_nSpriteIndex = (UINT)t; //sprite index for tile
-  desc.m_fXScale = 1.0f;
-  desc.m_fYScale = 1.0f;
+  desc.m_fXScale = 1.5f;
+  desc.m_fYScale = 1.5f;
 
   const int w = (int)ceil(m_nWinWidth / m_fTileSize) + 2; //width of window in tiles, with 2 extra
   const int h = (int)ceil(m_nWinHeight / m_fTileSize) + 2; //height of window in tiles, with 2 extra
 
   const Vector2 campos = m_pRenderer->GetCameraPos(); //camera position
-  const Vector2 origin = campos + 1.0f * m_nWinWidth * Vector2(-1.0f, 1.0f); //position of top left corner of window
+  const Vector2 origin = campos + 0.5f * m_nWinWidth * Vector2(-1.0f, 1.0f); //position of top left corner of window
 
-  const int top = std::max(0, (int)m_nHeight - (int)round(origin.y / (m_fTileSize * 0.25f)) + 1); //index of top tile
-  const int bottom = std::min(top + h + 1, (int)m_nHeight - 1); //index of bottom tile
+  for (int i = 0; i < m_nHeight; i += 1) {
+      for (int j = 0; j < m_nWidth; j += 1) {
+          /*const int top = std::max(0, (int)m_nHeight - (int)round(origin.y / (m_fTileSize * 0.25f)) + 1); //index of top tile
+          const int bottom = std::min(top + h + 1, (int)m_nHeight - 1); //index of bottom tile
 
-  const int left = std::max(0, (int)round(origin.x /m_fTileSize) - 1); //index of left tile
-  const int right = std::min(left + w, (int)m_nWidth - 1); //index of right tile
+          const int left = std::max(0, (int)round(origin.x /m_fTileSize) - 1); //index of left tile
+          const int right = std::min(left + w, (int)m_nWidth - 1); //index of right tile
 
   for(int i=bottom; i >= top; i--) // for each column from bottom to top
       for (int j = right; j >= left; j--) { // for each row from right to left
-         // make sure indices are within bounds.
+         // make sure indices are within bounds.*/
          if (i >= m_nHeight || j >= m_nWidth || i < 0 || j < 0) {
              continue;
          }
@@ -367,10 +370,10 @@ void CTileManager::Draw(eSprite t){
 		 // + (m_fTileSize * 0.25f): shift the y position up by 0.25x the tile size
          float isoY = ((j + i) * 0.5f) * (m_fTileSize * .75f) + (m_fTileSize * 0.25f);
          
-		 float scale = 0.65f; //scale of the tile
+		 float scale = /*0.625*/1.5f; //scale of the tile
 		 //multiply the isometric coordinates by the scale
-         desc.m_vPos.x = isoX * scale;
-         desc.m_vPos.y = isoY * scale;
+         //desc.m_vPos.x = isoX * scale;
+         //desc.m_vPos.y = isoY * scale;
          //t = charToSprite[m_chMap[i][j].type];
          
          /*switch (m_chMap[i][j].type) { //select which frame of the tile sprite is to be drawn
@@ -398,6 +401,15 @@ void CTileManager::Draw(eSprite t){
              }
          } //switch*/
 
+         
+         desc.m_vPos.x = isoX * scale;
+         desc.m_vPos.y = (m_nWinHeight / 2) + (-isoY * scale);
+
+         if (count < 10) {
+            printf("desc.m_vPos(x, y) = (%d, %d)\n", desc.m_vPos.x, desc.m_vPos.y);
+            count++;
+         }
+
          Tile& t = m_chMap[i][j];
 
          desc.m_nSpriteIndex = (UINT)t.info.baseSprite;
@@ -406,8 +418,9 @@ void CTileManager::Draw(eSprite t){
         
 		//desc.m_nSpriteIndex = (UINT)t;
 
-         m_pRenderer->Draw(&desc); //finally we can draw a tile
-     } //for
+          m_pRenderer->Draw(&desc); //finally we can draw a tile
+      } //for
+  } //for
 } //Draw
 
 float CTileManager::GetMapWidth() {
