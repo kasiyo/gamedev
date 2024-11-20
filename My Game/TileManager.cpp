@@ -161,7 +161,6 @@ void CTileManager::DrawBoundingBoxes(eSprite t){
 /// agrees with the map text file viewed in NotePad.
 /// \param t Sprite type for a 3-frame sprite: 0 is floor, 1 is wall, 2 is an error tile.
  
-int count = 0;
 void CTileManager::Draw(eSprite t){
   LSpriteDesc2D desc; //sprite descriptor for tile
 
@@ -211,25 +210,16 @@ void CTileManager::Draw(eSprite t){
          
          float scale = 1.5f;
 		 //float scale = 0.625f/*1.5f*/; //scale of the tile
-		 //multiply the isometric coordinates by the scale
-
          
+		 //multiply the isometric coordinates by the scale
          desc.m_vPos.x = isoX * scale;
          desc.m_vPos.y = (m_nWinHeight / 2) + (-isoY * scale);
          desc.m_f4Tint = m_chMap[i][j].tint;
-
-         if (count < 10) {
-            printf("desc.m_vPos(x, y) = (%d, %d)\n", desc.m_vPos.x, desc.m_vPos.y);
-            count++;
-         }
 
          Tile& t = m_chMap[i][j];
 
          desc.m_nSpriteIndex = (UINT)t.info.baseSprite;
          desc.m_nCurrentFrame = t.info.frameIndex;
-		
-        
-		//desc.m_nSpriteIndex = (UINT)t;
 
           m_pRenderer->Draw(&desc); //finally we can draw a tile
       } //for
