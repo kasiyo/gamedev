@@ -21,6 +21,8 @@ struct Tile {
     TileInfo info;
     XMFLOAT4 tint = DEFAULT_TILE_TINT;
     bool isOccupied = false;
+    int x;
+    int y;
 };
 
 class CTileManager: 
@@ -39,7 +41,7 @@ class CTileManager:
     std::vector<Vector2> m_vecTurrets; ///< Turret positions.
     Vector2 m_vPlayer; ///< Player location.
 
-    void MakeBoundingBoxes(); ///< Make bounding boxes for walls.
+    //void MakeBoundingBoxes(); ///< Make bounding boxes for walls.
 
 	float mapWidth = 0.0f;
 	float mapHeight = 0.0f;

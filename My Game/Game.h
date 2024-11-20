@@ -11,7 +11,7 @@
 #include "Player.h"
 #include "PlayerCamera.h"
 #include "Math.h"
-//#include "TileMap.h"
+#include "TileManager.h"
 
 /// \brief The game class.
 ///
@@ -31,7 +31,10 @@ class CGame:
     bool m_bDrawFrameRate = false; ///< Draw the frame rate.
     eGameState m_eGameState = eGameState::Playing; ///< Game state.
     int m_nNextLevel = 0; ///< Current level number.
-    
+    Tile* prevSelectedTile;
+    Tile* prevHighlightedTile;
+    std::vector<Tile*> units;
+
     void LoadImages(); ///< Load images.
     void LoadSounds(); ///< Load sounds.
     void BeginGame(); ///< Begin playing the game.

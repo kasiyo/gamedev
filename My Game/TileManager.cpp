@@ -15,7 +15,7 @@
 /// \param n Width and height of square tile in pixels.
 
 CTileManager::CTileManager(size_t n):
-    m_fTileSize((float) n) {
+    m_fTileSize((float) n * 1.25f) {
 	printf("TileManager::TileManager(%1.f)\n", m_fTileSize);
 
 	
@@ -33,7 +33,7 @@ CTileManager::~CTileManager(){
 /// Make the AABBs for the walls. Care is taken to use the longest horizontal
 /// and vertical AABBs possible so that there aren't so many of them.
 
-void CTileManager::MakeBoundingBoxes(){
+/*void CTileManager::MakeBoundingBoxes() {
   m_vecWalls.clear(); //no walls yet
 
   BoundingBox aabb; //current bounding box
@@ -64,7 +64,7 @@ void CTileManager::MakeBoundingBoxes(){
         aabb.Center = Vector3(pos.x, pos.y, 0); //bounding box center
         aabb.Extents = vTileExtents; //bounding box extents
         j++; //next column
-        pos.x += (t * 0.5f); //move right by tile width
+        pos.x += t; //move right by tile width
       } //if
 
       bool bSingleTile = true; //as far as we know, this is a single-tile wall
@@ -145,7 +145,7 @@ void CTileManager::MakeBoundingBoxes(){
     pos.x = vstart.x; //first column
     pos.y -= t; //next row
   } //for
-} //MakeBoundingBoxes
+} //MakeBoundingBoxes*/
 
 /// Delete the old map (if any), allocate the right sized chunk of memory for
 /// the new map, and read it from a text file.
@@ -221,19 +221,6 @@ void CTileManager::LoadMap(char* filename){
     for(size_t j=0; j<m_nWidth; j++){
       const char c = buffer[index];
 
-      /*if (c == 'T') {
-        m_chMap[i][j].type = 'F'; //floor tile
-        const Vector2 pos = m_fTileSize * Vector2((j + 0.5f) , m_nHeight - i -0.5f);
-        m_vecTurrets.push_back(pos);
-      } //if
-
-      else if(c == 'P'){
-        m_chMap[i][j].type = 'F'; //floor tile
-        m_vPlayer = m_fTileSize*Vector2(j + 0.5f, m_nHeight - i - 0.5f);
-      } //else if
-
-      else m_chMap[i][j].type = c; //load character into map*/
-
       if (CHAR_TO_TILE.count(c) > 0) {
           m_chMap[i][j].info = CHAR_TO_TILE.at(c);
       }
@@ -242,6 +229,9 @@ void CTileManager::LoadMap(char* filename){
           m_chMap[i][j].info.frameIndex = 0;
       }
 
+      m_chMap[i][j].x = j; //x coordinate
+      m_chMap[i][j].y = i; //y coordinate
+
       index++; //next index
     } //for
 
@@ -249,7 +239,7 @@ void CTileManager::LoadMap(char* filename){
   } //for
 
   m_vWorldSize = Vector2((float)m_nWidth, (float)m_nHeight)*m_fTileSize;
-  MakeBoundingBoxes();
+  //MakeBoundingBoxes();
 
   delete [] buffer; //clean up
 } //LoadMap
@@ -258,7 +248,7 @@ void CTileManager::LoadMap(char* filename){
 /// \param turrets [out] Vector of turret positions
 /// \param player [out] Player position.
 
-void CTileManager::LoadMapFromImageFile(char* filename) {
+/*void CTileManager::LoadMapFromImageFile(char* filename) {
     m_vecTurrets.clear(); //clear turrets from previous level
 
     if (m_chMap != nullptr) { //unload any previous maps
@@ -297,10 +287,10 @@ void CTileManager::LoadMapFromImageFile(char* filename) {
       //finish up
 
     m_vWorldSize = Vector2((float)m_nWidth, (float)m_nHeight) * m_fTileSize;
-    MakeBoundingBoxes();
+    //MakeBoundingBoxes();
 
     stbi_image_free(buffer);
-} //LoadMapFromImageFile
+} //LoadMapFromImageFile*/
 
 void CTileManager::GetObjects(std::vector<Vector2>& walls, Vector2& player){
   //turrets = m_vecTurrets;
@@ -372,38 +362,11 @@ void CTileManager::Draw(eSprite t){
          
 		 float scale = /*0.625*/1.5f; //scale of the tile
 		 //multiply the isometric coordinates by the scale
-         //desc.m_vPos.x = isoX * scale;
-         //desc.m_vPos.y = isoY * scale;
-         //t = charToSprite[m_chMap[i][j].type];
-         
-         /*switch (m_chMap[i][j].type) { //select which frame of the tile sprite is to be drawn
-             case 'B': {
-				 desc.m_nCurrentFrame = 4;
-				 break; //blank
-             }
-             case 'F': {
-                 //printf("FloorTile charToSprite['%s']\n", charToSprite[m_chMap[i][j].type]);
-                 desc.m_fXScale = 2.0f;
-                 desc.m_fYScale = 2.0f;
-                 desc.m_nCurrentFrame = 0;
-				 //desc.m_nSpriteIndex = (UINT)eSprite::FloorTile;
-                 break; //floor
-             }
-             case 'W': {
-                 //printf("Wall charToSprite['%s']\n", charToSprite[m_chMap[i][j].type]);
-                 //desc.m_nCurrentFrame = 1;
-                 desc.m_nCurrentFrame = 3;
-                 break; //wall
-             }
-             default:  {
-                 desc.m_nCurrentFrame = 2;
-                 break; //error tile
-             }
-         } //switch*/
 
          
          desc.m_vPos.x = isoX * scale;
          desc.m_vPos.y = (m_nWinHeight / 2) + (-isoY * scale);
+         desc.m_f4Tint = m_chMap[i][j].tint;
 
          if (count < 10) {
             printf("desc.m_vPos(x, y) = (%d, %d)\n", desc.m_vPos.x, desc.m_vPos.y);

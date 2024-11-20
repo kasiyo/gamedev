@@ -194,6 +194,19 @@ void CGame::KeyboardHandler(){
       printf("mousePos: %1.f %1.f\n", mousePos.x, mousePos.y);
       printf("cameraPos: %1.f %1.f\n", camera.GetPos().x, camera.GetPos().y);
       printf("tileX: %d tileY: %d\n", selectedX, selectedY);
+
+      Tile* highlightedTile = 0;
+      if (m_pTileManager->GetTile(selectedX, selectedY, &highlightedTile)) {
+          if (prevHighlightedTile && prevHighlightedTile != prevSelectedTile) {
+              prevHighlightedTile->tint = DEFAULT_TILE_TINT;
+          }
+
+          if (highlightedTile != prevSelectedTile) {
+              highlightedTile->tint = HIGHLIGHT_TILE_TINT;
+          }
+
+          prevHighlightedTile = highlightedTile;
+      }
   };
 
   Vector2 moveDirection;
