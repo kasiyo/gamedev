@@ -36,6 +36,7 @@ class CGame:
     std::vector<Tile*> units;
 
 	void HighlightTile(); ///< Highlight the tile under the cursor.
+	void SelectTile(); ///< Select the tile under the cursor.
 
     void LoadImages(); ///< Load images.
     void LoadSounds(); ///< Load sounds.

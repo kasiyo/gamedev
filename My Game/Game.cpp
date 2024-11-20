@@ -77,13 +77,13 @@ void CGame::HighlightTile() {
     int selectedX = (int)selected.x;
     int selectedY = (int)selected.y;
 
-
-    if (m_pKeyboard->TriggerDown(VK_LBUTTON)) {
+	/// --- TODO: debug statements for tile selection mouse coordinates --- ///
+    /*if (m_pKeyboard->TriggerDown(VK_LBUTTON)) {
 		printf("p.x: %d p.y: %d\n", p.x, p.y);
         printf("mousePos: %1.f %1.f\n", mousePos.x, mousePos.y);
         printf("cameraPos: %1.f %1.f\n", camera.GetPos().x, camera.GetPos().y);
         printf("tileX: %d tileY: %d\n", selectedX, selectedY);
-    }
+    }*/
     
 
     Tile* highlightedTile = 0;
@@ -98,6 +98,44 @@ void CGame::HighlightTile() {
 
         prevHighlightedTile = highlightedTile;
     }
+}
+
+void CGame::SelectTile() {
+	POINT p = {};//  get mouse position
+
+	GetCursorPos(&p);
+	ScreenToClient(m_pRenderer->GetWindow(), &p);
+
+	Vector2 mousePos((float)p.x - 500.0f, (float)p.y + 8.0f); // hardcode L
+	mousePos.x += camera.GetPos().x;
+	mousePos.y -= camera.GetPos().y;
+
+	float tileSizeX = (float)(int)((float)spriteSize * 1.5f);
+	float tileSizeY = (float)(int)((float)spriteSize * 0.75f);
+
+	Vector2 selected = Vector2(
+		(mousePos.y / tileSizeY) + (mousePos.x / tileSizeX),
+		(mousePos.y / tileSizeY) - (mousePos.x / tileSizeX)
+	);
+
+	int selectedX = (int)selected.x;
+	int selectedY = (int)selected.y;
+
+	Tile* selectedTile = 0;
+    if (m_pTileManager->GetTile(selectedX, selectedY, &selectedTile)) {
+        if (prevSelectedTile != nullptr) {
+            prevSelectedTile->tint = DEFAULT_TILE_TINT;
+        }
+		selectedTile->tint = SELECTED_TILE_TINT;
+		prevSelectedTile = selectedTile;
+    }
+    else {
+		if (prevSelectedTile != nullptr) {
+			prevSelectedTile->tint = DEFAULT_TILE_TINT;
+			prevSelectedTile = nullptr;
+		}
+    }
+	
 }
 
 /// Load the specific images needed for this game. This is where `eSprite`
@@ -222,45 +260,9 @@ void CGame::KeyboardHandler(){
   if(m_pKeyboard->TriggerDown(VK_BACK)) //start game
     BeginGame();
 
-  /*if (m_pKeyboard->TriggerDown(VK_LBUTTON)) { //left click
-      POINT p = {};
-
-      GetCursorPos(&p);
-      ScreenToClient(m_pRenderer->GetWindow(), &p);
-
-      Vector2 mousePos((float)p.x - 500.0f, (float)p.y + 8.0f); //hardcode L
-
-      mousePos.x += camera.GetPos().x;
-      mousePos.y -= camera.GetPos().y;
-
-      float tileSizeX = (float)(int)((float)spriteSize * 1.5f);
-      float tileSizeY = (float)(int)((float)spriteSize * 0.75f);
-
-      Vector2 selected = Vector2(
-          (mousePos.y / tileSizeY) + (mousePos.x / tileSizeX),
-          (mousePos.y / tileSizeY) - (mousePos.x / tileSizeX)
-      );
-
-      int selectedX = (int)selected.x;
-      int selectedY = (int)selected.y;
-
-      printf("mousePos: %1.f %1.f\n", mousePos.x, mousePos.y);
-      printf("cameraPos: %1.f %1.f\n", camera.GetPos().x, camera.GetPos().y);
-      printf("tileX: %d tileY: %d\n", selectedX, selectedY);
-
-      Tile* highlightedTile = 0;
-      if (m_pTileManager->GetTile(selectedX, selectedY, &highlightedTile)) {
-          if (prevHighlightedTile && prevHighlightedTile != prevSelectedTile) {
-              prevHighlightedTile->tint = DEFAULT_TILE_TINT;
-          }
-
-          if (highlightedTile != prevSelectedTile) {
-              highlightedTile->tint = HIGHLIGHT_TILE_TINT;
-          }
-
-          prevHighlightedTile = highlightedTile;
-      }
-  };*/
+  if (m_pKeyboard->TriggerDown(VK_LBUTTON)) { //left click
+      SelectTile();
+  };
 
   HighlightTile();
 

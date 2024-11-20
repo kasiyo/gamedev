@@ -9,6 +9,8 @@
 
 static const XMFLOAT4 DEFAULT_TILE_TINT = XMFLOAT4(0.8, 0.8, 0.8, 1);
 static const XMFLOAT4 HIGHLIGHT_TILE_TINT = XMFLOAT4(0.9, 1, 0.9, 1);
+static const XMFLOAT4 SELECTED_TILE_TINT = XMFLOAT4(1, 1.2, 1, 1);
+static const XMFLOAT4 DEFAULT_UNIT_TINT = XMFLOAT4(10, 1, 1, 1);
 
 /// \brief Sprite enumerated type.
 ///
