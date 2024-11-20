@@ -121,7 +121,7 @@ void CGame::SelectTile() {
 	int selectedX = (int)selected.x;
 	int selectedY = (int)selected.y;
 
-	Tile* selectedTile = 0;
+	/*Tile* selectedTile = 0;
     if (m_pTileManager->GetTile(selectedX, selectedY, &selectedTile)) {
         if (prevSelectedTile != nullptr) {
             prevSelectedTile->tint = DEFAULT_TILE_TINT;
@@ -134,8 +134,67 @@ void CGame::SelectTile() {
 			prevSelectedTile->tint = DEFAULT_TILE_TINT;
 			prevSelectedTile = nullptr;
 		}
+    }*/
+
+    //spawning (delete later)
+    if (currency >= 10) {
+        Tile* selectedTile = nullptr;
+        if (m_pTileManager->GetTile(selectedX, selectedY, &selectedTile)) {
+            selectedTile->tint = DEFAULT_UNIT_TINT;
+            units.push_back(selectedTile);
+        }
+        currency -= 10;
+    }
+    else {
+        Notification errNotification = {};
+        char text[64];
+        sprintf_s(text, "Not enough currency to buy unit!");
+        errNotification.text = std::string(text);
+        errNotification.endTime = m_pTimer->GetTime() + NOTIFICATION_DURATION;
+        errNotification.startTime = m_pTimer->GetTime();
+        notifications.push_back(errNotification);
     }
 	
+}
+
+void CGame::UpdateCurrency() {
+    if (currency < CURRENCY_MAX)
+        currency = currency + CURRENCY_GAINED_ON_UPDATE;
+    printf("Currency: %d\n", currency);
+}
+
+void CGame::UpdateUnits() {
+    std::vector<int> removeIndices = std::vector<int>();
+    for (int i = 0; i < units.size(); i++) {
+        int nextY = units[i]->y - 1;
+
+        Tile* nextTile = nullptr;
+        if (m_pTileManager->GetTile(units[i]->x, nextY, &nextTile)) {
+            units[i]->tint = DEFAULT_TILE_TINT;
+            nextTile->tint = DEFAULT_UNIT_TINT;
+            units[i] = nextTile;
+        }
+        else {
+            units[i]->tint = DEFAULT_TILE_TINT;
+            units.erase(units.begin() + i);
+            i -= 1;
+        }
+    }
+}
+
+void CGame::UpdateNotifications() {
+    for (int i = 0; i < notifications.size(); i++) {
+        Notification& notif = notifications[i];
+        float currentTime = m_pTimer->GetTime();
+        float progress = (currentTime - notif.startTime) / (notif.endTime - notif.startTime);
+
+        notif.progress = progress;
+
+        if (currentTime >= notif.endTime) {
+            notifications.erase(notifications.begin() + i);
+            i--;
+        }
+    }
 }
 
 /// Load the specific images needed for this game. This is where `eSprite`
@@ -361,8 +420,31 @@ void CGame::RenderFrame(){
   m_pTileManager->Draw(eSprite::GrassTile); //draw tiles
   m_pObjectManager->draw(); //draw objects
   m_pParticleEngine->Draw(); //draw particles
-  if(m_bDrawFrameRate)DrawFrameRateText(); //draw frame rate, if required
-  if(m_bGodMode)DrawGodModeText(); //draw god mode text, if required
+
+  //draw currency
+  char text[64];
+  sprintf_s(text, "Currency: %d", currency);
+  m_pRenderer->DrawScreenText(text, Vector2(10.0f, 10.0f), XMVECTORF32({ 1.f, 0.843137324f, 0.f, 1.f }));
+  if (m_bDrawFrameRate)DrawFrameRateText(); //draw frame rate, if required
+  if (m_bGodMode)DrawGodModeText(); //draw god mode text, if required
+
+  //draw notifications
+  for (int i = 0; i < notifications.size(); i++) {
+      Notification& notif = notifications[i];
+
+      float progress = notif.progress;
+      Vector2 startPos = Vector2(10.0f, 600.0f);
+      Vector2 endPos = Vector2(10.0f, 450.0f);
+
+      Vector2 currentPos = Math::lerp(startPos, endPos, progress);
+      float alpha = Math::lerp(1.0f, 0.0f, progress);
+
+      m_pRenderer->DrawScreenText(
+          notif.text.c_str(),
+          currentPos,
+          XMVECTORF32({ 1.f, 0.843137324f, 0.f, alpha })
+      );
+  }
 
   m_pRenderer->EndFrame(); //required after rendering
 } //RenderFrame
@@ -383,17 +465,38 @@ void CGame::FollowCamera(){
 /// multiple copies of a sound from starting on the same frame.  
 /// Move the game objects. Render a frame of animation. 
 
+static float accumulatorOfTime = 0.0f;
+
 void CGame::ProcessFrame(){
   KeyboardHandler(); //handle keyboard input
   ControllerHandler(); //handle controller input
   m_pAudio->BeginFrame(); //notify audio player that frame has begun
   
-  FollowCamera(); //make camera follow player
+  
 
   m_pTimer->Tick([&](){ //all time-dependent function calls should go here
-    m_pObjectManager->move(); //move all objects
+      frameCount++;
+      FollowCamera(); //make camera follow player
+      m_pObjectManager->move(); //move all objects
     
     m_pParticleEngine->step(); //advance particle animation
+
+    accumulatorOfTime += m_pTimer->GetFrameTime();
+    while (accumulatorOfTime >= 1.0f / 60.0f) {
+        //update units
+        if (frameCount % (int)(60.0f * UPDATE_UNITS_IN_SECONDS) == 0) {
+            UpdateUnits();
+        }
+        //update currency
+        if (frameCount % (int)(60.0f * UPDATE_CURRENCY_IN_SECONDS) == 0) {
+            UpdateCurrency();
+        }
+
+        accumulatorOfTime -= 1.0f / 60.0f;
+    }
+
+    //update notifications
+    UpdateNotifications();
   });
 
   RenderFrame(); //render a frame of animation
@@ -410,18 +513,9 @@ void CGame::ProcessGameState(){
 
   switch(m_eGameState){
     case eGameState::Playing:
-      if(/*m_pPlayer == nullptr || */ m_pObjectManager->GetNumTurrets() == 0) {
-        m_eGameState = eGameState::Waiting; //now waiting
-        t = m_pTimer->GetTime(); //start wait timer
-      } //if
       break;
 
     case eGameState::Waiting:
-      if(m_pTimer->GetTime() - t > 3.0f){ //3 seconds has elapsed since level end
-        if(m_pObjectManager->GetNumTurrets() == 0) //player won
-          m_nNextLevel = (m_nNextLevel + 1)%4; //advance next level
-        BeginGame(); //restart game
-      } //if
       break;
   } //switch
 } //CheckForEndOfGame

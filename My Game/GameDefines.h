@@ -12,6 +12,14 @@ static const XMFLOAT4 HIGHLIGHT_TILE_TINT = XMFLOAT4(0.9, 1, 0.9, 1);
 static const XMFLOAT4 SELECTED_TILE_TINT = XMFLOAT4(1, 1.2, 1, 1);
 static const XMFLOAT4 DEFAULT_UNIT_TINT = XMFLOAT4(10, 1, 1, 1);
 
+static const float UPDATE_UNITS_IN_SECONDS = 0.5f;
+static const float UPDATE_CURRENCY_IN_SECONDS = 0.5f;
+
+static const int CURRENCY_GAINED_ON_UPDATE = 10;
+static const int CURRENCY_MAX = 100;
+
+static const float NOTIFICATION_DURATION = 1.0f;
+
 /// \brief Sprite enumerated type.
 ///
 /// An enumerated type for the sprites, which will be cast to an unsigned

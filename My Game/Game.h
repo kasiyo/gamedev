@@ -12,6 +12,7 @@
 #include "PlayerCamera.h"
 #include "Math.h"
 #include "TileManager.h"
+#include "Notification.h"
 
 /// \brief The game class.
 ///
@@ -35,8 +36,17 @@ class CGame:
     Tile* prevHighlightedTile;
     std::vector<Tile*> units;
 
+    unsigned int frameCount = 0;
+    int currency = 0;
+
+    //notification test
+    std::vector<Notification> notifications;
+
 	void HighlightTile(); ///< Highlight the tile under the cursor.
 	void SelectTile(); ///< Select the tile under the cursor.
+    void UpdateCurrency();
+    void UpdateUnits();
+    void UpdateNotifications();
 
     void LoadImages(); ///< Load images.
     void LoadSounds(); ///< Load sounds.
