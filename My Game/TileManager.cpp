@@ -30,122 +30,6 @@ CTileManager::~CTileManager(){
   delete [] m_chMap;
 } //destructor
 
-/// Make the AABBs for the walls. Care is taken to use the longest horizontal
-/// and vertical AABBs possible so that there aren't so many of them.
-
-/*void CTileManager::MakeBoundingBoxes() {
-  m_vecWalls.clear(); //no walls yet
-
-  BoundingBox aabb; //current bounding box
-  const float t = m_fTileSize * 2; //shorthand for tile width and height
-  const Vector3 vTileExtents = 0.5f*t*Vector3::One; //tile extents extended to 3D
-  BoundingBox b; //single-tile bounding box
-  b.Extents = vTileExtents; //bounding box extents cover a single tile
-
-  //printf("m_fTileSize = %1.f\n", m_fTileSize);
-  //printf("vTileExtents (x, y, z): %1.f %1.f %1.f\n", vTileExtents.x, vTileExtents.y, vTileExtents.z);
-
-  //horizontal walls with more than one tile
-
-  const Vector2 vstart(t/2, t*(m_nHeight - 1.5f)); //start position
-  Vector2 pos = vstart; //set current position to start position
-  
-  for(size_t i=0; i<m_nHeight; i++){ //for each row
-    size_t j = 0; //column index
-    pos.x = vstart.x; //set start position x coordinate
-
-    while(j < m_nWidth){ //for each column
-      while(j < m_nWidth && m_chMap[i][j].type != 'W'){ //skip over non-wall entries
-        j++; //next column
-        pos.x += (t * 0.5f); //move right by tile width
-      } //while
-
-      if(j < m_nWidth){ //found leftmost tile in a wall
-        aabb.Center = Vector3(pos.x, pos.y, 0); //bounding box center
-        aabb.Extents = vTileExtents; //bounding box extents
-        j++; //next column
-        pos.x += t; //move right by tile width
-      } //if
-
-      bool bSingleTile = true; //as far as we know, this is a single-tile wall
-
-      while(j < m_nWidth && m_chMap[i][j].type == 'W'){ //for each adjacent wall tile
-        b.Center = Vector3(pos.x, pos.y, 0.5); //bounding box center
-        BoundingBox::CreateMerged(aabb, aabb, b); //merge b into aabb
-        bSingleTile = false; //the wall now has at least 2 tiles in it
-        j++; //next column
-        pos.x += (t * 0.5f); //move right by tile width
-      } //while
-
-      if(!bSingleTile) //skip this wall if it is a single tile
-        m_vecWalls.push_back(aabb); //add horizontal wall to the list
-    } //while
-
-    pos.y -= (t * 0.5f); //next row
-  } //for
-
-  //vertical walls, the single tiles get caught here
-
-  pos = vstart; //reset current position to start position
-  
-  for(size_t j=0; j<m_nWidth; j++){ //for each column
-    size_t i = 0; //row index
-    pos.y = vstart.y; //set start position y coordinate
-
-    while(i < m_nHeight){ //for each row
-      while(i < m_nHeight && m_chMap[i][j].type != 'W'){ //skip over non-wall entries
-        i++; //next row
-        pos.y -= t; //move down by tile height
-      } //while
-
-      if(i < m_nHeight){ //found topmost tile in a wall
-        aabb.Center = Vector3(pos.x, pos.y, 0); //bounding box center
-        aabb.Extents = vTileExtents; //bounding box extents
-        i++; //next row
-        pos.y -= t; //move down by tile height
-      } //if
-      
-      bool bSingleTile = true; //as far as we know, this is a single-tile wall
-
-      while(i < m_nHeight && m_chMap[i][j].type == 'W'){ //for each adjacent wall tile
-        b.Center = Vector3(pos.x, pos.y, 0); //bounding box center
-        BoundingBox::CreateMerged(aabb, aabb, b); //merge b into aabb
-        bSingleTile = false; //the wall now has at least 2 tiles in it
-        i++; //next row
-        pos.y -= t; //move down by tile height
-      } //while
-      
-      if(!bSingleTile) //skip this wall if it is a single tile
-        m_vecWalls.push_back(aabb); //add horizontal wall to the list
-    } //while
-
-    pos.x += t; //next column
-  } //for
-
-  //orphaned single tiles
-
-  pos = vstart; //reset current position to start position
-  
-  for(size_t i=0; i<m_nHeight; i++){ //for each row
-    for(size_t j=0; j<m_nWidth; j++){ //for each column
-      if(m_chMap[i][j].type == 'W' && //is a wall tile and
-        ((i == 0 || m_chMap[i - 1][j].type != 'W') && //has non-wall tile below or is on edge
-         (i == m_nHeight - 1 || m_chMap[i + 1][j].type != 'W') && //has non-wall tile above or is on edge
-         (j == 0 || m_chMap[i][j - 1].type != 'W') && //has non-wall tile at left or is on edge
-         (j == m_nWidth - 1 || m_chMap[i][j + 1].type != 'W') //has non-wall tile at right or is on edge
-        )
-      ){    
-        b.Center = Vector3(pos.x, pos.y, 0); //bounding box center
-        m_vecWalls.push_back(b); //add single-tile wall to the list
-      } //if
-
-      pos.x += t; //next column
-    } //for
-    
-    pos.x = vstart.x; //first column
-    pos.y -= t; //next row
-  } //for
-} //MakeBoundingBoxes*/
 
 /// Delete the old map (if any), allocate the right sized chunk of memory for
 /// the new map, and read it from a text file.
@@ -239,7 +123,6 @@ void CTileManager::LoadMap(char* filename){
   } //for
 
   m_vWorldSize = Vector2((float)m_nWidth, (float)m_nHeight)*m_fTileSize;
-  //MakeBoundingBoxes();
 
   delete [] buffer; //clean up
 } //LoadMap
@@ -247,50 +130,6 @@ void CTileManager::LoadMap(char* filename){
 /// Get positions of objects listed on map.
 /// \param turrets [out] Vector of turret positions
 /// \param player [out] Player position.
-
-/*void CTileManager::LoadMapFromImageFile(char* filename) {
-    m_vecTurrets.clear(); //clear turrets from previous level
-
-    if (m_chMap != nullptr) { //unload any previous maps
-        for (int i = 0; i < m_nHeight; i++)
-            delete[] m_chMap[i];
-        delete[] m_chMap;
-    } //if
-
-    //read map file into a byte buffer 
-
-    int channels = 0, w = 0, h = 0;
-    unsigned char* buffer = stbi_load(filename, &w, &h, &channels, 0);
-    m_nWidth = (size_t)w;
-    m_nHeight = (size_t)h;
-
-    //allocate space for the map 
-
-    m_chMap = new Tile* [m_nHeight];
-
-    for (int i = 0; i < m_nHeight; i++)
-        m_chMap[i] = new Tile[m_nWidth];
-
-    //load the map information from the buffer to the map
-
-    int index = 0;
-
-    for (int i = 0; i < m_nHeight; i++)
-        for (int j = 0; j < m_nWidth; j++) {
-            m_chMap[i][j].type =
-                (buffer[index] == 0 && buffer[index + 1] == 0 && buffer[index + 2] == 0) ? 'W' : 'F'; //load character into map
-            if (buffer[index] == 0 && buffer[index + 1] == 255 && buffer[index + 2] == 0)
-                m_vecTurrets.push_back(Vector2((float)j, m_nHeight - (float)i) * m_fTileSize);
-            index += channels;
-        } //for
-
-      //finish up
-
-    m_vWorldSize = Vector2((float)m_nWidth, (float)m_nHeight) * m_fTileSize;
-    //MakeBoundingBoxes();
-
-    stbi_image_free(buffer);
-} //LoadMapFromImageFile*/
 
 void CTileManager::GetObjects(std::vector<Vector2>& walls, Vector2& player){
   //turrets = m_vecTurrets;

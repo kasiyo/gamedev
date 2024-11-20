@@ -41,8 +41,6 @@ class CTileManager:
     std::vector<Vector2> m_vecTurrets; ///< Turret positions.
     Vector2 m_vPlayer; ///< Player location.
 
-    //void MakeBoundingBoxes(); ///< Make bounding boxes for walls.
-
 	float mapWidth = 0.0f;
 	float mapHeight = 0.0f;
 
@@ -51,7 +49,6 @@ class CTileManager:
     ~CTileManager(); ///< Destructor.
 
     void LoadMap(char*); ///< Load a map.
-    void LoadMapFromImageFile(char*); ///< Load map.
     void Draw(eSprite); ///< Draw the map with a given tile.
     void DrawBoundingBoxes(eSprite); ///< Draw the bounding boxes.
     void GetObjects(std::vector<Vector2>&, Vector2&); ///< Get objects.
