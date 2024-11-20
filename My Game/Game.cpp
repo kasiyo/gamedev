@@ -34,6 +34,10 @@ void CGame::Initialize(){
   LoadImages(); //load images from xml file list
   
   m_pTileManager = new CTileManager((size_t)m_pRenderer->GetWidth(eSprite::GrassTile) * SPRITE_SCALE);
+  
+  /// --- TODO: Change the tile size to match the new sprite size --- ///
+  //m_pTileManager = new CTileManager((size_t)m_pRenderer->GetWidth(eSprite::GrassTile));
+
   m_pObjectManager = new CObjectManager; //set up the object manager 
   LoadSounds(); //load the sounds for this game
 
@@ -54,12 +58,16 @@ void CGame::HighlightTile() {
     ScreenToClient(m_pRenderer->GetWindow(), &p);
 
     Vector2 mousePos((float)p.x - 500.0f, (float)p.y + 8.0f); //hardcode L
-
+    //Vector2 mousePos((float)p.x - 500.0f, (float)p.y + 10.0f);
     mousePos.x += camera.GetPos().x;
     mousePos.y -= camera.GetPos().y;
 
     float tileSizeX = (float)(int)((float)spriteSize * 1.5f);
     float tileSizeY = (float)(int)((float)spriteSize * 0.75f);
+
+	/// --- TODO: Change the tile size to match the new sprite size --- ///
+    //float tileSizeX = (float)(int)((float)spriteSize * 0.625f);
+    //float tileSizeY = (float)(int)((float)spriteSize * 0.625f);
 
     Vector2 selected = Vector2(
         (mousePos.y / tileSizeY) + (mousePos.x / tileSizeX),
@@ -69,9 +77,14 @@ void CGame::HighlightTile() {
     int selectedX = (int)selected.x;
     int selectedY = (int)selected.y;
 
-    /*printf("mousePos: %1.f %1.f\n", mousePos.x, mousePos.y);
-    printf("cameraPos: %1.f %1.f\n", camera.GetPos().x, camera.GetPos().y);
-    printf("tileX: %d tileY: %d\n", selectedX, selectedY);*/
+
+    if (m_pKeyboard->TriggerDown(VK_LBUTTON)) {
+		printf("p.x: %d p.y: %d\n", p.x, p.y);
+        printf("mousePos: %1.f %1.f\n", mousePos.x, mousePos.y);
+        printf("cameraPos: %1.f %1.f\n", camera.GetPos().x, camera.GetPos().y);
+        printf("tileX: %d tileY: %d\n", selectedX, selectedY);
+    }
+    
 
     Tile* highlightedTile = 0;
     if (m_pTileManager->GetTile(selectedX, selectedY, &highlightedTile)) {

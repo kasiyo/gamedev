@@ -16,6 +16,8 @@
 
 CTileManager::CTileManager(size_t n):
     m_fTileSize((float) n * 1.25f) {
+	/// --- TODO: sprite-sizing default from game.cpp --- ///
+    //m_fTileSize((float)n) {
 	printf("TileManager::TileManager(%1.f)\n", m_fTileSize);
 
 	
@@ -164,8 +166,16 @@ void CTileManager::Draw(eSprite t){
   LSpriteDesc2D desc; //sprite descriptor for tile
 
   desc.m_nSpriteIndex = (UINT)t; //sprite index for tile
-  desc.m_fXScale = 1.5f;
-  desc.m_fYScale = 1.5f;
+
+  //desc.m_fXScale = 1.3333333f; //scale of sprite
+  //desc.m_fYScale = 1.3333333f; //scale of sprite
+
+  desc.m_fXScale = 1.35f; //scale of sprite
+  desc.m_fYScale = 1.35f; //scale of sprite
+
+  /// --- TODO: sprite-sizing default from game.cpp
+  //desc.m_fXScale = 1.0f;
+  //desc.m_fYScale = 1.0f;
 
   const int w = (int)ceil(m_nWinWidth / m_fTileSize) + 2; //width of window in tiles, with 2 extra
   const int h = (int)ceil(m_nWinHeight / m_fTileSize) + 2; //height of window in tiles, with 2 extra
@@ -199,7 +209,8 @@ void CTileManager::Draw(eSprite t){
 		 // + (m_fTileSize * 0.25f): shift the y position up by 0.25x the tile size
          float isoY = ((j + i) * 0.5f) * (m_fTileSize * .75f) + (m_fTileSize * 0.25f);
          
-		 float scale = /*0.625*/1.5f; //scale of the tile
+         float scale = 1.5f;
+		 //float scale = 0.625f/*1.5f*/; //scale of the tile
 		 //multiply the isometric coordinates by the scale
 
          
