@@ -46,3 +46,9 @@ int CRenderer::GetWindowHeight() {
 float CRenderer::GetWindowScaleFromBase() {
 	return (float)m_nWinWidth / 1024.0f;
 }
+
+void LoadScreenFont(char* c) {
+	/// --- TODO: Add code to load a font for the load screen. --- ///
+	LoadScreenFont(c);
+	//return nullptr;
+}

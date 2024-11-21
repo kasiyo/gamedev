@@ -442,6 +442,7 @@ void CGame::RenderFrame(){
 
       Vector2 currentPos = Math::lerp(startPos, endPos, progress);
       float alpha = Math::lerp(1.0f, 0.0f, progress);
+      
 
       m_pRenderer->DrawScreenText(
           notif.text.c_str(),

@@ -22,6 +22,8 @@ class CRenderer: public LSpriteRenderer{
     int GetWindowHeight();
     float GetWindowScaleFromBase();
 
+    void LoadScreenFont(char*);
+
   private:
       HWND currWindow;
     }; //CRenderer
