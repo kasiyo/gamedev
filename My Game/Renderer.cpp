@@ -34,3 +34,15 @@ HWND CRenderer::GetWindow() {
 LBaseCamera* CRenderer::GetCamera() {
 	return this->m_pCamera;
 }
+
+int CRenderer::GetWindowWidth() {
+	return m_nWinWidth;
+}
+
+int CRenderer::GetWindowHeight() {
+	return m_nWinHeight;
+}
+
+float CRenderer::GetWindowScaleFromBase() {
+	return (float)m_nWinWidth / 1024.0f;
+}

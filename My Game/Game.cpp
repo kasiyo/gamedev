@@ -48,6 +48,9 @@ void CGame::Initialize(){
   float x = 0.0f, y = 0.0f;
   camera = PlayerCamera();
 
+  HWND hwnd = m_pRenderer->GetWindow();
+  SetWindowLong(hwnd, GWL_STYLE, GetWindowLong(hwnd, GWL_STYLE) & ~WS_SIZEBOX); // no resize!
+
   BeginGame();
 } //Initialize
 
