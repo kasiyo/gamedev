@@ -28,7 +28,7 @@ static const float NOTIFICATION_DURATION = 1.0f;
 
 enum class eSprite: UINT{
   Background, Bullet, Bullet2, Player, Smoke, Tile, Spark, Line,
-  Wall, GrassTile, Appliance,
+  Wall, GrassTile, Appliance, Unit,
   Size  //MUST BE LAST
 }; //eSprite
 

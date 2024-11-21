@@ -212,6 +212,7 @@ void CGame::LoadImages(){
   m_pRenderer->Load(eSprite::GrassTile, "grasstile");
   m_pRenderer->Load(eSprite::Appliance, "appliance");
   m_pRenderer->Load(eSprite::Tile, "tile");
+  m_pRenderer->Load(eSprite::Unit, "unit");
   m_pRenderer->Load(eSprite::Player,  "player");
   m_pRenderer->Load(eSprite::Bullet,  "bullet");
   m_pRenderer->Load(eSprite::Bullet2, "bullet2");
