@@ -178,6 +178,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ApplianceManager.h" />
+    <ClInclude Include="Button.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Notification.h" />
     <ClInclude Include="Player.h" />

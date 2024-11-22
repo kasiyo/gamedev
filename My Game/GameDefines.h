@@ -26,10 +26,10 @@ static const float NOTIFICATION_DURATION = 1.0f;
 /// integer and used for the index of the corresponding texture in graphics
 /// memory. `Size` must be last.
 
-enum class eSprite: UINT{
-  Background, Bullet, Bullet2, Player, Smoke, Tile, Spark, Line,
-  Wall, GrassTile, Appliance,
-  Size  //MUST BE LAST
+enum class eSprite : UINT {
+	Background, Bullet, Bullet2, Player, Smoke, Tile, Spark, Line,
+	Wall, GrassTile, Appliance,
+	Size  //MUST BE LAST
 }; //eSprite
 
 struct TileInfo {
@@ -65,9 +65,9 @@ static std::unordered_map<char, TileInfo> CHAR_TO_TILE = {
 /// integer and used for the index of the corresponding sample. `Size` must 
 /// be last.
 
-enum class eSound: UINT{
-  Start, Boom, Clang, Grunt, Gun, Ricochet,
-  Size  //MUST BE LAST
+enum class eSound : UINT {
+	Start, Boom, Clang, Grunt, Gun, Ricochet,
+	Size  //MUST BE LAST
 }; //eSound
 
 /// \brief Game state enumerated type.
@@ -76,8 +76,8 @@ enum class eSound: UINT{
 /// waiting a short interval for the level to end after winning or losing to
 /// let sounds and particle effects play to the end without being cut short.
 
-enum class eGameState{
-  Playing, Waiting
+enum class eGameState {
+	MainMenu, Playing, Paused, Waiting
 }; //eGameState
 
 #endif //__L4RC_GAME_GAMEDEFINES_H__
