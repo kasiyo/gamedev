@@ -37,6 +37,11 @@ struct TileInfo {
 	int frameIndex;
 };
 
+struct UnitInfo {
+	eSprite baseSprite;
+	int frameIndex;
+};
+
 static std::unordered_map<char, TileInfo> CHAR_TO_TILE = {
 	{ 'F', { eSprite::GrassTile, 0 } },
 	{ 'W', { eSprite::GrassTile, 1 } },
@@ -57,6 +62,13 @@ static std::unordered_map<char, TileInfo> CHAR_TO_TILE = {
 	{ 'C', { eSprite::Tile, 12 } },
 	{ 'D', { eSprite::Tile, 13 } },
 	{ 'E', { eSprite::Tile, 14 } },
+};
+
+static std::unordered_map<char*, UnitInfo> CHAR_TO_UNIT = {
+	{ "FL", { eSprite::Unit, 0 } },	// front facing left
+	{ "FR", { eSprite::Unit, 1 } }, // front facing right
+	{ "BR", { eSprite::Unit, 2 } }, // back facing right
+	{ "BL", { eSprite::Unit, 3 } }, // back facing left
 };
 
 /// \brief Sound enumerated type.
