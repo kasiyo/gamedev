@@ -48,6 +48,8 @@ class CTileManager:
     CTileManager(size_t); ///< Constructor.
     ~CTileManager(); ///< Destructor.
 
+    void SaveState(std::ostream& file);
+
     void LoadMap(char*); ///< Load a map.
     void Draw(eSprite); ///< Draw the map with a given tile.
     void DrawBoundingBoxes(eSprite); ///< Draw the bounding boxes.

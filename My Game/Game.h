@@ -23,12 +23,12 @@
 /// next animation frame. `Release()` will be called at game exit but before
 /// any destructors are run.
 
-class CGame: 
-  public LComponent, 
-  public LSettings,
-  public CCommon{ 
+class CGame :
+    public LComponent,
+    public LSettings,
+    public CCommon {
 
-  private:
+private:
     bool m_bDrawFrameRate = false; ///< Draw the frame rate.
     eGameState m_eGameState = eGameState::Playing; ///< Game state.
     int m_nNextLevel = 0; ///< Current level number.
@@ -42,11 +42,16 @@ class CGame:
     //notification test
     std::vector<Notification> notifications;
 
-	void HighlightTile(); ///< Highlight the tile under the cursor.
-	void SelectTile(); ///< Select the tile under the cursor.
+    void HighlightTile(); ///< Highlight the tile under the cursor.
+    void SelectTile(); ///< Select the tile under the cursor.
     void UpdateCurrency();
     void UpdateUnits();
     void UpdateNotifications();
+    void RenderMainMenu(); ///< Render the main menu.
+    void SaveGame(const std::string& filename);
+    void LoadGame(const std::string& filename);
+    void RenderPauseMenu(); ///< Render the pause menu.
+    //std::vector<Button> m_MainMenuButtons; // Main menu buttons
 
     void LoadImages(); ///< Load images.
     void LoadSounds(); ///< Load sounds.
@@ -61,10 +66,10 @@ class CGame:
     void FollowCamera(); ///< Make camera follow player character.
     void ProcessGameState(); ///< Process game state.
 
-	PlayerCamera camera; ///< The camera.
-	//TileMap tileMap; ///< The tile map.
+    PlayerCamera camera; ///< The camera.
+    //TileMap tileMap; ///< The tile map.
 
-  public:
+public:
     ~CGame(); ///< Destructor.
 
     void Initialize(); ///< Initialize the game.

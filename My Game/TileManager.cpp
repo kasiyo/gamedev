@@ -8,7 +8,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include "Renderer.h"
-
+#include <fstream>
 
 /// Construct a tile manager using square tiles, given the width and height
 /// of each tile.
@@ -31,6 +31,18 @@ CTileManager::~CTileManager(){
 
   delete [] m_chMap;
 } //destructor
+
+void CTileManager::SaveState(std::ostream& file) {
+    file << "<Tiles>\n";
+    for (size_t y = 0; y < m_nHeight; y++) {
+        for (size_t x = 0; x < m_nWidth; x++) {
+            file << "<Tile x=\"" << x << "\" y=\"" << y << "\" type=\""
+                << m_chMap[y][x].type << "\"/>\n";
+        }
+    }
+    file << "</Tiles>\n";
+}
+
 
 
 /// Delete the old map (if any), allocate the right sized chunk of memory for
