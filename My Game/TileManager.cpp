@@ -91,7 +91,6 @@ void CTileManager::LoadMap(char* filename){
     } //else
   } //for
 
-
   //allocate space for the map 
   
   m_chMap = new Tile*[m_nHeight];
@@ -148,6 +147,11 @@ bool CTileManager::GetTile(int x, int y, Tile** refval) {
 	return true;
 }
 
+/// Get the map.
+Tile** CTileManager::GetMap() {
+	return m_chMap;
+}
+
 /// This is for debug purposes so that you can verify that
 /// the collision shapes are in the right places.
 /// \param t Line sprite to be stretched to draw the line.
@@ -188,11 +192,9 @@ void CTileManager::Draw(eSprite t){
           const int bottom = std::min(top + h + 1, (int)m_nHeight - 1); //index of bottom tile
 
           const int left = std::max(0, (int)round(origin.x /m_fTileSize) - 1); //index of left tile
-          const int right = std::min(left + w, (int)m_nWidth - 1); //index of right tile
+          const int right = std::min(left + w, (int)m_nWidth - 1); //index of right tile*/
 
-  for(int i=bottom; i >= top; i--) // for each column from bottom to top
-      for (int j = right; j >= left; j--) { // for each row from right to left
-         // make sure indices are within bounds.*/
+         // make sure indices are within bounds.
          if (i >= m_nHeight || j >= m_nWidth || i < 0 || j < 0) {
              continue;
          }
@@ -212,14 +214,18 @@ void CTileManager::Draw(eSprite t){
 		 //float scale = 0.625f/*1.5f*/; //scale of the tile
          
 		 //multiply the isometric coordinates by the scale
-         desc.m_vPos.x = isoX * scale;
-         desc.m_vPos.y = (m_nWinHeight / 2) + (-isoY * scale);
+         //desc.m_vPos.x = isoX * scale;
+         //desc.m_vPos.y = (m_nWinHeight / 2) + (-isoY * scale);
+
+		 m_pRenderer->CalculateIso(i, j, scale, m_fTileSize, desc.m_vPos);
          desc.m_f4Tint = m_chMap[i][j].tint;
 
          Tile& t = m_chMap[i][j];
 
          desc.m_nSpriteIndex = (UINT)t.info.baseSprite;
          desc.m_nCurrentFrame = t.info.frameIndex;
+
+		 m_chMap[i][j].pos = desc.m_vPos; //store the position of the tile
 
           m_pRenderer->Draw(&desc); //finally we can draw a tile
       } //for

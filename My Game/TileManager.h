@@ -10,19 +10,19 @@
 #include "Settings.h"
 #include "Sprite.h"
 #include "GameDefines.h"
+#include "UnitManager.h"
 
 /// \brief The tile manager.
 ///
 /// The tile manager is responsible for the tile-based background.
 
 struct Tile {
-	eSprite sprite;
-    char type;
     TileInfo info;
     XMFLOAT4 tint = DEFAULT_TILE_TINT;
     bool isOccupied = false;
     int x;
     int y;
+    Vector2 pos;
 };
 
 class CTileManager: 
@@ -35,15 +35,17 @@ class CTileManager:
 
     float m_fTileSize = 0.0f; ///< Tile width and height.
 
-    Tile** m_chMap = nullptr; ///< The level map.
+    Tile** m_chMap = nullptr; ///< The tile map.
 
     std::vector<BoundingBox> m_vecWalls; ///< AABBs for the walls.
     std::vector<Vector2> m_vecTurrets; ///< Turret positions.
     Vector2 m_vPlayer; ///< Player location.
 
+	std::vector<Vector2> m_vecUnits; ///< Unit positions.
+
 	float mapWidth = 0.0f;
 	float mapHeight = 0.0f;
-
+	std::vector<Vector2> TilesInScreenSpace; ///< Tiles in screen space.
   public:
     CTileManager(size_t); ///< Constructor.
     ~CTileManager(); ///< Destructor.
@@ -52,11 +54,13 @@ class CTileManager:
     void Draw(eSprite); ///< Draw the map with a given tile.
     void DrawBoundingBoxes(eSprite); ///< Draw the bounding boxes.
     void GetObjects(std::vector<Vector2>&, Vector2&); ///< Get objects.
-    bool GetTile(int x, int y, Tile** refval);
+	bool GetTile(int x, int y, Tile** refval); ///< Get a tile.
 
     float GetMapWidth();
     float GetMapHeight();
 	float GetTileSize();
+
+	Tile** GetMap(); ///< Get the map.
 
 	const size_t GetWidth(); ///< Get width.
 	const size_t GetHeight(); ///< Get height.

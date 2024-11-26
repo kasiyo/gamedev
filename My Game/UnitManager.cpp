@@ -1,34 +1,89 @@
 #include "UnitManager.h"
 
-CUnitManager::CUnitManager() {
+CUnitManager::CUnitManager(size_t n) :
+	m_fUnitSize( (float)n ) {
+	//playerUnits = new Unit * [sizeof(Unit)];
+	printf("CUnitManager::CUnitManager(%1.f)\n", m_fUnitSize);
 }
 
 CUnitManager::~CUnitManager() {
+	for (size_t i = 0; i < m_vecUnits.size(); i++) {
+		delete[] playerUnits[i];
+	}
+	delete[] playerUnits;
 }
 
-void CUnitManager::AddUnit(UnitInfo info, int x, int y, int h, int d, int c) {
-	Unit unit;
-	unit.info = info;
-	unit.x = x;
-	unit.y = y;
-	unit.health = h;
-	unit.damage = d;
-	unit.cost = c;
+void CUnitManager::AddUnit(struct Tile* t) {
+	Unit* unit = nullptr;
+
+	unit = new Unit(eSprite::Unit, t->pos);
+	unit->desc.m_fXScale = 1.0f;
+	unit->desc.m_fYScale = 1.0f;
+	unit->desc.m_nSpriteIndex = UINT(eSprite::Unit);
+	unit->desc.m_nCurrentFrame = 0;
+	unit->desc.m_vPos = t->pos;
+
+	printf("unit->desc.m_nSpriteIndex: %d\n", unit->desc.m_nSpriteIndex);
+	printf("unit->desc.m_nCurrentFrame: %d\n", unit->desc.m_nCurrentFrame);
+	printf("unit->desc.m_vPos: %f, %f\n", unit->desc.m_vPos.x, unit->desc.m_vPos.y);
 	m_vecUnits.push_back(unit);
+
+}
+
+void CUnitManager::EditUnit(Unit u) {
+	for (int i = 0; i < m_vecUnits.size(); i++) {
+		//if (m_vecUnits[i].x == u.x && m_vecUnits[i].y == u.y) {
+		//	m_vecUnits[i] = u;
+		//}
+	}
 }
 
 void CUnitManager::RemoveUnit(int x, int y) {
 	for (int i = 0; i < m_vecUnits.size(); i++) {
-		if (m_vecUnits[i].x == x && m_vecUnits[i].y == y) {
-			m_vecUnits.erase(m_vecUnits.begin() + i);
-		}
+		//if (m_vecUnits[i].x == x && m_vecUnits[i].y == y) {
+		//	m_vecUnits.erase(m_vecUnits.begin() + i);
+		//}
 	}
 }
 
-void CUnitManager::DrawUnits() {
-	for (int i = 0; i < m_vecUnits.size(); i++) {
-		//draw unit
+std::vector<Unit*> CUnitManager::GetUnits() {
+	return m_vecUnits;
+}
+
+bool CUnitManager::GetUnit(int x, int y, Unit** refval) {
+	if (x < 0 || x >= m_pTileManager->GetWidth() || y < 0 || y >= m_pTileManager->GetHeight()) {
+		return false;
 	}
+
+	*refval = &playerUnits[y][x];
+	
+	for (int i = 0; i < m_vecUnits.size(); i++) {
+		//if (m_vecUnits[i].x == x && m_vecUnits[i].y == y) {
+		//	*refval = &m_vecUnits[i];
+		//	return true;
+		//}
+	}
+	return false;
+}
+
+void CUnitManager::Draw() {
+	LSpriteDesc2D desc;
+	const char* t = "FR"; // test char* for unit
+	
+	//desc.m_nSpriteIndex = (UINT)t;
+
+	for (int i = 0; i < m_vecUnits.size(); i++) {
+		//desc.m_vPos = m_vecUnits[i].position;
+		//desc.m_nCurrentFrame = (UINT)m_vecUnits[i].info.frameIndex;
+		//desc.m_fXScale = 1.0f;
+		//desc.m_fYScale = 1.0f;
+		//m_pRenderer->Draw(desc);
+		desc = m_vecUnits[i]->desc;
+		desc.m_fXScale = 1.0f;
+		desc.m_fYScale = 1.0f;
+		m_pRenderer->Draw(&desc);
+	}
+
 }
 
 void CUnitManager::UpdateUnits() {
@@ -39,17 +94,17 @@ void CUnitManager::UpdateUnits() {
 
 void CUnitManager::MoveUnit(int x, int y, int newX, int newY) {
 	for (int i = 0; i < m_vecUnits.size(); i++) {
-		if (m_vecUnits[i].x == x && m_vecUnits[i].y == y) {
-			m_vecUnits[i].x = newX;
-			m_vecUnits[i].y = newY;
-		}
+		//if (m_vecUnits[i].x == x && m_vecUnits[i].y == y) {
+		//	m_vecUnits[i].x = newX;
+		//	m_vecUnits[i].y = newY;
+		//}
 	}
 }
 
 void CUnitManager::AttackUnit(int x, int y, int targetX, int targetY) {
 	for (int i = 0; i < m_vecUnits.size(); i++) {
-		if (m_vecUnits[i].x == x && m_vecUnits[i].y == y) {
+		//if (m_vecUnits[i].x == x && m_vecUnits[i].y == y) {
 			//attack unit
-		}
+		//}
 	}
 }

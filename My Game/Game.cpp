@@ -22,7 +22,9 @@ static const float SPRITE_SCALE = 0.55f;
 CGame::~CGame(){
   delete m_pParticleEngine;
   delete m_pObjectManager;
+  delete m_pUnitManager;
   delete m_pTileManager;
+  
 } //destructor
 
 /// Initialize the renderer, the tile manager and the object manager, load 
@@ -34,7 +36,7 @@ void CGame::Initialize(){
   LoadImages(); //load images from xml file list
   
   m_pTileManager = new CTileManager((size_t)m_pRenderer->GetWidth(eSprite::GrassTile) * SPRITE_SCALE);
-  
+  m_pUnitManager = new CUnitManager((size_t)m_pRenderer->GetWidth(eSprite::Unit));
   /// --- TODO: Change the tile size to match the new sprite size --- ///
   //m_pTileManager = new CTileManager((size_t)m_pRenderer->GetWidth(eSprite::GrassTile));
 
@@ -124,27 +126,24 @@ void CGame::SelectTile() {
 	int selectedX = (int)selected.x;
 	int selectedY = (int)selected.y;
 
-	/*Tile* selectedTile = 0;
-    if (m_pTileManager->GetTile(selectedX, selectedY, &selectedTile)) {
-        if (prevSelectedTile != nullptr) {
-            prevSelectedTile->tint = DEFAULT_TILE_TINT;
-        }
-		selectedTile->tint = SELECTED_TILE_TINT;
-		prevSelectedTile = selectedTile;
-    }
-    else {
-		if (prevSelectedTile != nullptr) {
-			prevSelectedTile->tint = DEFAULT_TILE_TINT;
-			prevSelectedTile = nullptr;
-		}
-    }*/
-
     //spawning (delete later)
     if (currency >= 10) {
         Tile* selectedTile = nullptr;
+        Unit* newUnit = (Unit*)malloc(sizeof(Unit));
+        Unit* temp = nullptr;
+        char* b("FR");
+
         if (m_pTileManager->GetTile(selectedX, selectedY, &selectedTile)) {
             selectedTile->tint = DEFAULT_UNIT_TINT;
-            units.push_back(selectedTile);
+            if (!selectedTile->isOccupied) {    // if tile is NOT occupied
+				//selectedTile->isOccupied = true;
+			    m_pUnitManager->AddUnit(selectedTile);
+            }
+            tiles.push_back(selectedTile);
+            
+            
+            units.push_back(newUnit);
+			//m_pUnitManager->DrawUnit(newUnit);
         }
         currency -= 10;
     }
@@ -157,7 +156,9 @@ void CGame::SelectTile() {
         errNotification.startTime = m_pTimer->GetTime();
         notifications.push_back(errNotification);
     }
-	
+
+	printf("map width: %f map height: %f\n", m_pTileManager->GetMapWidth(), m_pTileManager->GetMapHeight());
+	printf("tilemanager width: %zu tilemanager height: %zu\n", m_pTileManager->GetWidth(), m_pTileManager->GetHeight());
 }
 
 void CGame::UpdateCurrency() {
@@ -168,18 +169,18 @@ void CGame::UpdateCurrency() {
 
 void CGame::UpdateUnits() {
     std::vector<int> removeIndices = std::vector<int>();
-    for (int i = 0; i < units.size(); i++) {
-        int nextY = units[i]->y - 1;
+    for (int i = 0; i < tiles.size(); i++) {
+        int nextY = tiles[i]->y - 1;
 
         Tile* nextTile = nullptr;
-        if (m_pTileManager->GetTile(units[i]->x, nextY, &nextTile)) {
-            units[i]->tint = DEFAULT_TILE_TINT;
+        if (m_pTileManager->GetTile(tiles[i]->x, nextY, &nextTile)) {
+            tiles[i]->tint = DEFAULT_TILE_TINT;
             nextTile->tint = DEFAULT_UNIT_TINT;
-            units[i] = nextTile;
+            tiles[i] = nextTile;
         }
         else {
-            units[i]->tint = DEFAULT_TILE_TINT;
-            units.erase(units.begin() + i);
+            tiles[i]->tint = DEFAULT_TILE_TINT;
+            tiles.erase(tiles.begin() + i);
             i -= 1;
         }
     }
@@ -198,6 +199,23 @@ void CGame::UpdateNotifications() {
             i--;
         }
     }
+}
+
+void CGame::DrawUnits() {
+    Tile* tile;
+    Unit* unit;
+    int numRows = (int)m_pTileManager->GetHeight();
+    int numCols = (int)m_pTileManager->GetWidth();
+    for (int i = 0; i < numRows; i++) {
+        for (int j = 0; j < numCols; j++) {
+            if (m_pTileManager->GetTile(j, i, &tile)) {
+                if (tile->isOccupied) {
+                    //m_pUnitManager->DrawUnit(playerUnits[i][j]);
+
+                }   // if tile is occupied
+            }   // if tile exists
+        }   // for j
+    }   // for i
 }
 
 /// Load the specific images needed for this game. This is where `eSprite`
@@ -325,6 +343,7 @@ void CGame::KeyboardHandler(){
 
   if (m_pKeyboard->TriggerDown(VK_LBUTTON)) { //left click
       SelectTile();
+      //m_pUnitManager->AddUnit();
   };
 
   HighlightTile();
@@ -423,6 +442,7 @@ void CGame::RenderFrame(){
   */
   m_pTileManager->Draw(eSprite::GrassTile); //draw tiles
   m_pObjectManager->draw(); //draw objects
+  m_pUnitManager->Draw(); //draw units
   m_pParticleEngine->Draw(); //draw particles
 
   //draw currency

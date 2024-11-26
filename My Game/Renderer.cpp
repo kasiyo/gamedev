@@ -47,6 +47,20 @@ float CRenderer::GetWindowScaleFromBase() {
 	return (float)m_nWinWidth / 1024.0f;
 }
 
+/// Calculate isometric projection.
+void CRenderer::CalculateIso(int i, int j, float scale, float descSize, Vector2 & v) {
+	const float diagonalShift = 0.5f;
+	const float isoXScale = 1.5f;
+	const float isoYScale = 0.75f;
+	const float offset = 0.25f;
+
+	float isoX = ((j - i) * diagonalShift) * (descSize * isoXScale) - (descSize * offset);
+	float isoY = ((j + i) * diagonalShift) * (descSize * isoYScale) + (descSize * offset);
+
+	v.x = isoX * scale;
+	v.y = (m_nWinHeight / 2) + (-isoY * scale);
+}
+
 void LoadScreenFont(char* c) {
 	/// --- TODO: Add code to load a font for the load screen. --- ///
 	LoadScreenFont(c);

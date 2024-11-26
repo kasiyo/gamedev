@@ -11,7 +11,7 @@
 /// CRenderer handles the game-specific rendering tasks, relying on
 /// the base class to do all of the actual API-specific rendering.
 
-class CRenderer: public LSpriteRenderer{
+class CRenderer: public LSpriteRenderer {
   public:
     CRenderer(); ///< Constructor.
 
@@ -21,6 +21,10 @@ class CRenderer: public LSpriteRenderer{
     int GetWindowWidth();
     int GetWindowHeight();
     float GetWindowScaleFromBase();
+
+	void CalculateIso(int i, int j, float scale, float descSize, Vector2&); ///< Calculate isometric projection.
+
+    
 
     void LoadScreenFont(char*);
 

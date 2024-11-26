@@ -162,7 +162,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ApplianceManager.cpp" />
     <ClCompile Include="Notification.cpp" />
     <ClCompile Include="PlayerCamera.cpp" />
     <ClCompile Include="Common.cpp" />
@@ -178,7 +177,6 @@
     <ClCompile Include="UnitManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ApplianceManager.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Notification.h" />
     <ClInclude Include="Player.h" />

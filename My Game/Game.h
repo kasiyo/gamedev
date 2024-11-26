@@ -13,6 +13,7 @@
 #include "Math.h"
 #include "TileManager.h"
 #include "Notification.h"
+#include "UnitManager.h"
 
 /// \brief The game class.
 ///
@@ -34,7 +35,8 @@ class CGame:
     int m_nNextLevel = 0; ///< Current level number.
     Tile* prevSelectedTile;
     Tile* prevHighlightedTile;
-    std::vector<Tile*> units;
+    std::vector<Tile*> tiles;
+    std::vector<Unit*> units;
 
     unsigned int frameCount = 0;
     int currency = 0;
@@ -47,6 +49,8 @@ class CGame:
     void UpdateCurrency();
     void UpdateUnits();
     void UpdateNotifications();
+
+    void DrawUnits();
 
     void LoadImages(); ///< Load images.
     void LoadSounds(); ///< Load sounds.
