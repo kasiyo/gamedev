@@ -20,12 +20,14 @@ void CUnitManager::AddUnit(struct Tile* t) {
 	unit->desc.m_fXScale = 1.0f;
 	unit->desc.m_fYScale = 1.0f;
 	unit->desc.m_nSpriteIndex = UINT(eSprite::Unit);
-	unit->desc.m_nCurrentFrame = 0;
+	unit->desc.m_nCurrentFrame = 2;
 	unit->desc.m_vPos = t->pos;
 
-	printf("unit->desc.m_nSpriteIndex: %d\n", unit->desc.m_nSpriteIndex);
-	printf("unit->desc.m_nCurrentFrame: %d\n", unit->desc.m_nCurrentFrame);
-	printf("unit->desc.m_vPos: %f, %f\n", unit->desc.m_vPos.x, unit->desc.m_vPos.y);
+	unit->desc.m_vPos.y += 20.0f;	// hardcode y-offset.
+	//printf("unit->desc.m_nSpriteIndex: %d\n", unit->desc.m_nSpriteIndex);
+	//printf("unit->desc.m_nCurrentFrame: %d\n", unit->desc.m_nCurrentFrame);
+	//printf("tile->pos: %f, %f\n", t->pos.x, t->pos.y);
+	//printf("unit->desc.m_vPos: %f, %f\n", unit->desc.m_vPos.x, unit->desc.m_vPos.y);
 	m_vecUnits.push_back(unit);
 
 }
@@ -68,7 +70,7 @@ bool CUnitManager::GetUnit(int x, int y, Unit** refval) {
 
 void CUnitManager::Draw() {
 	LSpriteDesc2D desc;
-	const char* t = "FR"; // test char* for unit
+	//const char* t = "FR"; // test char* for unit
 	
 	//desc.m_nSpriteIndex = (UINT)t;
 
@@ -78,9 +80,13 @@ void CUnitManager::Draw() {
 		//desc.m_fXScale = 1.0f;
 		//desc.m_fYScale = 1.0f;
 		//m_pRenderer->Draw(desc);
+		Tile* tile = nullptr;
+		
 		desc = m_vecUnits[i]->desc;
-		desc.m_fXScale = 1.0f;
-		desc.m_fYScale = 1.0f;
+		desc.m_fXScale = 2.0f;
+		desc.m_fYScale = 2.0f;
+		
+		
 		m_pRenderer->Draw(&desc);
 	}
 

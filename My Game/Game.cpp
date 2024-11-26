@@ -130,8 +130,6 @@ void CGame::SelectTile() {
     if (currency >= 10) {
         Tile* selectedTile = nullptr;
         Unit* newUnit = (Unit*)malloc(sizeof(Unit));
-        Unit* temp = nullptr;
-        char* b("FR");
 
         if (m_pTileManager->GetTile(selectedX, selectedY, &selectedTile)) {
             selectedTile->tint = DEFAULT_UNIT_TINT;
