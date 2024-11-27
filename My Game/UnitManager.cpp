@@ -2,15 +2,14 @@
 
 CUnitManager::CUnitManager(size_t n) :
 	m_fUnitSize((float)n) {
-	//playerUnits = new Unit * [sizeof(Unit)];
+
 	printf("CUnitManager::CUnitManager(%1.f)\n", m_fUnitSize);
 }
 
 CUnitManager::~CUnitManager() {
 	for (size_t i = 0; i < m_vecUnits.size(); i++) {
-		delete[] playerUnits[i];
+		delete m_vecUnits[i];
 	}
-	delete[] playerUnits;
 }
 
 void CUnitManager::AddUnit(struct Tile* t) {
@@ -28,8 +27,12 @@ void CUnitManager::AddUnit(struct Tile* t) {
 	//printf("unit->desc.m_nCurrentFrame: %d\n", unit->desc.m_nCurrentFrame);
 	//printf("tile->pos: %f, %f\n", t->pos.x, t->pos.y);
 	//printf("unit->desc.m_vPos: %f, %f\n", unit->desc.m_vPos.x, unit->desc.m_vPos.y);
+	unit->x = t->x;
+	unit->y = t->y;
 	m_vecUnits.push_back(unit);
 
+	playerUnit = unit;
+	playerTile = t;
 }
 
 void CUnitManager::EditUnit(Unit u) {
@@ -57,7 +60,7 @@ bool CUnitManager::GetUnit(int x, int y, Unit** refval) {
 		return false;
 	}
 
-	*refval = &playerUnits[y][x];
+	*refval = &m_vecUnits[y][x];
 
 	for (int i = 0; i < m_vecUnits.size(); i++) {
 		//if (m_vecUnits[i].x == x && m_vecUnits[i].y == y) {
@@ -69,28 +72,13 @@ bool CUnitManager::GetUnit(int x, int y, Unit** refval) {
 }
 
 void CUnitManager::Draw() {
-	LSpriteDesc2D desc;
-	//const char* t = "FR"; // test char* for unit
-
-	//desc.m_nSpriteIndex = (UINT)t;
-
+	/// --- TODO: render units by tile position; if unit's position is < another unit's
+	/// position, render that one first. --- ///
 	for (int i = 0; i < m_vecUnits.size(); i++) {
-		//desc.m_vPos = m_vecUnits[i].position;
-		//desc.m_nCurrentFrame = (UINT)m_vecUnits[i].info.frameIndex;
-		//desc.m_fXScale = 1.0f;
-		//desc.m_fYScale = 1.0f;
-		//m_pRenderer->Draw(desc);
-		Tile* tile = nullptr;
-
-		//desc = m_vecUnits[i]->desc;
-		//desc.m_fXScale = 2.0f;
-		//desc.m_fYScale = 2.0f;
-
 		m_vecUnits[i]->desc.m_fXScale = 2.0f;
 		m_vecUnits[i]->desc.m_fYScale = 2.0f;
 		//m_vecUnits[i]->desc.m_vPos.y += 20.0f;	// make her fly up.
 		m_vecUnits[i]->draw();
-		//m_pRenderer->Draw(&desc);
 	}
 
 }

@@ -8,11 +8,13 @@
 
 //forward declarations to make the compiler less stroppy
 
-class CObjectManager; 
+class CObjectManager;
 class CRenderer;
 class LParticleEngine2D;
+struct Tile;
 class CTileManager;
 class CPlayer;
+class Unit;
 class CUnitManager;
 
 /// \brief The common variables class.
@@ -23,20 +25,24 @@ class CUnitManager;
 /// around as parameters, which makes the code minisculely faster, and more
 /// importantly, makes the code more readable by reducing function clutter.
 
-class CCommon{
-  protected:  
-    static CRenderer* m_pRenderer; ///< Pointer to renderer.
-    static CObjectManager* m_pObjectManager; ///< Pointer to object manager.
-    static LParticleEngine2D* m_pParticleEngine; ///< Pointer to particle engine.
-    static CTileManager* m_pTileManager; ///< Pointer to tile manager. 
+class CCommon {
+protected:
+	static CRenderer* m_pRenderer; ///< Pointer to renderer.
+	static CObjectManager* m_pObjectManager; ///< Pointer to object manager.
+	static LParticleEngine2D* m_pParticleEngine; ///< Pointer to particle engine.
+
+
+	static CTileManager* m_pTileManager; ///< Pointer to tile manager. 
 
 	static CUnitManager* m_pUnitManager; ///< Pointer to appliance manager.
 
-    static bool m_bDrawAABBs; ///< Draw AABB flag.
-    static bool m_bGodMode; ///< God mode flag.
+	static bool m_bDrawAABBs; ///< Draw AABB flag.
+	static bool m_bGodMode; ///< God mode flag.
 
-    static Vector2 m_vWorldSize; ///< World height and width.
-//    static CPlayer* m_pPlayer; ///< Pointer to player character.
+	static Vector2 m_vWorldSize; ///< World height and width.
+	//    static CPlayer* m_pPlayer; ///< Pointer to player character.
+	static Unit* playerUnit; ///< Pointer to player character.
+	static Tile* playerTile; ///< Pointer to player tile.
 }; //CCommon
 
 #endif //__L4RC_GAME_COMMON_H__

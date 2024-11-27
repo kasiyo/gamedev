@@ -19,90 +19,90 @@ static size_t spriteSize = 0;
 static const float SPRITE_SCALE = 0.55f;
 
 
-CGame::~CGame(){
-  delete m_pParticleEngine;
-  delete m_pObjectManager;
-  delete m_pUnitManager;
-  delete m_pTileManager;
-  
+CGame::~CGame() {
+	delete m_pParticleEngine;
+	delete m_pObjectManager;
+	delete m_pUnitManager;
+	delete m_pTileManager;
+
 } //destructor
 
 /// Initialize the renderer, the tile manager and the object manager, load 
 /// images and sounds, and begin the game.
 
-void CGame::Initialize(){
-  m_pRenderer = new CRenderer();
-  m_pRenderer->Initialize(eSprite::Size); 
-  LoadImages(); //load images from xml file list
-  
-  m_pTileManager = new CTileManager((size_t)m_pRenderer->GetWidth(eSprite::GrassTile) * SPRITE_SCALE);
-  m_pUnitManager = new CUnitManager((size_t)m_pRenderer->GetWidth(eSprite::Unit));
-  /// --- TODO: Change the tile size to match the new sprite size --- ///
-  //m_pTileManager = new CTileManager((size_t)m_pRenderer->GetWidth(eSprite::GrassTile));
+void CGame::Initialize() {
+	m_pRenderer = new CRenderer();
+	m_pRenderer->Initialize(eSprite::Size);
+	LoadImages(); //load images from xml file list
 
-  m_pObjectManager = new CObjectManager; //set up the object manager 
-  LoadSounds(); //load the sounds for this game
+	m_pTileManager = new CTileManager((size_t)m_pRenderer->GetWidth(eSprite::GrassTile) * SPRITE_SCALE);
+	m_pUnitManager = new CUnitManager((size_t)m_pRenderer->GetWidth(eSprite::Unit));
+	/// --- TODO: Change the tile size to match the new sprite size --- ///
+	//m_pTileManager = new CTileManager((size_t)m_pRenderer->GetWidth(eSprite::GrassTile));
 
-  spriteSize = m_pRenderer->GetWidth(eSprite::GrassTile);
+	m_pObjectManager = new CObjectManager; //set up the object manager 
+	LoadSounds(); //load the sounds for this game
 
-  m_pParticleEngine = new LParticleEngine2D(m_pRenderer);
+	spriteSize = m_pRenderer->GetWidth(eSprite::GrassTile);
 
-  float x = 0.0f, y = 0.0f;
-  camera = PlayerCamera();
+	m_pParticleEngine = new LParticleEngine2D(m_pRenderer);
 
-  HWND hwnd = m_pRenderer->GetWindow();
-  SetWindowLong(hwnd, GWL_STYLE, GetWindowLong(hwnd, GWL_STYLE) & ~WS_SIZEBOX); // no resize!
+	float x = 0.0f, y = 0.0f;
+	camera = PlayerCamera();
 
-  BeginGame();
+	HWND hwnd = m_pRenderer->GetWindow();
+	SetWindowLong(hwnd, GWL_STYLE, GetWindowLong(hwnd, GWL_STYLE) & ~WS_SIZEBOX); // no resize!
+
+	BeginGame();
 } //Initialize
 
 void CGame::HighlightTile() {
-    POINT p = {};//  get mouse position
+	POINT p = {};//  get mouse position
 
-    GetCursorPos(&p);
-    ScreenToClient(m_pRenderer->GetWindow(), &p);
+	GetCursorPos(&p);
+	ScreenToClient(m_pRenderer->GetWindow(), &p);
 
-    Vector2 mousePos((float)p.x - 500.0f, (float)p.y + 8.0f); //hardcode L
-    //Vector2 mousePos((float)p.x - 500.0f, (float)p.y + 10.0f);
-    mousePos.x += camera.GetPos().x;
-    mousePos.y -= camera.GetPos().y;
+	Vector2 mousePos((float)p.x - 500.0f, (float)p.y + 8.0f); //hardcode L
+	//Vector2 mousePos((float)p.x - 500.0f, (float)p.y + 10.0f);
+	mousePos.x += camera.GetPos().x;
+	mousePos.y -= camera.GetPos().y;
 
-    float tileSizeX = (float)(int)((float)spriteSize * 1.5f);
-    float tileSizeY = (float)(int)((float)spriteSize * 0.75f);
+	float tileSizeX = (float)(int)((float)spriteSize * 1.5f);
+	float tileSizeY = (float)(int)((float)spriteSize * 0.75f);
 
 	/// --- TODO: Change the tile size to match the new sprite size --- ///
-    //float tileSizeX = (float)(int)((float)spriteSize * 0.625f);
-    //float tileSizeY = (float)(int)((float)spriteSize * 0.625f);
+	//float tileSizeX = (float)(int)((float)spriteSize * 0.625f);
+	//float tileSizeY = (float)(int)((float)spriteSize * 0.625f);
 
-    Vector2 selected = Vector2(
-        (mousePos.y / tileSizeY) + (mousePos.x / tileSizeX),
-        (mousePos.y / tileSizeY) - (mousePos.x / tileSizeX)
-    );
+	Vector2 selected = Vector2(
+		(mousePos.y / tileSizeY) + (mousePos.x / tileSizeX),
+		(mousePos.y / tileSizeY) - (mousePos.x / tileSizeX)
+	);
 
-    int selectedX = (int)selected.x;
-    int selectedY = (int)selected.y;
+	int selectedX = (int)selected.x;
+	int selectedY = (int)selected.y;
 
 	/// --- TODO: debug statements for tile selection mouse coordinates --- ///
-    /*if (m_pKeyboard->TriggerDown(VK_LBUTTON)) {
+	/*if (m_pKeyboard->TriggerDown(VK_LBUTTON)) {
 		printf("p.x: %d p.y: %d\n", p.x, p.y);
-        printf("mousePos: %1.f %1.f\n", mousePos.x, mousePos.y);
-        printf("cameraPos: %1.f %1.f\n", camera.GetPos().x, camera.GetPos().y);
-        printf("tileX: %d tileY: %d\n", selectedX, selectedY);
-    }*/
-    
+		printf("mousePos: %1.f %1.f\n", mousePos.x, mousePos.y);
+		printf("cameraPos: %1.f %1.f\n", camera.GetPos().x, camera.GetPos().y);
+		printf("tileX: %d tileY: %d\n", selectedX, selectedY);
+	}*/
 
-    Tile* highlightedTile = 0;
-    if (m_pTileManager->GetTile(selectedX, selectedY, &highlightedTile)) {
-        if (prevHighlightedTile && prevHighlightedTile != prevSelectedTile) {
-            prevHighlightedTile->tint = DEFAULT_TILE_TINT;
-        }
 
-        if (highlightedTile != prevSelectedTile) {
-            highlightedTile->tint = HIGHLIGHT_TILE_TINT;
-        }
+	Tile* highlightedTile = 0;
+	if (m_pTileManager->GetTile(selectedX, selectedY, &highlightedTile)) {
+		if (prevHighlightedTile && prevHighlightedTile != prevSelectedTile) {
+			prevHighlightedTile->tint = DEFAULT_TILE_TINT;
+		}
 
-        prevHighlightedTile = highlightedTile;
-    }
+		if (highlightedTile != prevSelectedTile) {
+			highlightedTile->tint = HIGHLIGHT_TILE_TINT;
+		}
+
+		prevHighlightedTile = highlightedTile;
+	}
 }
 
 void CGame::SelectTile() {
@@ -126,93 +126,76 @@ void CGame::SelectTile() {
 	int selectedX = (int)selected.x;
 	int selectedY = (int)selected.y;
 
-    //spawning (delete later)
-    if (currency >= 10) {
-        Tile* selectedTile = nullptr;
-        Unit* newUnit = (Unit*)malloc(sizeof(Unit));
+	//spawning (delete later)
+	if (currency >= 10) {
+		Tile* selectedTile = nullptr;
+		Unit* newUnit = (Unit*)malloc(sizeof(Unit));
 
-        if (m_pTileManager->GetTile(selectedX, selectedY, &selectedTile)) {
-            selectedTile->tint = DEFAULT_UNIT_TINT;
-            if (!selectedTile->isOccupied) {    // if tile is NOT occupied
+		if (m_pTileManager->GetTile(selectedX, selectedY, &selectedTile)) {
+			selectedTile->tint = DEFAULT_UNIT_TINT;
+			if (!selectedTile->isOccupied) {    // if tile is NOT occupied
 				//selectedTile->isOccupied = true;
-			    m_pUnitManager->AddUnit(selectedTile);
-            }
-            tiles.push_back(selectedTile);
-            
-            
-            units.push_back(newUnit);
-        }
-        currency -= 10;
-    }
-    else {
-        Notification errNotification = {};
-        char text[64];
-        sprintf_s(text, "Not enough currency to buy unit!");
-        errNotification.text = std::string(text);
-        errNotification.endTime = m_pTimer->GetTime() + NOTIFICATION_DURATION;
-        errNotification.startTime = m_pTimer->GetTime();
-        notifications.push_back(errNotification);
-    }
+				m_pUnitManager->AddUnit(selectedTile);
+			}
+			tiles.push_back(selectedTile);
+
+
+			units.push_back(newUnit);
+		}
+		currency -= 10;
+	}
+	else {
+		Notification errNotification = {};
+		char text[64];
+		sprintf_s(text, "Not enough currency to buy unit!");
+		errNotification.text = std::string(text);
+		errNotification.endTime = m_pTimer->GetTime() + NOTIFICATION_DURATION;
+		errNotification.startTime = m_pTimer->GetTime();
+		notifications.push_back(errNotification);
+	}
 
 	printf("map width: %f map height: %f\n", m_pTileManager->GetMapWidth(), m_pTileManager->GetMapHeight());
 	printf("tilemanager width: %zu tilemanager height: %zu\n", m_pTileManager->GetWidth(), m_pTileManager->GetHeight());
 }
 
 void CGame::UpdateCurrency() {
-    if (currency < CURRENCY_MAX)
-        currency = currency + CURRENCY_GAINED_ON_UPDATE;
-    printf("Currency: %d\n", currency);
+	if (currency < CURRENCY_MAX)
+		currency = currency + CURRENCY_GAINED_ON_UPDATE;
+	printf("Currency: %d\n", currency);
 }
 
 void CGame::UpdateUnits() {
-    std::vector<int> removeIndices = std::vector<int>();
-    for (int i = 0; i < tiles.size(); i++) {
-        int nextY = tiles[i]->y - 1;
+	std::vector<int> removeIndices = std::vector<int>();
+	for (int i = 0; i < tiles.size(); i++) {
+		int nextY = tiles[i]->y - 1;
 
-        Tile* nextTile = nullptr;
-        if (m_pTileManager->GetTile(tiles[i]->x, nextY, &nextTile)) {
-            tiles[i]->tint = DEFAULT_TILE_TINT;
-            nextTile->tint = DEFAULT_UNIT_TINT;
-            tiles[i] = nextTile;
-        }
-        else {
-            tiles[i]->tint = DEFAULT_TILE_TINT;
-            tiles.erase(tiles.begin() + i);
-            i -= 1;
-        }
-    }
+		Tile* nextTile = nullptr;
+		if (m_pTileManager->GetTile(tiles[i]->x, nextY, &nextTile)) {
+			tiles[i]->tint = DEFAULT_TILE_TINT;
+			nextTile->tint = DEFAULT_UNIT_TINT;
+			tiles[i] = nextTile;
+		}
+		else {
+			tiles[i]->tint = DEFAULT_TILE_TINT;
+			tiles.erase(tiles.begin() + i);
+			i -= 1;
+		}
+	}
 }
 
 void CGame::UpdateNotifications() {
-    for (int i = 0; i < notifications.size(); i++) {
-        Notification& notif = notifications[i];
-        float currentTime = m_pTimer->GetTime();
-        float progress = (currentTime - notif.startTime) / (notif.endTime - notif.startTime);
+	for (int i = 0; i < notifications.size(); i++) {
+		Notification& notif = notifications[i];
+		float currentTime = m_pTimer->GetTime();
+		float progress = (currentTime - notif.startTime) / (notif.endTime - notif.startTime);
 
-        notif.progress = progress;
+		notif.progress = progress;
 
-        if (currentTime >= notif.endTime) {
-            notifications.erase(notifications.begin() + i);
-            i--;
-        }
-    }
-}
-
-void CGame::DrawUnits() {
-    Tile* tile;
-    Unit* unit;
-    int numRows = (int)m_pTileManager->GetHeight();
-    int numCols = (int)m_pTileManager->GetWidth();
-    for (int i = 0; i < numRows; i++) {
-        for (int j = 0; j < numCols; j++) {
-            if (m_pTileManager->GetTile(j, i, &tile)) {
-                if (tile->isOccupied) {
-                    //m_pUnitManager->DrawUnit(playerUnits[i][j]);
-
-                }   // if tile is occupied
-            }   // if tile exists
-        }   // for j
-    }   // for i
+		if (currentTime >= notif.endTime) {
+			notifications.erase(notifications.begin() + i);
+			i--;
+		}
+	}
 }
 
 /// Load the specific images needed for this game. This is where `eSprite`
@@ -222,55 +205,55 @@ void CGame::DrawUnits() {
 /// should abort from deeper in the Engine code leaving you with an error
 /// message in a dialog box.
 
-void CGame::LoadImages(){  
-  m_pRenderer->BeginResourceUpload();
-  m_pRenderer->Load(eSprite::GrassTile, "grasstile");
-  m_pRenderer->Load(eSprite::Appliance, "appliance");
-  m_pRenderer->Load(eSprite::Tile, "tile");
-  m_pRenderer->Load(eSprite::Unit, "unit");
-  m_pRenderer->Load(eSprite::Player,  "player");
-  m_pRenderer->Load(eSprite::Bullet,  "bullet");
-  m_pRenderer->Load(eSprite::Bullet2, "bullet2");
-  m_pRenderer->Load(eSprite::Smoke,   "smoke");
-  m_pRenderer->Load(eSprite::Spark,   "spark");
-  
-  m_pRenderer->Load(eSprite::Line,    "greenline"); 
+void CGame::LoadImages() {
+	m_pRenderer->BeginResourceUpload();
+	m_pRenderer->Load(eSprite::GrassTile, "grasstile");
+	m_pRenderer->Load(eSprite::Appliance, "appliance");
+	m_pRenderer->Load(eSprite::Tile, "tile");
+	m_pRenderer->Load(eSprite::Unit, "unit");
+	m_pRenderer->Load(eSprite::Player, "player");
+	m_pRenderer->Load(eSprite::Bullet, "bullet");
+	m_pRenderer->Load(eSprite::Bullet2, "bullet2");
+	m_pRenderer->Load(eSprite::Smoke, "smoke");
+	m_pRenderer->Load(eSprite::Spark, "spark");
 
-  m_pRenderer->EndResourceUpload();
+	m_pRenderer->Load(eSprite::Line, "greenline");
+
+	m_pRenderer->EndResourceUpload();
 } //LoadImages
 
 /// Initialize the audio player and load game sounds.
 
-void CGame::LoadSounds(){
-  m_pAudio->Initialize(eSound::Size);
+void CGame::LoadSounds() {
+	m_pAudio->Initialize(eSound::Size);
 
-  m_pAudio->Load(eSound::Grunt, "grunt");
-  m_pAudio->Load(eSound::Clang, "clang");
-  m_pAudio->Load(eSound::Gun, "gun");
-  m_pAudio->Load(eSound::Ricochet, "ricochet");
-  m_pAudio->Load(eSound::Start, "start");
-  m_pAudio->Load(eSound::Boom, "boom");
+	m_pAudio->Load(eSound::Grunt, "grunt");
+	m_pAudio->Load(eSound::Clang, "clang");
+	m_pAudio->Load(eSound::Gun, "gun");
+	m_pAudio->Load(eSound::Ricochet, "ricochet");
+	m_pAudio->Load(eSound::Start, "start");
+	m_pAudio->Load(eSound::Boom, "boom");
 } //LoadSounds
 
 /// Release all of the DirectX12 objects by deleting the renderer.
 
-void CGame::Release(){
-  delete m_pRenderer;
-  m_pRenderer = nullptr; //for safety
+void CGame::Release() {
+	delete m_pRenderer;
+	m_pRenderer = nullptr; //for safety
 } //Release
 
 /// Ask the object manager to create a player object and turrets specified by
 /// the tile manager.
 
-void CGame::CreateObjects(){
-  std::vector<Vector2> turretpos; //vector of turret positions
-  Vector2 playerpos; //player positions
-  Vector2 cameraPos = camera.GetPos();
-  Vector2 basePos((m_nWinWidth / 4), ((m_nWinHeight / 4) + 50));
+void CGame::CreateObjects() {
+	std::vector<Vector2> turretpos; //vector of turret positions
+	Vector2 playerpos; //player positions
+	Vector2 cameraPos = camera.GetPos();
+	Vector2 basePos((m_nWinWidth / 4), ((m_nWinHeight / 4) + 50));
 
-  m_pTileManager->GetObjects(turretpos, playerpos); //get positions
-  
-  //m_pPlayer = (CPlayer*)m_pObjectManager->create(eSprite::Player, playerpos);
+	m_pTileManager->GetObjects(turretpos, playerpos); //get positions
+
+	//m_pPlayer = (CPlayer*)m_pObjectManager->create(eSprite::Player, playerpos);
 
 } //CreateObjects
 
@@ -279,31 +262,31 @@ void CGame::CreateObjects(){
 /// program. Clear the particle engine to get rid of any existing particles,
 /// delete any old objects out of the object manager and create some new ones.
 
-void CGame::BeginGame(){  
-  m_pParticleEngine->clear(); //clear old particles
-  
-  /*switch (m_nNextLevel) {
-    case 0: m_pTileManager->LoadMap("Media\\Maps\\tiny.txt"); break;
-    case 1: m_pTileManager->LoadMap("Media\\Maps\\small.txt"); break;
-    case 2: m_pTileManager->LoadMap("Media\\Maps\\map.txt"); break;
-    case 3: m_pTileManager->LoadMapFromImageFile("Media\\Maps\\maze.png");
-      break;
-  } //switch*/
+void CGame::BeginGame() {
+	m_pParticleEngine->clear(); //clear old particles
 
-  //m_pTileManager->LoadMap("Media\\Maps\\small.txt");
-  //m_pTileManager->LoadMap("Media\\Maps\\basefloor.txt");
-  //m_pTileManager->LoadMap("Media\\Maps\\bwfloor.txt");
-  m_pTileManager->LoadMap("Media\\Maps\\tilefloor.txt");
-  m_pObjectManager->clear(); //clear old objects
-  CreateObjects(); //create new objects (must be after map is loaded) 
+	/*switch (m_nNextLevel) {
+	  case 0: m_pTileManager->LoadMap("Media\\Maps\\tiny.txt"); break;
+	  case 1: m_pTileManager->LoadMap("Media\\Maps\\small.txt"); break;
+	  case 2: m_pTileManager->LoadMap("Media\\Maps\\map.txt"); break;
+	  case 3: m_pTileManager->LoadMapFromImageFile("Media\\Maps\\maze.png");
+		break;
+	} //switch*/
 
-  
-  m_pAudio->stop(); //stop all  currently playing sounds
-  if (sound < 1) {
-	  m_pAudio->play(eSound::Start); //play start-of-game sound
-	  sound++;
-  }
-  m_eGameState = eGameState::Playing; //now playing
+	//m_pTileManager->LoadMap("Media\\Maps\\small.txt");
+	//m_pTileManager->LoadMap("Media\\Maps\\basefloor.txt");
+	//m_pTileManager->LoadMap("Media\\Maps\\bwfloor.txt");
+	m_pTileManager->LoadMap("Media\\Maps\\tilefloor.txt");
+	m_pObjectManager->clear(); //clear old objects
+	CreateObjects(); //create new objects (must be after map is loaded) 
+
+
+	m_pAudio->stop(); //stop all  currently playing sounds
+	if (sound < 1) {
+		m_pAudio->play(eSound::Start); //play start-of-game sound
+		sound++;
+	}
+	m_eGameState = eGameState::Playing; //now playing
 } //BeginGame
 
 void CGame::MouseHandler() {
@@ -313,171 +296,179 @@ void CGame::MouseHandler() {
 /// Poll the keyboard state and respond to the key presses that happened since
 /// the last frame.
 
-void CGame::KeyboardHandler(){
-  m_pKeyboard->GetState(); //get current keyboard state
-  
-  if (m_pKeyboard->TriggerDown(VK_RETURN)) {
-      m_nNextLevel = (m_nNextLevel + 1) % 4;
-      BeginGame();
-  } //if
+void CGame::KeyboardHandler() {
+	m_pKeyboard->GetState(); //get current keyboard state
 
-  if(m_pKeyboard->TriggerDown(VK_F1)) //help
-    ShellExecute(0, 0, "https://larc.unt.edu/code/topdown/", 0, 0, SW_SHOW);
-  
-  if(m_pKeyboard->TriggerDown(VK_F2)) //toggle frame rate
-    m_bDrawFrameRate = !m_bDrawFrameRate;
-  
-  if(m_pKeyboard->TriggerDown(VK_F3)) //toggle AABB drawing
-    m_bDrawAABBs = !m_bDrawAABBs; 
+	if (m_pKeyboard->TriggerDown(VK_RETURN)) {
+		m_nNextLevel = (m_nNextLevel + 1) % 4;
+		BeginGame();
+	} //if
 
-  if (m_pKeyboard->TriggerDown(VK_F4)) // move to next level
-  {
-      m_nNextLevel = (m_nNextLevel + 1) % 3;
-      BeginGame();
-  }
-  if(m_pKeyboard->TriggerDown(VK_BACK)) //start game
-    BeginGame();
+	if (m_pKeyboard->TriggerDown(VK_F1)) //help
+		ShellExecute(0, 0, "https://larc.unt.edu/code/topdown/", 0, 0, SW_SHOW);
 
-  if (m_pKeyboard->TriggerDown(VK_LBUTTON)) { //left click
-      SelectTile();
-      //m_pUnitManager->AddUnit();
-  };
+	if (m_pKeyboard->TriggerDown(VK_F2)) //toggle frame rate
+		m_bDrawFrameRate = !m_bDrawFrameRate;
 
-  HighlightTile();
+	if (m_pKeyboard->TriggerDown(VK_F3)) //toggle AABB drawing
+		m_bDrawAABBs = !m_bDrawAABBs;
 
-  Vector2 moveDirection;
+	if (m_pKeyboard->TriggerDown(VK_F4)) // move to next level
+	{
+		m_nNextLevel = (m_nNextLevel + 1) % 3;
+		BeginGame();
+	}
+	if (m_pKeyboard->TriggerDown(VK_BACK)) //start game
+		BeginGame();
+
+	if (m_pKeyboard->TriggerDown(VK_LBUTTON)) { //left click
+		SelectTile();
+		//m_pUnitManager->AddUnit();
+	};
+
+	HighlightTile();
+
+	Vector2 moveDirection;
 
 
-    /// camera movement
-  Vector2 downVector(0, 1);      //  pan down
-  if (m_pKeyboard->Down('W') || m_pKeyboard->Down(VK_UP)) {
-      moveDirection += downVector;
-  }
+	/// camera movement
+	Vector2 downVector(0, 1);      //  pan down
+	if (m_pKeyboard->Down('W') /* || m_pKeyboard->Down(VK_UP)*/) {
+		moveDirection += downVector;
+	}
 
-  Vector2 rightVector(-1, 0);     //  pan right
-  if (m_pKeyboard->Down('A') || m_pKeyboard->Down(VK_LEFT)) {
-      moveDirection += rightVector;
-  }
+	Vector2 rightVector(-1, 0);     //  pan right
+	if (m_pKeyboard->Down('A') /* || m_pKeyboard->Down(VK_LEFT)*/) {
+		moveDirection += rightVector;
+	}
 
-  Vector2 leftVector(1, 0);   //  pan left
-  if (m_pKeyboard->Down('D') || m_pKeyboard->Down(VK_RIGHT)) {
-      moveDirection += leftVector;
-  }
+	Vector2 leftVector(1, 0);   //  pan left
+	if (m_pKeyboard->Down('D') /* || m_pKeyboard->Down(VK_RIGHT)*/) {
+		moveDirection += leftVector;
+	}
 
-  Vector2 upVector(0, -1);     //  pan up
-  if (m_pKeyboard->Down('S') || m_pKeyboard->Down(VK_DOWN)) {
-      moveDirection += upVector;
-  }
+	Vector2 upVector(0, -1);     //  pan up
+	if (m_pKeyboard->Down('S') /* || m_pKeyboard->Down(VK_DOWN)*/) {
+		moveDirection += upVector;
+	}
 
-  camera.MoveCamera(moveDirection * 50.f, m_pTimer->GetFrameTime());
+	camera.MoveCamera(moveDirection * 50.f, m_pTimer->GetFrameTime());
 
-  //if (m_pKeyboard->Down('Q'))
+
+
+	//if (m_pKeyboard->Down('Q'))
 
 
 } //KeyboardHandler
 
 /// Poll the XBox controller state and respond to the controls there.
 
-void CGame::ControllerHandler(){
-  if(!m_pController->IsConnected())return;
+void CGame::ControllerHandler() {
+	if (!m_pController->IsConnected())return;
 
-  m_pController->GetState(); //get state of controller's controls 
-  
-  /*if (m_pPlayer) { //safety
-    m_pPlayer->SetSpeed(100*m_pController->GetRTrigger());
-    m_pPlayer->SetRotSpeed(-2.0f*m_pController->GetRThumb().x);
+	m_pController->GetState(); //get state of controller's controls 
 
-    if(m_pController->GetButtonRSToggle()) //fire gun
-      m_pObjectManager->FireGun(m_pPlayer, eSprite::Bullet);
+	/*if (m_pPlayer) { //safety
+	  m_pPlayer->SetSpeed(100*m_pController->GetRTrigger());
+	  m_pPlayer->SetRotSpeed(-2.0f*m_pController->GetRThumb().x);
 
-    if(m_pController->GetDPadRight()) //strafe right
-      m_pPlayer->StrafeRight();
-  
-    if(m_pController->GetDPadLeft()) //strafe left
-      m_pPlayer->StrafeLeft();
+	  if(m_pController->GetButtonRSToggle()) //fire gun
+		m_pObjectManager->FireGun(m_pPlayer, eSprite::Bullet);
 
-    if(m_pController->GetDPadDown()) //strafe back
-      m_pPlayer->StrafeBack();
-  } //if*/
+	  if(m_pController->GetDPadRight()) //strafe right
+		m_pPlayer->StrafeRight();
+
+	  if(m_pController->GetDPadLeft()) //strafe left
+		m_pPlayer->StrafeLeft();
+
+	  if(m_pController->GetDPadDown()) //strafe back
+		m_pPlayer->StrafeBack();
+	} //if*/
 } //ControllerHandler
+
+void CGame::DrawNumFrames() {
+	char text[64];
+	sprintf_s(text, "Frame: %d", frameCount);
+	m_pRenderer->DrawScreenText(text, Vector2(10.0f, 30.0f));
+}
 
 /// Draw the current frame rate to a hard-coded position in the window.
 /// The frame rate will be drawn in a hard-coded position using the font
 /// specified in `gamesettings.xml`.
 
-void CGame::DrawFrameRateText(){
-  const std::string s = std::to_string(m_pTimer->GetFPS()) + " fps"; //frame rate
-  const Vector2 pos(m_nWinWidth - 128.0f, 30.0f); //hard-coded position
-  m_pRenderer->DrawScreenText(s.c_str(), pos); //draw to screen
+void CGame::DrawFrameRateText() {
+	const std::string s = std::to_string(m_pTimer->GetFPS()) + " fps"; //frame rate
+	const Vector2 pos(m_nWinWidth - 128.0f, 30.0f); //hard-coded position
+	m_pRenderer->DrawScreenText(s.c_str(), pos); //draw to screen
 } //DrawFrameRateText
 
 /// Draw the god mode text to a hard-coded position in the window using the
 /// font specified in `gamesettings.xml`.
 
-void CGame::DrawGodModeText(){
-  const Vector2 pos(64.0f, 30.0f); //hard-coded position
-  m_pRenderer->DrawScreenText("God Mode", pos); //draw to screen
+void CGame::DrawGodModeText() {
+	const Vector2 pos(64.0f, 30.0f); //hard-coded position
+	m_pRenderer->DrawScreenText("God Mode", pos); //draw to screen
 } //DrawGodModeText
 
 /// Ask the object manager to draw the game objects. The renderer is notified of
 /// the start and end of the frame so that it can let Direct3D do its
 /// pipelining jiggery-pokery.
 
-void CGame::RenderFrame(){
+void CGame::RenderFrame() {
 
-  m_pRenderer->BeginFrame(); //required before rendering
+	m_pRenderer->BeginFrame(); //required before rendering
 
-  /// get window size for zoom
-  RECT windowRect;
-  /*if (GetWindowRect(m_pRenderer->GetWindow(), &windowRect)) {
-      //printf("%ld %ld %ld %ld\n", windowRect.top, windowRect.bottom, windowRect.left, windowRect.right);
-      m_pRenderer->GetCamera()->SetOrthographic(
-          std::abs(windowRect.right - windowRect.left),
-          std::abs(windowRect.top - windowRect.bottom), 0.25f, 45.0f);  // changing values from 0.1 to 0.25f
-  }                                                                     // and 100.0 to 45.0f works better after tile resizing
-                                                                        // for some reason...
-  */
-  m_pTileManager->Draw(eSprite::GrassTile); //draw tiles
-  m_pObjectManager->draw(); //draw objects
-  m_pUnitManager->Draw(); //draw units
-  m_pParticleEngine->Draw(); //draw particles
+	/// get window size for zoom
+	RECT windowRect;
+	/*if (GetWindowRect(m_pRenderer->GetWindow(), &windowRect)) {
+		//printf("%ld %ld %ld %ld\n", windowRect.top, windowRect.bottom, windowRect.left, windowRect.right);
+		m_pRenderer->GetCamera()->SetOrthographic(
+			std::abs(windowRect.right - windowRect.left),
+			std::abs(windowRect.top - windowRect.bottom), 0.25f, 45.0f);  // changing values from 0.1 to 0.25f
+	}                                                                     // and 100.0 to 45.0f works better after tile resizing
+																		  // for some reason...
+	*/
+	m_pTileManager->Draw(eSprite::GrassTile); //draw tiles
+	m_pObjectManager->draw(); //draw objects
+	m_pUnitManager->Draw(); //draw units
+	m_pParticleEngine->Draw(); //draw particles
 
-  //draw currency
-  char text[64];
-  sprintf_s(text, "Currency: %d", currency);
-  m_pRenderer->DrawScreenText(text, Vector2(10.0f, 10.0f), XMVECTORF32({ 1.f, 0.843137324f, 0.f, 1.f }));
-  if (m_bDrawFrameRate)DrawFrameRateText(); //draw frame rate, if required
-  if (m_bGodMode)DrawGodModeText(); //draw god mode text, if required
+	//draw currency
+	char text[64];
+	sprintf_s(text, "Currency: %d", currency);
+	m_pRenderer->DrawScreenText(text, Vector2(10.0f, 10.0f), XMVECTORF32({ 1.f, 0.843137324f, 0.f, 1.f }));
+	if (m_bDrawFrameRate)DrawFrameRateText(); //draw frame rate, if required
+	if (m_bGodMode)DrawGodModeText(); //draw god mode text, if required
+	DrawNumFrames(); //draw frame number
+	//draw notifications
+	for (int i = 0; i < notifications.size(); i++) {
+		Notification& notif = notifications[i];
 
-  //draw notifications
-  for (int i = 0; i < notifications.size(); i++) {
-      Notification& notif = notifications[i];
+		float progress = notif.progress;
+		Vector2 startPos = Vector2(10.0f, 600.0f);
+		Vector2 endPos = Vector2(10.0f, 450.0f);
 
-      float progress = notif.progress;
-      Vector2 startPos = Vector2(10.0f, 600.0f);
-      Vector2 endPos = Vector2(10.0f, 450.0f);
+		Vector2 currentPos = Math::lerp(startPos, endPos, progress);
+		float alpha = Math::lerp(1.0f, 0.0f, progress);
 
-      Vector2 currentPos = Math::lerp(startPos, endPos, progress);
-      float alpha = Math::lerp(1.0f, 0.0f, progress);
-      
 
-      m_pRenderer->DrawScreenText(
-          notif.text.c_str(),
-          currentPos,
-          XMVECTORF32({ 1.f, 0.843137324f, 0.f, alpha })
-      );
-  }
+		m_pRenderer->DrawScreenText(
+			notif.text.c_str(),
+			currentPos,
+			XMVECTORF32({ 1.f, 0.843137324f, 0.f, alpha })
+		);
+	}
 
-  m_pRenderer->EndFrame(); //required after rendering
+	m_pRenderer->EndFrame(); //required after rendering
 } //RenderFrame
 
 /// Make the camera follow the player, but don't let it get too close to the
 /// edge unless the world is smaller than the window, in which case we just
 /// center everything.
 
-void CGame::FollowCamera(){
-  Vector3 newPos(camera.GetPos());
-  m_pRenderer->SetCameraPos(newPos); //camera to player
+void CGame::FollowCamera() {
+	Vector3 newPos(camera.GetPos());
+	m_pRenderer->SetCameraPos(newPos); //camera to player
 
 } //FollowCamera
 
@@ -489,40 +480,94 @@ void CGame::FollowCamera(){
 
 static float accumulatorOfTime = 0.0f;
 
-void CGame::ProcessFrame(){
-  KeyboardHandler(); //handle keyboard input
-  ControllerHandler(); //handle controller input
-  m_pAudio->BeginFrame(); //notify audio player that frame has begun
-  
-  
+void CGame::ProcessFrame() {
+	KeyboardHandler(); //handle keyboard input
+	ControllerHandler(); //handle controller input
+	m_pAudio->BeginFrame(); //notify audio player that frame has begun
 
-  m_pTimer->Tick([&](){ //all time-dependent function calls should go here
-      frameCount++;
-      FollowCamera(); //make camera follow player
-      m_pObjectManager->move(); //move all objects
-    
-    m_pParticleEngine->step(); //advance particle animation
 
-    accumulatorOfTime += m_pTimer->GetFrameTime();
-    while (accumulatorOfTime >= 1.0f / 60.0f) {
-        //update units
-        if (frameCount % (int)(60.0f * UPDATE_UNITS_IN_SECONDS) == 0) {
-            UpdateUnits();
-        }
-        //update currency
-        if (frameCount % (int)(60.0f * UPDATE_CURRENCY_IN_SECONDS) == 0) {
-            UpdateCurrency();
-        }
 
-        accumulatorOfTime -= 1.0f / 60.0f;
-    }
+	m_pTimer->Tick([&]() { //all time-dependent function calls should go here
+		frameCount++;
+		FollowCamera(); //make camera follow player
+		m_pObjectManager->move(); //move all objects
 
-    //update notifications
-    UpdateNotifications();
-  });
+		m_pParticleEngine->step(); //advance particle animation
 
-  RenderFrame(); //render a frame of animation
-  ProcessGameState(); //check for end of game
+		accumulatorOfTime += m_pTimer->GetFrameTime();
+		while (accumulatorOfTime >= 1.0f / 60.0f) {
+			//update units
+			if (frameCount % (int)(60.0f * UPDATE_UNITS_IN_SECONDS) == 0) {
+				UpdateUnits();
+			}
+			//update currency
+			if (frameCount % (int)(60.0f * UPDATE_CURRENCY_IN_SECONDS) == 0) {
+				UpdateCurrency();
+			}
+
+			accumulatorOfTime -= 1.0f / 60.0f;
+		}
+
+		//Unit* playerUnit = nullptr;
+		//Tile* playerTile = nullptr;
+		Tile* dirTile = nullptr;
+
+		if (!m_pUnitManager->m_vecUnits.empty()) {
+			playerUnit = m_pUnitManager->m_vecUnits[0];
+
+			if (m_pKeyboard->TriggerDown(VK_RIGHT)) {
+				if (m_pTileManager->GetTile((int)playerUnit->x, (int)playerUnit->y, &playerTile)) {
+					// move right one tile
+					if (m_pTileManager->GetTile((int)playerUnit->x + 1, (int)playerUnit->y, &dirTile)) {
+						//playerTile->tint = DEFAULT_TILE_TINT;
+						playerUnit->x += 1;
+						const Vector2 newPos = dirTile->pos;
+						playerUnit->moveTo(newPos);
+					}
+				}
+			}
+			if (m_pKeyboard->TriggerDown(VK_LEFT)) {
+				if (m_pTileManager->GetTile((int)playerUnit->x, (int)playerUnit->y, &playerTile)) {
+					// move left one tile
+					if (m_pTileManager->GetTile((int)playerUnit->x - 1, (int)playerUnit->y, &dirTile)) {
+						//playerTile->tint = DEFAULT_TILE_TINT;
+						playerUnit->x -= 1;
+						const Vector2 newPos = dirTile->pos;
+						playerUnit->moveTo(newPos);
+					}
+				}
+			}
+			if (m_pKeyboard->TriggerDown(VK_UP)) {
+				if (m_pTileManager->GetTile((int)playerUnit->x, (int)playerUnit->y, &playerTile)) {
+					// move up one tile
+					if (m_pTileManager->GetTile((int)playerUnit->x, (int)playerUnit->y - 1, &dirTile)) {
+						//playerTile->tint = DEFAULT_TILE_TINT;
+						playerUnit->y -= 1;
+						const Vector2 newPos = dirTile->pos;
+						playerUnit->moveTo(newPos);
+					}
+				}
+			}
+			if (m_pKeyboard->TriggerDown(VK_DOWN)) {
+				if (m_pTileManager->GetTile((int)playerUnit->x, (int)playerUnit->y, &playerTile)) {
+					// move down one tile
+					if (m_pTileManager->GetTile((int)playerUnit->x, (int)playerUnit->y + 1, &dirTile)) {
+						//playerTile->tint = DEFAULT_TILE_TINT;
+						playerUnit->y += 1;
+						const Vector2 newPos = dirTile->pos;
+						playerUnit->moveTo(newPos);
+					}
+				}
+			}
+
+		}
+
+		//update notifications
+		UpdateNotifications();
+		});
+
+	RenderFrame(); //render a frame of animation
+	ProcessGameState(); //check for end of game
 } //ProcessFrame
 
 /// Take action appropriate to the current game state. If the game is currently
@@ -530,14 +575,14 @@ void CGame::ProcessFrame(){
 /// killed, then enter the wait state. If the game has been in the wait
 /// state for longer than 3 seconds, then restart the game.
 
-void CGame::ProcessGameState(){
-  static float t = 0; //time at start of game
+void CGame::ProcessGameState() {
+	static float t = 0; //time at start of game
 
-  switch(m_eGameState){
-    case eGameState::Playing:
-      break;
+	switch (m_eGameState) {
+	case eGameState::Playing:
+		break;
 
-    case eGameState::Waiting:
-      break;
-  } //switch
+	case eGameState::Waiting:
+		break;
+	} //switch
 } //CheckForEndOfGame

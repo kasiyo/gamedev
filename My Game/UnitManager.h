@@ -11,15 +11,15 @@
 class Unit : public CCommon, public LBaseObject {
 	friend class CUnitManager;
 private:
-	//Tile* tile = nullptr;
 public:
 	Unit(eSprite t, const Vector2& p) : LBaseObject(t, p) {};
 	UnitInfo info;
-	Vector2 position;
 	int health;
 	int damage;
 	int cost;
 
+	int x;
+	int y;
 	LSpriteDesc2D desc;
 	Unit& operator=(const Unit& rhs) {
 		if (this != &rhs) {
@@ -30,14 +30,27 @@ public:
 	void draw() {
 		m_pRenderer->Draw(&desc); // Draw the unit.
 	};
+	void move() {
+		// Move the unit.
+		x += 1;
+		const float delta = m_pTimer->GetFrameTime();
 
+		//const Vector2 view = GetViewVector();
+
+		//m_vPos += view * m_fSpeed * delta;
+	};
+
+	void moveTo(const Vector2 pos) {
+		// Move the unit to the tile.
+		desc.m_vPos = pos;
+		desc.m_vPos.y += 20.0f;	// hardcode y-offset.
+	};
 };
 
 class CUnitManager : public CCommon, public LBaseObjectManager<Unit> {
 private:
 	size_t m_nWidth = 0;
 
-	Unit** playerUnits = nullptr;
 	std::vector<Unit> enemyUnits;
 	int numPlayerUnits = 0;
 
@@ -47,6 +60,8 @@ public:
 	~CUnitManager();
 
 	std::vector<Unit*> m_vecUnits;
+	Unit* gameMaster = nullptr;
+	Unit* playerUnit = nullptr;
 
 	void AddUnit(struct Tile*);
 	void EditUnit(Unit u);

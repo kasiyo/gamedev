@@ -24,56 +24,56 @@
 /// next animation frame. `Release()` will be called at game exit but before
 /// any destructors are run.
 
-class CGame: 
-  public LComponent, 
-  public LSettings,
-  public CCommon{ 
+class CGame :
+	public LComponent,
+	public LSettings,
+	public CCommon {
 
-  private:
-    bool m_bDrawFrameRate = false; ///< Draw the frame rate.
-    eGameState m_eGameState = eGameState::Playing; ///< Game state.
-    int m_nNextLevel = 0; ///< Current level number.
-    Tile* prevSelectedTile;
-    Tile* prevHighlightedTile;
-    std::vector<Tile*> tiles;
-    std::vector<Unit*> units;
+private:
+	bool m_bDrawFrameRate = false; ///< Draw the frame rate.
+	eGameState m_eGameState = eGameState::Playing; ///< Game state.
+	int m_nNextLevel = 0; ///< Current level number.
+	Tile* prevSelectedTile;
+	Tile* prevHighlightedTile;
+	std::vector<Tile*> tiles;
+	std::vector<Unit*> units;
 
-    unsigned int frameCount = 0;
-    int currency = 0;
+	unsigned int frameCount = 0;
+	int currency = 0;
 
-    //notification test
-    std::vector<Notification> notifications;
+	//notification test
+	std::vector<Notification> notifications;
 
 	void HighlightTile(); ///< Highlight the tile under the cursor.
 	void SelectTile(); ///< Select the tile under the cursor.
-    void UpdateCurrency();
-    void UpdateUnits();
-    void UpdateNotifications();
+	void UpdateCurrency();
+	void UpdateUnits();
+	void UpdateNotifications();
 
-    void DrawUnits();
+	void DrawNumFrames();
 
-    void LoadImages(); ///< Load images.
-    void LoadSounds(); ///< Load sounds.
-    void BeginGame(); ///< Begin playing the game.
-    void MouseHandler(); ///< the mouse handler.
-    void KeyboardHandler(); ///< The keyboard handler.
-    void ControllerHandler(); ///< The controller handler.
-    void RenderFrame(); ///< Render an animation frame.
-    void DrawFrameRateText(); ///< Draw frame rate text to screen.
-    void DrawGodModeText(); ///< Draw god mode text if in god mode.
-    void CreateObjects(); ///< Create game objects.
-    void FollowCamera(); ///< Make camera follow player character.
-    void ProcessGameState(); ///< Process game state.
+	void LoadImages(); ///< Load images.
+	void LoadSounds(); ///< Load sounds.
+	void BeginGame(); ///< Begin playing the game.
+	void MouseHandler(); ///< the mouse handler.
+	void KeyboardHandler(); ///< The keyboard handler.
+	void ControllerHandler(); ///< The controller handler.
+	void RenderFrame(); ///< Render an animation frame.
+	void DrawFrameRateText(); ///< Draw frame rate text to screen.
+	void DrawGodModeText(); ///< Draw god mode text if in god mode.
+	void CreateObjects(); ///< Create game objects.
+	void FollowCamera(); ///< Make camera follow player character.
+	void ProcessGameState(); ///< Process game state.
 
 	PlayerCamera camera; ///< The camera.
 	//TileMap tileMap; ///< The tile map.
 
-  public:
-    ~CGame(); ///< Destructor.
+public:
+	~CGame(); ///< Destructor.
 
-    void Initialize(); ///< Initialize the game.
-    void ProcessFrame(); ///< Process an animation frame.
-    void Release(); ///< Release the renderer.
+	void Initialize(); ///< Initialize the game.
+	void ProcessFrame(); ///< Process an animation frame.
+	void Release(); ///< Release the renderer.
 }; //CGame
 
 #endif //__L4RC_GAME_GAME_H__
