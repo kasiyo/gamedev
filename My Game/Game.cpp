@@ -141,7 +141,6 @@ void CGame::SelectTile() {
             
             
             units.push_back(newUnit);
-			//m_pUnitManager->DrawUnit(newUnit);
         }
         currency -= 10;
     }

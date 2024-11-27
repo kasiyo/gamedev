@@ -1,7 +1,7 @@
 #include "UnitManager.h"
 
 CUnitManager::CUnitManager(size_t n) :
-	m_fUnitSize( (float)n ) {
+	m_fUnitSize((float)n) {
 	//playerUnits = new Unit * [sizeof(Unit)];
 	printf("CUnitManager::CUnitManager(%1.f)\n", m_fUnitSize);
 }
@@ -58,7 +58,7 @@ bool CUnitManager::GetUnit(int x, int y, Unit** refval) {
 	}
 
 	*refval = &playerUnits[y][x];
-	
+
 	for (int i = 0; i < m_vecUnits.size(); i++) {
 		//if (m_vecUnits[i].x == x && m_vecUnits[i].y == y) {
 		//	*refval = &m_vecUnits[i];
@@ -71,7 +71,7 @@ bool CUnitManager::GetUnit(int x, int y, Unit** refval) {
 void CUnitManager::Draw() {
 	LSpriteDesc2D desc;
 	//const char* t = "FR"; // test char* for unit
-	
+
 	//desc.m_nSpriteIndex = (UINT)t;
 
 	for (int i = 0; i < m_vecUnits.size(); i++) {
@@ -81,13 +81,16 @@ void CUnitManager::Draw() {
 		//desc.m_fYScale = 1.0f;
 		//m_pRenderer->Draw(desc);
 		Tile* tile = nullptr;
-		
-		desc = m_vecUnits[i]->desc;
-		desc.m_fXScale = 2.0f;
-		desc.m_fYScale = 2.0f;
-		
-		
-		m_pRenderer->Draw(&desc);
+
+		//desc = m_vecUnits[i]->desc;
+		//desc.m_fXScale = 2.0f;
+		//desc.m_fYScale = 2.0f;
+
+		m_vecUnits[i]->desc.m_fXScale = 2.0f;
+		m_vecUnits[i]->desc.m_fYScale = 2.0f;
+		//m_vecUnits[i]->desc.m_vPos.y += 20.0f;	// make her fly up.
+		m_vecUnits[i]->draw();
+		//m_pRenderer->Draw(&desc);
 	}
 
 }
