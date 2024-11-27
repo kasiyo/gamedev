@@ -211,6 +211,7 @@ void CGame::LoadImages() {
 	m_pRenderer->Load(eSprite::Appliance, "appliance");
 	m_pRenderer->Load(eSprite::Tile, "tile");
 	m_pRenderer->Load(eSprite::Unit, "unit");
+	m_pRenderer->Load(eSprite::AnnoyingOrange, "annoyingorange");
 	m_pRenderer->Load(eSprite::Player, "player");
 	m_pRenderer->Load(eSprite::Bullet, "bullet");
 	m_pRenderer->Load(eSprite::Bullet2, "bullet2");
@@ -353,12 +354,6 @@ void CGame::KeyboardHandler() {
 	}
 
 	camera.MoveCamera(moveDirection * 50.f, m_pTimer->GetFrameTime());
-
-
-
-	//if (m_pKeyboard->Down('Q'))
-
-
 } //KeyboardHandler
 
 /// Poll the XBox controller state and respond to the controls there.
@@ -508,8 +503,7 @@ void CGame::ProcessFrame() {
 			accumulatorOfTime -= 1.0f / 60.0f;
 		}
 
-		//Unit* playerUnit = nullptr;
-		//Tile* playerTile = nullptr;
+		/// --- moves the player unit --- ///
 		Tile* dirTile = nullptr;
 
 		if (!m_pUnitManager->m_vecUnits.empty()) {

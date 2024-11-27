@@ -16,6 +16,7 @@ class CTileManager;
 class CPlayer;
 class Unit;
 class CUnitManager;
+class GameMaster;
 
 /// \brief The common variables class.
 ///
@@ -35,6 +36,8 @@ protected:
 	static CTileManager* m_pTileManager; ///< Pointer to tile manager. 
 
 	static CUnitManager* m_pUnitManager; ///< Pointer to appliance manager.
+
+	static GameMaster* GameMaster; ///< Pointer to game master.
 
 	static bool m_bDrawAABBs; ///< Draw AABB flag.
 	static bool m_bGodMode; ///< God mode flag.

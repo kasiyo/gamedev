@@ -7,6 +7,7 @@
 #include "ComponentIncludes.h"
 #include "TileManager.h"
 #include "BaseObject.h"
+#include "Math.h"
 
 class Unit : public CCommon, public LBaseObject {
 	friend class CUnitManager;
@@ -34,10 +35,6 @@ public:
 		// Move the unit.
 		x += 1;
 		const float delta = m_pTimer->GetFrameTime();
-
-		//const Vector2 view = GetViewVector();
-
-		//m_vPos += view * m_fSpeed * delta;
 	};
 
 	void moveTo(const Vector2 pos) {

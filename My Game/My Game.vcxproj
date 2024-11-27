@@ -162,6 +162,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GameMaster.cpp" />
     <ClCompile Include="Notification.cpp" />
     <ClCompile Include="PlayerCamera.cpp" />
     <ClCompile Include="Common.cpp" />
@@ -177,6 +178,7 @@
     <ClCompile Include="UnitManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameMaster.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Notification.h" />
     <ClInclude Include="Player.h" />

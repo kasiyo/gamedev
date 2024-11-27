@@ -26,10 +26,10 @@ static const float NOTIFICATION_DURATION = 1.0f;
 /// integer and used for the index of the corresponding texture in graphics
 /// memory. `Size` must be last.
 
-enum class eSprite: UINT{
-  Background, Bullet, Bullet2, Player, Smoke, Tile, Spark, Line,
-  Wall, GrassTile, Appliance, Unit,
-  Size  //MUST BE LAST
+enum class eSprite : UINT {
+	Background, Bullet, Bullet2, Player, Smoke, Tile, Spark, Line,
+	Wall, GrassTile, Appliance, Unit, AnnoyingOrange,
+	Size  //MUST BE LAST
 }; //eSprite
 
 struct TileInfo {
@@ -38,6 +38,11 @@ struct TileInfo {
 };
 
 struct UnitInfo {
+	eSprite baseSprite;
+	int frameIndex;
+};
+
+struct GMInfo {
 	eSprite baseSprite;
 	int frameIndex;
 };
@@ -71,15 +76,21 @@ static std::unordered_map<char*, UnitInfo> CHAR_TO_UNIT = {
 	{ "BL", { eSprite::Unit, 3 } }, // back facing left
 };
 
+static std::unordered_map<char*, GMInfo> CHAR_TO_GM = {
+	{ "ANNOYED", { eSprite::AnnoyingOrange, 0 } },
+	{ "BACK_TURNED", { eSprite::AnnoyingOrange, 1 } },
+	{ "GRIN", { eSprite::AnnoyingOrange, 2 } },
+};
+
 /// \brief Sound enumerated type.
 ///
 /// An enumerated type for the sounds, which will be cast to an unsigned
 /// integer and used for the index of the corresponding sample. `Size` must 
 /// be last.
 
-enum class eSound: UINT{
-  Start, Boom, Clang, Grunt, Gun, Ricochet,
-  Size  //MUST BE LAST
+enum class eSound : UINT {
+	Start, Boom, Clang, Grunt, Gun, Ricochet,
+	Size  //MUST BE LAST
 }; //eSound
 
 /// \brief Game state enumerated type.
@@ -88,8 +99,8 @@ enum class eSound: UINT{
 /// waiting a short interval for the level to end after winning or losing to
 /// let sounds and particle effects play to the end without being cut short.
 
-enum class eGameState{
-  Playing, Waiting
+enum class eGameState {
+	Playing, Waiting
 }; //eGameState
 
 #endif //__L4RC_GAME_GAMEDEFINES_H__
