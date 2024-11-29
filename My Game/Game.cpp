@@ -135,7 +135,7 @@ void CGame::SelectTile() {
 		if (m_pTileManager->GetTile(selectedX, selectedY, &selectedTile)) {
 			selectedTile->tint = DEFAULT_UNIT_TINT;
 			if (!selectedTile->isOccupied) {    // if tile is NOT occupied
-				//selectedTile->isOccupied = true;
+				selectedTile->isOccupied = true;
 				m_pUnitManager->AddUnit(selectedTile);
 			}
 			tiles.push_back(selectedTile);
@@ -559,6 +559,15 @@ void CGame::ProcessFrame() {
 						playerUnit->moveTo(newPos);
 					}
 				}
+			}
+
+			int nextPhaseNum = Math::RandomizePhase(2, accumulatorOfTime);
+			printf("nextPhaseNum: %d\n", nextPhaseNum);
+			if (frameCount % (int)(60.0f * 1.5f) == 0) {
+				m_pGameMaster->SwitchPhases(nextPhaseNum);
+			}
+			else {
+				m_pGameMaster->desc.m_nCurrentFrame = m_pGameMaster->m_nCurrentFrame;
 			}
 
 		}

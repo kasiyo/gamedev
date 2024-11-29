@@ -1,6 +1,7 @@
 #pragma once
 #include <algorithm>
 #include <cmath>
+#include <random>
 namespace Math
 {
 	static float SmoothDamp(float current, float target, float* currentVelocity, float smoothTime, float maxSpeed, float deltaTime);
@@ -15,6 +16,8 @@ namespace Math
 
 		return start + (progress * (end - start));
 	}
+
+	static int RandomizePhase(int numPhases, float deltaTime);
 };
 
 
@@ -47,3 +50,18 @@ static float Math::SmoothDamp(float current, float target, float* currentVelocit
 	return num8;
 }
 
+static int Math::RandomizePhase(int numPhases, float deltaTime) {
+
+	int remainder = RAND_MAX % (numPhases + 1);
+	int x;
+
+	/*if (((int)timer % 2 == 0)) {
+		phase = rand() % numPhases;
+		timer = 0.0f;
+	}*/
+	do {
+		x = rand();
+	} while (x >= RAND_MAX - remainder);
+
+	return x % (numPhases + 1);
+}

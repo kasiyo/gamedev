@@ -41,6 +41,7 @@ public:
 		// Move the unit to the tile.
 		desc.m_vPos = pos;
 		desc.m_vPos.y += 20.0f;	// hardcode y-offset.
+
 	};
 };
 

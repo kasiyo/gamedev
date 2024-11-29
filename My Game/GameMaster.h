@@ -4,6 +4,7 @@
 #include "Renderer.h"
 #include "GameDefines.h"
 #include "TileManager.h"
+#include "ComponentIncludes.h"
 
 class GameMaster : public CCommon, public LBaseObject {
 public:
@@ -14,10 +15,11 @@ public:
 	LSpriteDesc2D desc;
 
 	void draw();
-
 	void move();
 	bool IsFacingPlayer;
 
 	void GetSpawnPoint();
+	void SwitchPhases(int nextPhaseNum);
+	LComponent* timer;
 };
 

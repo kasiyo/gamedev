@@ -42,10 +42,17 @@ struct UnitInfo {
 	int frameIndex;
 };
 
+static enum GameMasterPhase {
+	ANNOYED, BACK_TURNED, GRIN,
+};
+
 struct GMInfo {
 	eSprite baseSprite;
 	int frameIndex;
+	GameMasterPhase currentPhase;
 };
+
+
 
 static std::unordered_map<char, TileInfo> CHAR_TO_TILE = {
 	{ 'F', { eSprite::GrassTile, 0 } },
@@ -76,10 +83,10 @@ static std::unordered_map<char*, UnitInfo> CHAR_TO_UNIT = {
 	{ "BL", { eSprite::Unit, 3 } }, // back facing left
 };
 
-static std::unordered_map<char*, GMInfo> CHAR_TO_GM = {
-	{ "ANNOYED", { eSprite::AnnoyingOrange, 0 } },
-	{ "BACK_TURNED", { eSprite::AnnoyingOrange, 1 } },
-	{ "GRIN", { eSprite::AnnoyingOrange, 2 } },
+static std::unordered_map<GameMasterPhase, GMInfo> CHAR_TO_GM = {
+	{ ANNOYED, { eSprite::AnnoyingOrange, 0 } },
+	{ BACK_TURNED, { eSprite::AnnoyingOrange, 1 } },
+	{ GRIN, { eSprite::AnnoyingOrange, 2 } },
 };
 
 /// \brief Sound enumerated type.
