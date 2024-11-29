@@ -64,6 +64,8 @@ public:
 
 	const size_t GetWidth(); ///< Get width.
 	const size_t GetHeight(); ///< Get height.
+	//static Tile* GMSpawnPoint;
+	Tile* GetGMSpawnPoint(); ///< Get the game master spawn point (centermost tile of first few rows).
 
 	const bool Visible(const Vector2&, const Vector2&, float) const; ///< Check visibility.
 	const bool CollideWithWall(BoundingSphere, Vector2&, float&) const; ///< Object-wall collision test.

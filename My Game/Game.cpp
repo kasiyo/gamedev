@@ -37,6 +37,7 @@ void CGame::Initialize() {
 
 	m_pTileManager = new CTileManager((size_t)m_pRenderer->GetWidth(eSprite::GrassTile) * SPRITE_SCALE);
 	m_pUnitManager = new CUnitManager((size_t)m_pRenderer->GetWidth(eSprite::Unit));
+
 	/// --- TODO: Change the tile size to match the new sprite size --- ///
 	//m_pTileManager = new CTileManager((size_t)m_pRenderer->GetWidth(eSprite::GrassTile));
 
@@ -280,6 +281,11 @@ void CGame::BeginGame() {
 	m_pTileManager->LoadMap("Media\\Maps\\tilefloor.txt");
 	m_pObjectManager->clear(); //clear old objects
 	CreateObjects(); //create new objects (must be after map is loaded) 
+	if (m_pTileManager->GetMap() != nullptr) {
+		//m_pTileManager->GMSpawnPoint = m_pTileManager->GetGMSpawnPoint();
+		GMTile = m_pTileManager->GetGMSpawnPoint();
+		m_pGameMaster = new GameMaster(GMTile->pos);
+	}
 
 
 	m_pAudio->stop(); //stop all  currently playing sounds
@@ -425,6 +431,7 @@ void CGame::RenderFrame() {
 	*/
 	m_pTileManager->Draw(eSprite::GrassTile); //draw tiles
 	m_pObjectManager->draw(); //draw objects
+	m_pGameMaster->draw();
 	m_pUnitManager->Draw(); //draw units
 	m_pParticleEngine->Draw(); //draw particles
 

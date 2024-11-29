@@ -14,6 +14,7 @@
 #include "TileManager.h"
 #include "Notification.h"
 #include "UnitManager.h"
+#include "GameMaster.h"
 
 /// \brief The game class.
 ///

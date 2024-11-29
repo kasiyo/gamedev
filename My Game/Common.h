@@ -37,7 +37,7 @@ protected:
 
 	static CUnitManager* m_pUnitManager; ///< Pointer to appliance manager.
 
-	static GameMaster* GameMaster; ///< Pointer to game master.
+	static GameMaster* m_pGameMaster; ///< Pointer to game master.
 
 	static bool m_bDrawAABBs; ///< Draw AABB flag.
 	static bool m_bGodMode; ///< God mode flag.
@@ -46,6 +46,7 @@ protected:
 	//    static CPlayer* m_pPlayer; ///< Pointer to player character.
 	static Unit* playerUnit; ///< Pointer to player character.
 	static Tile* playerTile; ///< Pointer to player tile.
+	static Tile* GMTile; ///< Pointer to game master tile.
 }; //CCommon
 
 #endif //__L4RC_GAME_COMMON_H__

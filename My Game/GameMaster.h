@@ -12,14 +12,12 @@ public:
 	int x;
 	int y;
 	LSpriteDesc2D desc;
-	void draw() {
-		m_pRenderer->Draw(&desc); // Draw the unit.
-	};
 
-	void move() {
-		// Move the unit.
-		const float delta = m_pTimer->GetFrameTime();
-	};
+	void draw();
+
+	void move();
 	bool IsFacingPlayer;
+
+	void GetSpawnPoint();
 };
 
