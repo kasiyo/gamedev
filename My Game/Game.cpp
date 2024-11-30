@@ -523,6 +523,9 @@ void CGame::ProcessFrame() {
 						//playerTile->tint = DEFAULT_TILE_TINT;
 						playerUnit->x += 1;
 						const Vector2 newPos = dirTile->pos;
+						const char* c("FR");
+						playerUnit->m_nCurrentFrame = 1;
+						playerUnit->desc.m_nCurrentFrame = 1;
 						playerUnit->moveTo(newPos);
 					}
 				}
@@ -534,6 +537,8 @@ void CGame::ProcessFrame() {
 						//playerTile->tint = DEFAULT_TILE_TINT;
 						playerUnit->x -= 1;
 						const Vector2 newPos = dirTile->pos;
+						playerUnit->m_nCurrentFrame = 3;
+						playerUnit->desc.m_nCurrentFrame = 3;
 						playerUnit->moveTo(newPos);
 					}
 				}
@@ -545,6 +550,8 @@ void CGame::ProcessFrame() {
 						//playerTile->tint = DEFAULT_TILE_TINT;
 						playerUnit->y -= 1;
 						const Vector2 newPos = dirTile->pos;
+						playerUnit->m_nCurrentFrame = 2;
+						playerUnit->desc.m_nCurrentFrame = 2;
 						playerUnit->moveTo(newPos);
 					}
 				}
@@ -556,13 +563,15 @@ void CGame::ProcessFrame() {
 						//playerTile->tint = DEFAULT_TILE_TINT;
 						playerUnit->y += 1;
 						const Vector2 newPos = dirTile->pos;
+						playerUnit->m_nCurrentFrame = 0;
+						playerUnit->desc.m_nCurrentFrame = 0;
 						playerUnit->moveTo(newPos);
 					}
 				}
 			}
 
 			int nextPhaseNum = Math::RandomizePhase(2, accumulatorOfTime);
-			printf("nextPhaseNum: %d\n", nextPhaseNum);
+
 			if (frameCount % (int)(60.0f * 1.5f) == 0) {
 				m_pGameMaster->SwitchPhases(nextPhaseNum);
 			}
