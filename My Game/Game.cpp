@@ -209,7 +209,6 @@ void CGame::UpdateNotifications() {
 void CGame::LoadImages() {
 	m_pRenderer->BeginResourceUpload();
 	m_pRenderer->Load(eSprite::GrassTile, "grasstile");
-	m_pRenderer->Load(eSprite::Appliance, "appliance");
 	m_pRenderer->Load(eSprite::Tile, "tile");
 	m_pRenderer->Load(eSprite::Unit, "unit");
 	m_pRenderer->Load(eSprite::AnnoyingOrange, "annoyingorange");
@@ -218,8 +217,12 @@ void CGame::LoadImages() {
 	m_pRenderer->Load(eSprite::Bullet2, "bullet2");
 	m_pRenderer->Load(eSprite::Smoke, "smoke");
 	m_pRenderer->Load(eSprite::Spark, "spark");
-
+	m_pRenderer->Load(eSprite::Background, "background");
 	m_pRenderer->Load(eSprite::Line, "greenline");
+	//m_pRenderer->Load(eFont::PixelAEBold, "pixelaebold");
+	//m_pRenderer->Load(eFont::PixelAERegular, "pixelaeregular");
+	//m_pRenderer->Load(eSprite::PixelAEBold, "pixelaebold");
+	//m_pRenderer->Load(eSprite::PixelAERegular, "pixelaeregular");
 
 	m_pRenderer->EndResourceUpload();
 } //LoadImages
@@ -441,7 +444,9 @@ void CGame::RenderFrame() {
 	m_pRenderer->DrawScreenText(text, Vector2(10.0f, 10.0f), XMVECTORF32({ 1.f, 0.843137324f, 0.f, 1.f }));
 	if (m_bDrawFrameRate)DrawFrameRateText(); //draw frame rate, if required
 	if (m_bGodMode)DrawGodModeText(); //draw god mode text, if required
+
 	DrawNumFrames(); //draw frame number
+
 	//draw notifications
 	for (int i = 0; i < notifications.size(); i++) {
 		Notification& notif = notifications[i];
@@ -461,6 +466,12 @@ void CGame::RenderFrame() {
 		);
 	}
 
+	if (GameIsLost == true) {
+		m_bDrawGameOver = true;
+	}
+	if (m_bDrawGameOver) {
+		m_pRenderer->DrawGameOver();
+	}
 	m_pRenderer->EndFrame(); //required after rendering
 } //RenderFrame
 
@@ -486,8 +497,6 @@ void CGame::ProcessFrame() {
 	KeyboardHandler(); //handle keyboard input
 	ControllerHandler(); //handle controller input
 	m_pAudio->BeginFrame(); //notify audio player that frame has begun
-
-
 
 	m_pTimer->Tick([&]() { //all time-dependent function calls should go here
 		frameCount++;
@@ -521,12 +530,19 @@ void CGame::ProcessFrame() {
 					// move right one tile
 					if (m_pTileManager->GetTile((int)playerUnit->x + 1, (int)playerUnit->y, &dirTile)) {
 						//playerTile->tint = DEFAULT_TILE_TINT;
-						playerUnit->x += 1;
-						const Vector2 newPos = dirTile->pos;
-						const char* c("FR");
-						playerUnit->m_nCurrentFrame = 1;
-						playerUnit->desc.m_nCurrentFrame = 1;
-						playerUnit->moveTo(newPos);
+						if (dirTile->viewableByGameMaster) {
+							m_bDrawGameOver = true;
+							GameIsLost = true;
+							m_pUnitManager->m_vecUnits.clear();
+						}
+						else {
+							playerUnit->x += 1;
+							const Vector2 newPos = dirTile->pos;
+
+							playerUnit->m_nCurrentFrame = 1;
+							playerUnit->desc.m_nCurrentFrame = 1;
+							playerUnit->moveTo(newPos);
+						}
 					}
 				}
 			}
@@ -535,11 +551,22 @@ void CGame::ProcessFrame() {
 					// move left one tile
 					if (m_pTileManager->GetTile((int)playerUnit->x - 1, (int)playerUnit->y, &dirTile)) {
 						//playerTile->tint = DEFAULT_TILE_TINT;
-						playerUnit->x -= 1;
-						const Vector2 newPos = dirTile->pos;
-						playerUnit->m_nCurrentFrame = 3;
-						playerUnit->desc.m_nCurrentFrame = 3;
-						playerUnit->moveTo(newPos);
+						if (dirTile->viewableByGameMaster) {
+							//game over
+							//printf("Game Over\n");
+							m_bDrawGameOver = true;
+							//m_eGameState = eGameState::GameOver;
+							m_pUnitManager->m_vecUnits.clear();
+							//GameOver();
+							GameIsLost = true;
+						}
+						else {
+							playerUnit->x -= 1;
+							const Vector2 newPos = dirTile->pos;
+							playerUnit->m_nCurrentFrame = 3;
+							playerUnit->desc.m_nCurrentFrame = 3;
+							playerUnit->moveTo(newPos);
+						}
 					}
 				}
 			}
@@ -548,11 +575,22 @@ void CGame::ProcessFrame() {
 					// move up one tile
 					if (m_pTileManager->GetTile((int)playerUnit->x, (int)playerUnit->y - 1, &dirTile)) {
 						//playerTile->tint = DEFAULT_TILE_TINT;
-						playerUnit->y -= 1;
-						const Vector2 newPos = dirTile->pos;
-						playerUnit->m_nCurrentFrame = 2;
-						playerUnit->desc.m_nCurrentFrame = 2;
-						playerUnit->moveTo(newPos);
+						if (dirTile->viewableByGameMaster) {
+							//game over
+							//printf("Game Over\n");
+							//m_eGameState = eGameState::GameOver;
+							m_bDrawGameOver = true;
+							m_pUnitManager->m_vecUnits.clear();
+							//GameOver();
+							GameIsLost = true;
+						}
+						else {
+							playerUnit->y -= 1;
+							const Vector2 newPos = dirTile->pos;
+							playerUnit->m_nCurrentFrame = 2;
+							playerUnit->desc.m_nCurrentFrame = 2;
+							playerUnit->moveTo(newPos);
+						}
 					}
 				}
 			}
@@ -561,11 +599,22 @@ void CGame::ProcessFrame() {
 					// move down one tile
 					if (m_pTileManager->GetTile((int)playerUnit->x, (int)playerUnit->y + 1, &dirTile)) {
 						//playerTile->tint = DEFAULT_TILE_TINT;
-						playerUnit->y += 1;
-						const Vector2 newPos = dirTile->pos;
-						playerUnit->m_nCurrentFrame = 0;
-						playerUnit->desc.m_nCurrentFrame = 0;
-						playerUnit->moveTo(newPos);
+						if (dirTile->viewableByGameMaster) {
+							//game over
+							//printf("Game Over\n");
+							//m_eGameState = eGameState::GameOver;
+							//GameOver();
+							m_bDrawGameOver = true;
+							m_pUnitManager->m_vecUnits.clear();
+							GameIsLost = true;
+						}
+						else {
+							playerUnit->y += 1;
+							const Vector2 newPos = dirTile->pos;
+							playerUnit->m_nCurrentFrame = 0;
+							playerUnit->desc.m_nCurrentFrame = 0;
+							playerUnit->moveTo(newPos);
+						}
 					}
 				}
 			}
@@ -580,7 +629,6 @@ void CGame::ProcessFrame() {
 			}
 
 		}
-
 		//update notifications
 		UpdateNotifications();
 		});
@@ -588,6 +636,21 @@ void CGame::ProcessFrame() {
 	RenderFrame(); //render a frame of animation
 	ProcessGameState(); //check for end of game
 } //ProcessFrame
+
+void CGame::GameOver() {
+	//m_pRenderer->BeginFrame();
+	XMVECTORF32 black = { 0.0f, 0.0f, 0.0f, 1.0f };
+	XMVECTORF32 white = { 1.0f, 1.0f, 1.0f, 1.0f };
+	while (!m_pKeyboard->TriggerDown(VK_RETURN)) {
+		BeginGame();
+		m_eGameState = eGameState::Playing;
+		m_pRenderer->SetBgColor(black); //black background
+		//m_pRenderer->DrawScreenText("Game Over", Vector2(300.0f, 300.0f), white);
+	}
+
+
+	//m_pRenderer->EndFrame();
+}
 
 /// Take action appropriate to the current game state. If the game is currently
 /// playing, then if the player has been killed or all turrets have been
@@ -602,6 +665,14 @@ void CGame::ProcessGameState() {
 		break;
 
 	case eGameState::Waiting:
+		break;
+
+	case eGameState::GameOver: {
+		//GameOver();
+		break;
+	}
+
+	case eGameState::GameWon:
 		break;
 	} //switch
 } //CheckForEndOfGame

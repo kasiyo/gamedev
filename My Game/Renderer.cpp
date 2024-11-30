@@ -5,8 +5,8 @@
 #include "ComponentIncludes.h"
 #include "Abort.h"
 
-CRenderer::CRenderer():
-  LSpriteRenderer(eSpriteMode::Batched2D){
+CRenderer::CRenderer() :
+	LSpriteRenderer(eSpriteMode::Batched2D) {
 } //constructor
 
 /// Load the specific images needed for this game.
@@ -18,18 +18,20 @@ CRenderer::CRenderer():
 /// leaving you with a dialog box that tells you what
 /// went wrong.
 
-void CRenderer::LoadImages(){  
-  BeginResourceUpload();
+void CRenderer::LoadImages() {
+	BeginResourceUpload();
 
-  Load(eSprite::Background, "background");  
+	Load(eSprite::Background, "background");
 
 
-  EndResourceUpload();
+	EndResourceUpload();
 } //LoadImages
 
 HWND CRenderer::GetWindow() {
 	return m_Hwnd;
 }
+
+
 
 LBaseCamera* CRenderer::GetCamera() {
 	return this->m_pCamera;
@@ -48,7 +50,7 @@ float CRenderer::GetWindowScaleFromBase() {
 }
 
 /// Calculate isometric projection.
-void CRenderer::CalculateIso(int i, int j, float scale, float descSize, Vector2 & v) {
+void CRenderer::CalculateIso(int i, int j, float scale, float descSize, Vector2& v) {
 	const float diagonalShift = 0.5f;
 	const float isoXScale = 1.5f;
 	const float isoYScale = 0.75f;
@@ -61,8 +63,38 @@ void CRenderer::CalculateIso(int i, int j, float scale, float descSize, Vector2 
 	v.y = (m_nWinHeight / 2) + (-isoY * scale);
 }
 
-void LoadScreenFont(char* c) {
+/// Draw game over.
+void CRenderer::DrawGameOver() {
+	XMVECTORF32 color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	XMVECTORF32 black = { 0.0f, 0.0f, 0.0f, 1.0f };
+	XMVECTORF32 white = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+
+
+	Draw(eSprite::Background, Vector2(this->m_pCamera->GetPos().x, this->m_pCamera->GetPos().y));
+	Vector2 camPos(this->m_pCamera->GetPos().x, this->m_pCamera->GetPos().y);
+	//SetBgColor(black);
+	//LoadScreenFont(eFont::PixelAERegular);
+	const wchar_t* text = L"Game Over";
+	if (m_pFont == nullptr) {
+		return;
+	}
+	m_pFont->DrawString(m_pSpriteBatch.get(), text, camPos, white, 0.0f, Vector2::Zero, 1.0f);
+	DrawCenteredText("Game Over", white);
+	//DrawScreenText("Game Over", 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+	//LoadScreenFont();
+
+}
+
+void CRenderer::LoadTextSprites() {
+	BeginResourceUpload();
+	//Load(eSprite::Text, "text");
+
+	EndResourceUpload();
+}
+
+/*void LoadScreenFont(const char* c) {
 	/// --- TODO: Add code to load a font for the load screen. --- ///
 	LoadScreenFont(c);
 	//return nullptr;
-}
+}*/

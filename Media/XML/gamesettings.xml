@@ -6,10 +6,13 @@
   <game name="kaia wanted to do a visual novel but ended up with an rts!" />
   <renderer width="1024" height="768"/>
    
-  <font file="Media\Fonts\AverageSans_24.spritefont"/>
-	<font file="Media\Fonts\PixelAE-Bold.ttf"/>
-	<font file="Media\Fonts\PixelAE-Regular.ttf"/>
-
+  <!--
+	-->
+	<!--<sprite name ="pixelaebold" file="Media\Fonts\PixelAEBold.ttf" />
+	<sprite name ="pixelaeregular" file ="Media\Fonts\PixelAERegular.ttf" />-->
+<font file="Media\Fonts\AverageSans_24.spritefont"/>
+	<font file="Media\Fonts\PixelAEBold.ttf"/>
+	<font file="Media\Fonts\PixelAERegular.ttf"/>
   <!-- sprites -->
    
   <sprites path="Media\Images">
@@ -18,7 +21,7 @@
 	  <sprite name="unit" file="unit" ext="png" frames="4"/>
 	  <sprite name="annoyingorange" file="annoyingorange" ext="png" frames="3"/>
 	  <!--<sprite name="floortile" file="floortile.png"/>-->
-	  <sprite name="appliance" file="appliance0.png" />
+    <sprite name="background" file="background0.jpg"/>
     <sprite name="player" file="player.png"/>
     <sprite name="turret" file="turret.png"/>
     <sprite name="bullet" file="bullet.png"/>

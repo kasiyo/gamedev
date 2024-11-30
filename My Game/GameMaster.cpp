@@ -43,6 +43,7 @@ void GameMaster::SwitchPhases(int nextPhaseNum) {
 		this->desc.m_nCurrentFrame = nextPhaseNum;
 		phaseName = "BACK_TURNED";
 		IsFacingPlayer = false;
+		m_pTileManager->SetTileVisibility(false);
 		break;
 	};
 	case ANNOYED: {
@@ -51,6 +52,7 @@ void GameMaster::SwitchPhases(int nextPhaseNum) {
 		IsFacingPlayer = true;
 		this->desc.m_nCurrentFrame = nextPhaseNum;
 		phaseName = "ANNOYED";
+		m_pTileManager->SetTileVisibility(true);
 		break;
 	};
 	case GRIN: {
@@ -59,10 +61,11 @@ void GameMaster::SwitchPhases(int nextPhaseNum) {
 		IsFacingPlayer = true;
 		this->desc.m_nCurrentFrame = nextPhaseNum;
 		phaseName = "GRIN";
+		m_pTileManager->SetTileVisibility(true);
 		break;
 	};
 	};
 	this->m_nCurrentFrame = nextPhaseNum;
-	printf("Switched to phase %d: $s\n", nextPhaseNum, phaseName);
+	printf("Switched to phase %d: %s\n", nextPhaseNum, phaseName.c_str());
 	//m_pRenderer->Draw(this);
 }

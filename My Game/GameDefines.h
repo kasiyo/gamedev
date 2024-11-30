@@ -20,6 +20,11 @@ static const int CURRENCY_MAX = 100;
 
 static const float NOTIFICATION_DURATION = 1.0f;
 
+enum class eFont : UINT {
+	Normal, Large, Small, Title, Notification,
+	Size  //MUST BE LAST
+};
+
 /// \brief Sprite enumerated type.
 ///
 /// An enumerated type for the sprites, which will be cast to an unsigned
@@ -28,7 +33,7 @@ static const float NOTIFICATION_DURATION = 1.0f;
 
 enum class eSprite : UINT {
 	Background, Bullet, Bullet2, Player, Smoke, Tile, Spark, Line,
-	Wall, GrassTile, Appliance, Unit, AnnoyingOrange,
+	Wall, GrassTile, Unit, AnnoyingOrange,
 	Size  //MUST BE LAST
 }; //eSprite
 
@@ -107,7 +112,7 @@ enum class eSound : UINT {
 /// let sounds and particle effects play to the end without being cut short.
 
 enum class eGameState {
-	Playing, Waiting
+	Playing, Waiting, GameOver, GameWon
 }; //eGameState
 
 #endif //__L4RC_GAME_GAMEDEFINES_H__

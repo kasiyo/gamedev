@@ -265,6 +265,24 @@ Tile* CTileManager::GetGMSpawnPoint() {
 	return &m_chMap[centerY][centerX];
 }
 
+/// Set the visibility of the tiles.
+void CTileManager::SetTileVisibility(bool b) {
+	if (b == true) {
+		for (size_t i = 0; i < m_nHeight; i++) {
+			for (size_t j = 0; j < m_nWidth; j++) {
+				m_chMap[i][j].viewableByGameMaster = true;
+			}
+		}
+	}
+	else {
+		for (size_t i = 0; i < m_nHeight; i++) {
+			for (size_t j = 0; j < m_nWidth; j++) {
+				m_chMap[i][j].viewableByGameMaster = false;
+			}
+		}
+	}
+} //SetTileVisibility
+
 /// Check whether a circle is visible from a point, that is, either the left
 /// or the right side of the object (from the perspective of the point)
 /// has no walls between it and the point. This gives some weird behavior

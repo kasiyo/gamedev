@@ -69,6 +69,10 @@ private:
 	PlayerCamera camera; ///< The camera.
 	//TileMap tileMap; ///< The tile map.
 
+	void GameOver(); ///< Game over.
+	bool GameIsLost = false;
+	bool m_bDrawGameOver = false; ///< Player lost.
+
 public:
 	~CGame(); ///< Destructor.
 
