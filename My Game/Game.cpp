@@ -632,7 +632,14 @@ void CGame::ProcessFrame() {
 		//update notifications
 		UpdateNotifications();
 		});
-
+	if (m_bDrawGameOver) {
+		if (m_pKeyboard->TriggerDown(VK_RETURN)) {
+			BeginGame();
+			m_eGameState = eGameState::Playing;
+			m_bDrawGameOver = false;
+			GameIsLost = false;
+		}
+	}
 	RenderFrame(); //render a frame of animation
 	ProcessGameState(); //check for end of game
 } //ProcessFrame

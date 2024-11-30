@@ -3,43 +3,47 @@
 <!-- Game settings -->
 
 <settings>
-  <game name="kaia wanted to do a visual novel but ended up with an rts!" />
-  <renderer width="1024" height="768"/>
+	
+    <game name="kaia wanted to do a visual novel but ended up with an rts!" />
+    <renderer width="1024" height="768"/>
    
-  <!--
-	-->
 	<!--<sprite name ="pixelaebold" file="Media\Fonts\PixelAEBold.ttf" />
 	<sprite name ="pixelaeregular" file ="Media\Fonts\PixelAERegular.ttf" />-->
-<font file="Media\Fonts\AverageSans_24.spritefont"/>
+    
+	<font file="Media\Fonts\AverageSans_24.spritefont"/>
 	<font file="Media\Fonts\PixelAEBold.ttf"/>
 	<font file="Media\Fonts\PixelAERegular.ttf"/>
-  <!-- sprites -->
+    
+	<!-- sprites -->
    
-  <sprites path="Media\Images">
-	<sprite name="tile" file="tile" ext ="png" frames="15"/>
-	  <sprite name="grasstile" file="grasstile" ext ="png" frames="5"/>
-	  <sprite name="unit" file="unit" ext="png" frames="4"/>
-	  <sprite name="annoyingorange" file="annoyingorange" ext="png" frames="3"/>
-	  <!--<sprite name="floortile" file="floortile.png"/>-->
-    <sprite name="background" file="background0.jpg"/>
-    <sprite name="player" file="player.png"/>
-    <sprite name="turret" file="turret.png"/>
-    <sprite name="bullet" file="bullet.png"/>
-    <sprite name="bullet2" file="bullet2.png"/>
-    <sprite name="smoke" file="graysmoke.png"/>
-    <sprite name="spark" file="spark.png"/>
-     <sprite name="greenline" file="greenline.png"/>
+    <sprites path="Media\Images">
+		
+	    <sprite name="tile" file="tile" ext ="png" frames="15"/>
+	    <sprite name="grasstile" file="grasstile" ext ="png" frames="5"/>
+	    <sprite name="unit" file="unit" ext="png" frames="4"/>
+	    <sprite name="annoyingorange" file="annoyingorange" ext="png" frames="3"/>
 
-  </sprites>
+        <sprite name="background" file="background0.jpg"/>
+        <sprite name="player" file="player.png"/>
+        <sprite name="turret" file="turret.png"/>
+        <sprite name="bullet" file="bullet.png"/>
+        <sprite name="bullet2" file="bullet2.png"/>
+        <sprite name="smoke" file="graysmoke.png"/>
+        <sprite name="spark" file="spark.png"/>
+        <sprite name="greenline" file="greenline.png"/>
 
-  <!-- sound -->
+	</sprites>
+
+    <!-- sound -->
   
-  <sounds  path="Media\Sounds"> 
-    <sound name="start" file="start.wav" instances="1"/>
-    <sound name="gun" file="44magnum.wav" instances="8"/>
-    <sound name="ricochet" file="ricochet.wav" instances="8"/>
-    <sound name="clang" file="clang.wav" instances="4"/>
-    <sound name="grunt" file="umph.wav" instances="2"/>
-    <sound name="boom" file="boom.wav" instances="4"/>
-  </sounds>
+    <sounds  path="Media\Sounds"> 
+		
+        <sound name="start" file="start.wav" instances="1"/>
+        <sound name="gun" file="44magnum.wav" instances="8"/>
+        <sound name="ricochet" file="ricochet.wav" instances="8"/>
+        <sound name="clang" file="clang.wav" instances="4"/>
+        <sound name="grunt" file="umph.wav" instances="2"/>
+        <sound name="boom" file="boom.wav" instances="4"/>
+		
+    </sounds>
 </settings>
