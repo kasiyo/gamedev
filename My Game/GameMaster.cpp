@@ -69,3 +69,8 @@ void GameMaster::SwitchPhases(int nextPhaseNum) {
 	printf("Switched to phase %d: %s\n", nextPhaseNum, phaseName.c_str());
 	//m_pRenderer->Draw(this);
 }
+
+// if the player is in god mode, the GM will not attack.
+void GameMaster::SetFriendlyMode(bool PlayerGodModeEnabled) {
+	FriendlyMode = PlayerGodModeEnabled;
+}

@@ -73,7 +73,7 @@ private:
 	void GameOver(); ///< Game over.
 	bool GameIsLost = false;
 	bool m_bDrawGameOver = false; ///< Player lost.
-
+	bool m_bPlayerGodMode = false; ///< God mode toggle.
 public:
 	~CGame(); ///< Destructor.
 

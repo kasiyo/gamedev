@@ -21,5 +21,7 @@ public:
 	void GetSpawnPoint();
 	void SwitchPhases(int nextPhaseNum);
 	LComponent* timer;
+	bool FriendlyMode;	// start off as true
+	void SetFriendlyMode(bool PlayerGodModeEnabled);
 };
 

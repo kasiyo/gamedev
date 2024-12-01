@@ -312,24 +312,43 @@ void CGame::KeyboardHandler() {
 		BeginGame();
 	} //if
 
-	if (m_pKeyboard->TriggerDown(VK_F1)) //help
+	if (m_pKeyboard->TriggerDown(VK_F1)) {	//help
 		ShellExecute(0, 0, "https://larc.unt.edu/code/topdown/", 0, 0, SW_SHOW);
+	}
 
-	if (m_pKeyboard->TriggerDown(VK_F2)) //toggle frame rate
+	if (m_pKeyboard->TriggerDown(VK_F2)) {		// toggle frame rate
 		m_bDrawFrameRate = !m_bDrawFrameRate;
+	}
 
-	if (m_pKeyboard->TriggerDown(VK_F3)) //toggle AABB drawing
+	if (m_pKeyboard->TriggerDown(VK_F3)) {		// toggle AABB drawing
 		m_bDrawAABBs = !m_bDrawAABBs;
+	}
 
-	if (m_pKeyboard->TriggerDown(VK_F4)) // move to next level
-	{
+	if (m_pKeyboard->TriggerDown(VK_F4)) {		// move to next level
 		m_nNextLevel = (m_nNextLevel + 1) % 3;
 		BeginGame();
 	}
-	if (m_pKeyboard->TriggerDown(VK_BACK)) //start game
-		BeginGame();
 
-	if (m_pKeyboard->TriggerDown(VK_LBUTTON)) { //left click
+	if (m_pKeyboard->TriggerDown(VK_BACK)) {	// start game
+		BeginGame();
+	}
+
+	if (m_pKeyboard->TriggerDown('G')) {		// toggle god mode
+		if (m_bPlayerGodMode) {
+			m_bPlayerGodMode = false;
+			if (m_pGameMaster != nullptr) {
+				m_pGameMaster->SetFriendlyMode(m_bPlayerGodMode);
+			}
+		}
+		else {
+			m_bPlayerGodMode = true;
+			if (m_pGameMaster != nullptr) {
+				m_pGameMaster->SetFriendlyMode(m_bPlayerGodMode);
+			}
+		}
+	}
+
+	if (m_pKeyboard->TriggerDown(VK_LBUTTON)) { // left click
 		SelectTile();
 	};
 
@@ -520,22 +539,22 @@ void CGame::ProcessFrame() {
 					// move right one tile
 					if (m_pTileManager->GetTile((int)playerUnit->x + 1, (int)playerUnit->y, &dirTile)) {
 						//playerTile->tint = DEFAULT_TILE_TINT;
-						/*if (dirTile->viewableByGameMaster) {
+						if (dirTile->viewableByGameMaster && m_pGameMaster->FriendlyMode != true) {
 							m_bDrawGameOver = true;
 							GameIsLost = true;
 							m_pUnitManager->m_vecUnits.clear();
 						}
-						else {*/
-						playerUnit->x += 1;
-						const Vector2 newPos = dirTile->pos;
+						else {
+							playerUnit->x += 1;
+							const Vector2 newPos = dirTile->pos;
 
-						playerUnit->m_nCurrentFrame = 1;
-						playerUnit->desc.m_nCurrentFrame = 1;
-						//m_pUnitManager->MoveUnit(newPos, m_pTimer->GetTime());
-						printf("startPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
-						playerUnit->moveTo(newPos, m_pTimer->GetFrameTime());
-						printf("endPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
-						//}
+							playerUnit->m_nCurrentFrame = 1;
+							playerUnit->desc.m_nCurrentFrame = 1;
+							//m_pUnitManager->MoveUnit(newPos, m_pTimer->GetTime());
+							printf("startPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
+							playerUnit->moveTo(newPos, m_pTimer->GetFrameTime());
+							printf("endPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
+						}
 					}
 				}
 			}
@@ -547,7 +566,7 @@ void CGame::ProcessFrame() {
 					// move left one tile
 					if (m_pTileManager->GetTile((int)playerUnit->x - 1, (int)playerUnit->y, &dirTile)) {
 						//playerTile->tint = DEFAULT_TILE_TINT;
-						/*if (dirTile->viewableByGameMaster) {
+						if (dirTile->viewableByGameMaster && m_bPlayerGodMode == false && m_pGameMaster->FriendlyMode != true) {
 							//game over
 							//printf("Game Over\n");
 							m_bDrawGameOver = true;
@@ -556,15 +575,15 @@ void CGame::ProcessFrame() {
 
 							GameIsLost = true;
 						}
-						else {*/
-						playerUnit->x -= 1;
-						const Vector2 newPos = dirTile->pos;
-						playerUnit->m_nCurrentFrame = 3;
-						playerUnit->desc.m_nCurrentFrame = 3;
-						printf("startPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
-						playerUnit->moveTo(newPos, m_pTimer->GetFrameTime());
-						printf("endPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
-						//}
+						else {
+							playerUnit->x -= 1;
+							const Vector2 newPos = dirTile->pos;
+							playerUnit->m_nCurrentFrame = 3;
+							playerUnit->desc.m_nCurrentFrame = 3;
+							printf("startPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
+							playerUnit->moveTo(newPos, m_pTimer->GetFrameTime());
+							printf("endPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
+						}
 					}
 				}
 			}
@@ -576,7 +595,7 @@ void CGame::ProcessFrame() {
 					// move up one tile
 					if (m_pTileManager->GetTile((int)playerUnit->x, (int)playerUnit->y - 1, &dirTile)) {
 						//playerTile->tint = DEFAULT_TILE_TINT;
-						/*if (dirTile->viewableByGameMaster) {
+						if (dirTile->viewableByGameMaster && m_bPlayerGodMode == false && m_pGameMaster->FriendlyMode != true) {
 							//game over
 							//printf("Game Over\n");
 							//m_eGameState = eGameState::GameOver;
@@ -585,15 +604,15 @@ void CGame::ProcessFrame() {
 
 							GameIsLost = true;
 						}
-						else {*/
-						playerUnit->y -= 1;
-						const Vector2 newPos = dirTile->pos;
-						playerUnit->m_nCurrentFrame = 2;
-						playerUnit->desc.m_nCurrentFrame = 2;
-						printf("startPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
-						playerUnit->moveTo(newPos, m_pTimer->GetFrameTime());
-						printf("endPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
-						//}
+						else {
+							playerUnit->y -= 1;
+							const Vector2 newPos = dirTile->pos;
+							playerUnit->m_nCurrentFrame = 2;
+							playerUnit->desc.m_nCurrentFrame = 2;
+							printf("startPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
+							playerUnit->moveTo(newPos, m_pTimer->GetFrameTime());
+							printf("endPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
+						}
 					}
 				}
 			}
@@ -605,7 +624,7 @@ void CGame::ProcessFrame() {
 					// move down one tile
 					if (m_pTileManager->GetTile((int)playerUnit->x, (int)playerUnit->y + 1, &dirTile)) {
 						//playerTile->tint = DEFAULT_TILE_TINT;
-						/*if (dirTile->viewableByGameMaster) {
+						if (dirTile->viewableByGameMaster && m_bPlayerGodMode == false && m_pGameMaster->FriendlyMode != true) {
 							//game over
 							//printf("Game Over\n");
 							//m_eGameState = eGameState::GameOver;
@@ -614,15 +633,15 @@ void CGame::ProcessFrame() {
 							m_pUnitManager->m_vecUnits.clear();
 							GameIsLost = true;
 						}
-						else {*/
-						playerUnit->y += 1;
-						const Vector2 newPos = dirTile->pos;
-						playerUnit->m_nCurrentFrame = 0;
-						playerUnit->desc.m_nCurrentFrame = 0;
-						printf("startPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
-						playerUnit->moveTo(newPos, m_pTimer->GetFrameTime());
-						printf("endPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
-						//}
+						else {
+							playerUnit->y += 1;
+							const Vector2 newPos = dirTile->pos;
+							playerUnit->m_nCurrentFrame = 0;
+							playerUnit->desc.m_nCurrentFrame = 0;
+							printf("startPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
+							playerUnit->moveTo(newPos, m_pTimer->GetFrameTime());
+							printf("endPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
+						}
 					}
 				}
 			}
