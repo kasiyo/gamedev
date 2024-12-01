@@ -73,8 +73,6 @@ void CRenderer::DrawGameOver() {
 	Vector2 camPos(this->m_pCamera->GetPos().x, this->m_pCamera->GetPos().y);
 	Draw(eSprite::Background, Vector2(this->m_pCamera->GetPos().x, this->m_pCamera->GetPos().y));
 
-
-	//SetBgColor(black);
 	//LoadScreenFont(eFont::PixelAERegular);
 	const wchar_t* text = L"Game Over";
 	if (m_pFont == nullptr) {

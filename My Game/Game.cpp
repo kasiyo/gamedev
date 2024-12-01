@@ -140,7 +140,6 @@ void CGame::SelectTile() {
 			}
 			tiles.push_back(selectedTile);
 
-
 			units.push_back(newUnit);
 		}
 		currency -= 10;
@@ -162,7 +161,7 @@ void CGame::SelectTile() {
 void CGame::UpdateCurrency() {
 	if (currency < CURRENCY_MAX)
 		currency = currency + CURRENCY_GAINED_ON_UPDATE;
-	printf("Currency: %d\n", currency);
+	//printf("Currency: %d\n", currency);
 }
 
 void CGame::UpdateUnits() {
@@ -281,15 +280,14 @@ void CGame::BeginGame() {
 	//m_pTileManager->LoadMap("Media\\Maps\\small.txt");
 	//m_pTileManager->LoadMap("Media\\Maps\\basefloor.txt");
 	//m_pTileManager->LoadMap("Media\\Maps\\bwfloor.txt");
-	m_pTileManager->LoadMap("Media\\Maps\\tilefloor.txt");
+	//m_pTileManager->LoadMap("Media\\Maps\\tilefloor.txt");
+	m_pTileManager->LoadMap("Media\\Maps\\betamap.txt");
 	m_pObjectManager->clear(); //clear old objects
 	CreateObjects(); //create new objects (must be after map is loaded) 
 	if (m_pTileManager->GetMap() != nullptr) {
-		//m_pTileManager->GMSpawnPoint = m_pTileManager->GetGMSpawnPoint();
 		GMTile = m_pTileManager->GetGMSpawnPoint();
 		m_pGameMaster = new GameMaster(GMTile->pos);
 	}
-
 
 	m_pAudio->stop(); //stop all  currently playing sounds
 	if (sound < 1) {
@@ -333,7 +331,6 @@ void CGame::KeyboardHandler() {
 
 	if (m_pKeyboard->TriggerDown(VK_LBUTTON)) { //left click
 		SelectTile();
-		//m_pUnitManager->AddUnit();
 	};
 
 	HighlightTile();
@@ -371,23 +368,6 @@ void CGame::ControllerHandler() {
 	if (!m_pController->IsConnected())return;
 
 	m_pController->GetState(); //get state of controller's controls 
-
-	/*if (m_pPlayer) { //safety
-	  m_pPlayer->SetSpeed(100*m_pController->GetRTrigger());
-	  m_pPlayer->SetRotSpeed(-2.0f*m_pController->GetRThumb().x);
-
-	  if(m_pController->GetButtonRSToggle()) //fire gun
-		m_pObjectManager->FireGun(m_pPlayer, eSprite::Bullet);
-
-	  if(m_pController->GetDPadRight()) //strafe right
-		m_pPlayer->StrafeRight();
-
-	  if(m_pController->GetDPadLeft()) //strafe left
-		m_pPlayer->StrafeLeft();
-
-	  if(m_pController->GetDPadDown()) //strafe back
-		m_pPlayer->StrafeBack();
-	} //if*/
 } //ControllerHandler
 
 void CGame::DrawNumFrames() {
@@ -439,8 +419,9 @@ void CGame::RenderFrame() {
 	m_pParticleEngine->Draw(); //draw particles
 
 	//draw currency
-	char text[64];
-	sprintf_s(text, "Currency: %d", currency);
+	char text[256];
+	//sprintf_s(text, "Currency: %d", currency);
+	sprintf_s(text, "u will die if u don't make it past this ornage. don't let him see u.");
 	m_pRenderer->DrawScreenText(text, Vector2(10.0f, 10.0f), XMVECTORF32({ 1.f, 0.843137324f, 0.f, 1.f }));
 	if (m_bDrawFrameRate)DrawFrameRateText(); //draw frame rate, if required
 	if (m_bGodMode)DrawGodModeText(); //draw god mode text, if required
@@ -492,6 +473,7 @@ void CGame::FollowCamera() {
 /// Move the game objects. Render a frame of animation. 
 
 static float accumulatorOfTime = 0.0f;
+static float deltaTime = 0.0f;
 
 void CGame::ProcessFrame() {
 	KeyboardHandler(); //handle keyboard input
@@ -522,99 +504,125 @@ void CGame::ProcessFrame() {
 		/// --- moves the player unit --- ///
 		Tile* dirTile = nullptr;
 
+		/*if (playerUnit != nullptr) {
+			playerUnit->m_pTimer->Tick([&]() {
+				playerUnit->update();
+				});*/
 		if (!m_pUnitManager->m_vecUnits.empty()) {
 			playerUnit = m_pUnitManager->m_vecUnits[0];
 
-			if (m_pKeyboard->TriggerDown(VK_RIGHT)) {
+			if (m_pKeyboard->Down(VK_RIGHT)) {
+				const float TimeKeyPressed = m_pTimer->GetFrameTime();
+
+
+				deltaTime -= TimeKeyPressed;
 				if (m_pTileManager->GetTile((int)playerUnit->x, (int)playerUnit->y, &playerTile)) {
 					// move right one tile
 					if (m_pTileManager->GetTile((int)playerUnit->x + 1, (int)playerUnit->y, &dirTile)) {
 						//playerTile->tint = DEFAULT_TILE_TINT;
-						if (dirTile->viewableByGameMaster) {
+						/*if (dirTile->viewableByGameMaster) {
 							m_bDrawGameOver = true;
 							GameIsLost = true;
 							m_pUnitManager->m_vecUnits.clear();
 						}
-						else {
-							playerUnit->x += 1;
-							const Vector2 newPos = dirTile->pos;
+						else {*/
+						playerUnit->x += 1;
+						const Vector2 newPos = dirTile->pos;
 
-							playerUnit->m_nCurrentFrame = 1;
-							playerUnit->desc.m_nCurrentFrame = 1;
-							playerUnit->moveTo(newPos);
-						}
+						playerUnit->m_nCurrentFrame = 1;
+						playerUnit->desc.m_nCurrentFrame = 1;
+						//m_pUnitManager->MoveUnit(newPos, m_pTimer->GetTime());
+						printf("startPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
+						playerUnit->moveTo(newPos, m_pTimer->GetFrameTime());
+						printf("endPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
+						//}
 					}
 				}
 			}
-			if (m_pKeyboard->TriggerDown(VK_LEFT)) {
+			if (m_pKeyboard->Down(VK_LEFT)) {
+				const float TimeKeyPressed = m_pTimer->GetFrameTime();
+
+				deltaTime -= TimeKeyPressed;
 				if (m_pTileManager->GetTile((int)playerUnit->x, (int)playerUnit->y, &playerTile)) {
 					// move left one tile
 					if (m_pTileManager->GetTile((int)playerUnit->x - 1, (int)playerUnit->y, &dirTile)) {
 						//playerTile->tint = DEFAULT_TILE_TINT;
-						if (dirTile->viewableByGameMaster) {
+						/*if (dirTile->viewableByGameMaster) {
 							//game over
 							//printf("Game Over\n");
 							m_bDrawGameOver = true;
 							//m_eGameState = eGameState::GameOver;
 							m_pUnitManager->m_vecUnits.clear();
-							//GameOver();
+
 							GameIsLost = true;
 						}
-						else {
-							playerUnit->x -= 1;
-							const Vector2 newPos = dirTile->pos;
-							playerUnit->m_nCurrentFrame = 3;
-							playerUnit->desc.m_nCurrentFrame = 3;
-							playerUnit->moveTo(newPos);
-						}
+						else {*/
+						playerUnit->x -= 1;
+						const Vector2 newPos = dirTile->pos;
+						playerUnit->m_nCurrentFrame = 3;
+						playerUnit->desc.m_nCurrentFrame = 3;
+						printf("startPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
+						playerUnit->moveTo(newPos, m_pTimer->GetFrameTime());
+						printf("endPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
+						//}
 					}
 				}
 			}
-			if (m_pKeyboard->TriggerDown(VK_UP)) {
+			if (m_pKeyboard->Down(VK_UP)) {
+				const float TimeKeyPressed = m_pTimer->GetFrameTime();
+
+				deltaTime -= TimeKeyPressed;
 				if (m_pTileManager->GetTile((int)playerUnit->x, (int)playerUnit->y, &playerTile)) {
 					// move up one tile
 					if (m_pTileManager->GetTile((int)playerUnit->x, (int)playerUnit->y - 1, &dirTile)) {
 						//playerTile->tint = DEFAULT_TILE_TINT;
-						if (dirTile->viewableByGameMaster) {
+						/*if (dirTile->viewableByGameMaster) {
 							//game over
 							//printf("Game Over\n");
 							//m_eGameState = eGameState::GameOver;
 							m_bDrawGameOver = true;
 							m_pUnitManager->m_vecUnits.clear();
-							//GameOver();
+
 							GameIsLost = true;
 						}
-						else {
-							playerUnit->y -= 1;
-							const Vector2 newPos = dirTile->pos;
-							playerUnit->m_nCurrentFrame = 2;
-							playerUnit->desc.m_nCurrentFrame = 2;
-							playerUnit->moveTo(newPos);
-						}
+						else {*/
+						playerUnit->y -= 1;
+						const Vector2 newPos = dirTile->pos;
+						playerUnit->m_nCurrentFrame = 2;
+						playerUnit->desc.m_nCurrentFrame = 2;
+						printf("startPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
+						playerUnit->moveTo(newPos, m_pTimer->GetFrameTime());
+						printf("endPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
+						//}
 					}
 				}
 			}
-			if (m_pKeyboard->TriggerDown(VK_DOWN)) {
+			if (m_pKeyboard->Down(VK_DOWN)) {
+				const float TimeKeyPressed = m_pTimer->GetFrameTime();
+
+				deltaTime -= TimeKeyPressed;
 				if (m_pTileManager->GetTile((int)playerUnit->x, (int)playerUnit->y, &playerTile)) {
 					// move down one tile
 					if (m_pTileManager->GetTile((int)playerUnit->x, (int)playerUnit->y + 1, &dirTile)) {
 						//playerTile->tint = DEFAULT_TILE_TINT;
-						if (dirTile->viewableByGameMaster) {
+						/*if (dirTile->viewableByGameMaster) {
 							//game over
 							//printf("Game Over\n");
 							//m_eGameState = eGameState::GameOver;
-							//GameOver();
+
 							m_bDrawGameOver = true;
 							m_pUnitManager->m_vecUnits.clear();
 							GameIsLost = true;
 						}
-						else {
-							playerUnit->y += 1;
-							const Vector2 newPos = dirTile->pos;
-							playerUnit->m_nCurrentFrame = 0;
-							playerUnit->desc.m_nCurrentFrame = 0;
-							playerUnit->moveTo(newPos);
-						}
+						else {*/
+						playerUnit->y += 1;
+						const Vector2 newPos = dirTile->pos;
+						playerUnit->m_nCurrentFrame = 0;
+						playerUnit->desc.m_nCurrentFrame = 0;
+						printf("startPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
+						playerUnit->moveTo(newPos, m_pTimer->GetFrameTime());
+						printf("endPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
+						//}
 					}
 				}
 			}

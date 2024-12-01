@@ -31,13 +31,14 @@ class CGame :
 	public CCommon {
 
 private:
-	bool m_bDrawFrameRate = false; ///< Draw the frame rate.
+	bool m_bDrawFrameRate = true; ///< Draw the frame rate.
 	eGameState m_eGameState = eGameState::Playing; ///< Game state.
 	int m_nNextLevel = 0; ///< Current level number.
 	Tile* prevSelectedTile;
 	Tile* prevHighlightedTile;
 	std::vector<Tile*> tiles;
 	std::vector<Unit*> units;
+	std::vector<Vector2> unitPositions;
 
 	unsigned int frameCount = 0;
 	int currency = 0;

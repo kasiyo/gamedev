@@ -29,6 +29,7 @@ void CUnitManager::AddUnit(struct Tile* t) {
 	//printf("unit->desc.m_vPos: %f, %f\n", unit->desc.m_vPos.x, unit->desc.m_vPos.y);
 	unit->x = t->x;
 	unit->y = t->y;
+	unit->m_pTimer->GetFrameTime();
 	m_vecUnits.push_back(unit);
 
 	playerUnit = unit;
@@ -89,13 +90,23 @@ void CUnitManager::UpdateUnits() {
 	}
 }
 
-void CUnitManager::MoveUnit(int x, int y, int newX, int newY) {
+void CUnitManager::MoveUnit(Vector2 moveDirection, float deltaTime) {
 	for (int i = 0; i < m_vecUnits.size(); i++) {
 		//if (m_vecUnits[i].x == x && m_vecUnits[i].y == y) {
 		//	m_vecUnits[i].x = newX;
 		//	m_vecUnits[i].y = newY;
 		//}
 	}
+	float startTime = deltaTime;
+	float endTime = startTime + 2.0f;
+	float smoothTime = 1.0f;
+	float progress = (startTime - deltaTime) / (endTime - startTime);
+	float maxSpeed = 50.0f;
+	//float velocityX = Math::SmoothDamp(playerUnit->currentVelocity.x, moveDirection.x, &playerUnit->currentAcceleration.x, smoothTime, maxSpeed, deltaTime);
+	//float velocityY = Math::SmoothDamp(playerUnit->currentVelocity.y, moveDirection.y, &playerUnit->currentAcceleration.y, smoothTime, maxSpeed, deltaTime);
+	//playerUnit->currentVelocity = Vector2(velocityX, velocityY);
+	Vector2 currentPos = Math::lerp(playerUnit->m_vPos, moveDirection, progress);
+	playerUnit->m_vPos = currentPos;
 }
 
 void CUnitManager::AttackUnit(int x, int y, int targetX, int targetY) {
