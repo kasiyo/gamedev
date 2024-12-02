@@ -30,6 +30,7 @@
 		<sprite name="fence" file="fence" ext="png" frames="2"/>
 		<sprite name="water" file="water" ext="png" frames="8"/>
 		<sprite name="lagoon" file="lagoon" ext="png" frames="8"/>
+		<sprite name="nature" file="nature" ext="png" frames="12"/>
 		
         <sprite name="player" file="player.png"/>
         <sprite name="turret" file="turret.png"/>

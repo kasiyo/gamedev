@@ -216,6 +216,7 @@ void CGame::LoadImages() {
 	m_pRenderer->Load(eSprite::Fence, "fence");
 	m_pRenderer->Load(eSprite::Water, "water");
 	m_pRenderer->Load(eSprite::Lagoon, "lagoon");
+	m_pRenderer->Load(eSprite::Nature, "nature");
 
 	m_pRenderer->Load(eSprite::Player, "player");
 	m_pRenderer->Load(eSprite::Bullet, "bullet");

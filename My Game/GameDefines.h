@@ -34,11 +34,17 @@ enum class eFont : UINT {
 enum class eSprite : UINT {
 	Background, Bullet, Bullet2, Player, Smoke, Spark, Line,
 	Tile, GrassTile, Unit, AnnoyingOrange,
-	Block, Bridge, Fence, Water, Lagoon,
+	Block, Bridge, Fence, Water, Lagoon, Nature,
 	Size  //MUST BE LAST
 }; //eSprite
 
 struct TileInfo {
+	eSprite baseSprite;
+	int frameIndex;
+	bool isFullHeight;
+};
+
+struct BlockInfo {
 	eSprite baseSprite;
 	int frameIndex;
 };
@@ -60,27 +66,95 @@ struct GMInfo {
 
 
 
+
 static std::unordered_map<char, TileInfo> CHAR_TO_TILE = {
-	{ 'F', { eSprite::GrassTile, 0 } },
-	{ 'W', { eSprite::GrassTile, 1 } },
-	{ 'T', { eSprite::GrassTile, 1 } },
-	{ 'P', { eSprite::GrassTile, 1 } },
-	{ '0', { eSprite::Tile, 0 } },		//	light brown paved tile
-	{ '1', { eSprite::Tile, 1 } },		//	purple paved tile
-	{ '2', { eSprite::Tile, 2 } },		//	dark brown paved tile
-	{ '3', { eSprite::Tile, 3 } },		//	light brown unpaved tile
-	{ '4', { eSprite::Tile, 4 } },		//	purple unpaved tile
-	{ '5', { eSprite::Tile, 5 } },		//	dark brown unpaved tile
-	{ '6', { eSprite::Tile, 6 } },		//	dead grass paved tile
-	{ '7', { eSprite::Tile, 7 } },		//	snow tile
-	{ '8', { eSprite::Tile, 8 } },		//	ice tile
-	{ '9', { eSprite::Tile, 9 } },		//	lava tile
-	{ 'A', { eSprite::Tile, 10 } },		//	dead grass tile
-	{ 'B', { eSprite::Tile, 11 } },		//	dirt tile
-	{ 'C', { eSprite::Tile, 12 } },		//	grass tile
-	{ 'D', { eSprite::Tile, 13 } },		//	purple water tile
-	{ 'E', { eSprite::Tile, 14 } },		//	orange water tile
-	{ 'F', { eSprite::Tile, 15 } },		//	brick tile
+	{ '`', { eSprite::GrassTile, 0 } },
+	//{ 'W', { eSprite::GrassTile, 1 } },
+	//{ 'T', { eSprite::GrassTile, 1 } },
+	//{ 'P', { eSprite::GrassTile, 1 } },
+	{ '0', { eSprite::Tile, 0, false } },		//	light brown paved tile
+	{ '1', { eSprite::Tile, 1, false } },		//	purple paved tile
+	{ '2', { eSprite::Tile, 2, false } },		//	dark brown paved tile
+	{ '3', { eSprite::Tile, 3, false } },		//	light brown unpaved tile
+	{ '4', { eSprite::Tile, 4, false } },		//	purple unpaved tile
+	{ '5', { eSprite::Tile, 5, false } },		//	dark brown unpaved tile
+	{ '6', { eSprite::Tile, 6, false } },		//	dead grass paved tile
+	{ '7', { eSprite::Tile, 7, false } },		//	snow tile
+	{ '8', { eSprite::Tile, 8, false } },		//	ice tile
+	{ '9', { eSprite::Tile, 9, false } },		//	lava tile
+	{ 'A', { eSprite::Tile, 10, false } },		//	dead grass tile
+	{ 'B', { eSprite::Tile, 11, false } },		//	dirt tile
+	{ 'C', { eSprite::Tile, 12, false } },		//	grass tile
+	{ 'D', { eSprite::Tile, 13, false } },		//	purple water tile
+	{ 'E', { eSprite::Tile, 14, false } },		//	orange water tile
+	{ 'F', { eSprite::Tile, 15, false } },		//	brick tile
+
+	{ 'G', { eSprite::Block, 0, true } },		//	clay brick block
+	{ 'H', { eSprite::Block, 1, true } },		//	wooden block
+	{ 'I', { eSprite::Block, 2, true } },		//	stone brick block
+	{ 'J', { eSprite::Block, 3, true } },		//	red brick block
+	{ 'K', { eSprite::Block, 4, true } },		//	unpaved clay block
+	{ 'L', { eSprite::Block, 5, true } },		//	unpaved stone block
+	{ 'M', { eSprite::Block, 6, true } },		//	dirt block
+	{ 'N', { eSprite::Block, 7, true } },		//	light grass block
+	{ 'O', { eSprite::Block, 8, true } },		//	dark grass block
+	{ 'P', { eSprite::Block, 9, true } },		//	light paved road block
+	{ 'Q', { eSprite::Block, 10, true } },		//	dark paved road block
+	{ 'R', { eSprite::Block, 11, true } },		//	snow block
+	{ 'S', { eSprite::Block, 12, true } },		//	ice block
+	{ 'T', { eSprite::Block, 13, true } },		//	orange cream soda block
+	{ 'U', { eSprite::Block, 14, true } },		//	lava block
+	{ 'V', { eSprite::Block, 15, true } },		//	purple rock block
+
+	{ 'W', { eSprite::Water, 0, true } },		//	water full corner block
+	{ 'X', { eSprite::Water, 1, true } },		//	water left corner block
+	{ 'Y', { eSprite::Water, 2, true } },		//	water right corner block
+	{ 'Z', { eSprite::Water, 3, true } },		//	tall water tile
+	{ 'a', { eSprite::Water, 4, false } },		//	water full corner tile
+	{ 'b', { eSprite::Water, 5, false } },		//	water left corner tile
+	{ 'c', { eSprite::Water, 6, false } },		//	water right corner tile
+	{ 'd', { eSprite::Water, 7, false } },		//	short water tile
+
+	{ 'e', { eSprite::Lagoon, 0, true } },		//	lagoon full corner block
+	{ 'f', { eSprite::Lagoon, 1, true } },		//	lagoon left corner block
+	{ 'g', { eSprite::Lagoon, 2, true } },		//	lagoon right corner block
+	{ 'h', { eSprite::Lagoon, 3, true } },		//	tall lagoon tile
+	{ 'i', { eSprite::Lagoon, 4, false } },		//	lagoon full corner tile
+	{ 'j', { eSprite::Lagoon, 5, false } },		//	lagoon left corner tile
+	{ 'k', { eSprite::Lagoon, 6, false } },		//	lagoon right corner tile
+	{ 'l', { eSprite::Lagoon, 7, false } },		//	short lagoon tile
+
+	{ 'm', { eSprite::Fence, 0, true } },		//	north/south fence
+	{ 'n', { eSprite::Fence, 1, true } },		//	east/west fence
+	{ 'o', { eSprite::Bridge, 0, true } },		//	north/south dark bridge
+	{ 'p', { eSprite::Bridge, 1, true } },		//	east/west dark bridge
+	{ 'q', { eSprite::Bridge, 2, true } },		//	north/south light bridge
+	{ 'r', { eSprite::Bridge, 3, true } },		//	east/west light bridge
+
+	{ 's', { eSprite::Nature, 0, true } },		//	tree stump
+	{ 't', { eSprite::Nature, 1, true } },		//	tree trunk
+	{ 'u', { eSprite::Nature, 2, true } },		//	big bush
+	{ 'v', { eSprite::Nature, 3, true } },		//	cactus
+	{ 'w', { eSprite::Nature, 4, true } },		//	icicles
+	{ 'x', { eSprite::Nature, 5, true } },		//	purple spike
+	{ 'y', { eSprite::Nature, 6, false } },		//	small rock cluster
+	{ 'z', { eSprite::Nature, 7, false } },		//	small bush
+	{ '!', { eSprite::Nature, 8, true } },		//	big rock cluster
+	{ '@', { eSprite::Nature, 9, false } },		//	dead bush
+	{ '#', { eSprite::Nature, 10, true } },		//	cat tail bush
+	{ '$', { eSprite::Nature, 11, true } },		//	fire
+};
+
+static std::unordered_map<char, BlockInfo> CHAR_TO_BLOCK = {
+	{ 'B', { eSprite::Block, 0 } },		//	brick block
+	{ 'C', { eSprite::Block, 1 } },		//	crate block
+	{ 'D', { eSprite::Block, 2 } },		//	dirt block
+	{ 'G', { eSprite::Block, 3 } },		//	grass block
+	{ 'L', { eSprite::Block, 4 } },		//	lava block
+	{ 'M', { eSprite::Block, 5 } },		//	metal block
+	{ 'P', { eSprite::Block, 6 } },		//	purple block
+	{ 'S', { eSprite::Block, 7 } },		//	snow block
+	{ 'W', { eSprite::Block, 8 } },		//	wood block
 };
 
 static std::unordered_map<char*, UnitInfo> CHAR_TO_UNIT = {
