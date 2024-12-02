@@ -26,6 +26,15 @@ typedef struct Tile {
 	Vector2 pos;
 } Tile;
 
+
+/// <summary>
+///  --- TODO: variable row/column size for each layer --- ///
+/// </summary>
+typedef struct TileLayer {
+	Tile** tiles = nullptr;
+	int layerLevel = -1;
+} TileLayer;
+
 class CTileManager :
 	public CCommon,
 	public LSettings
@@ -47,6 +56,7 @@ private:
 	float mapWidth = 0.0f;
 	float mapHeight = 0.0f;
 	std::vector<Vector2> TilesInScreenSpace; ///< Tiles in screen space.
+	std::vector <TileLayer> m_vecTileLayers; ///< Tile layers.
 public:
 	CTileManager(size_t); ///< Constructor.
 	~CTileManager(); ///< Destructor.
@@ -65,10 +75,18 @@ public:
 
 	const size_t GetWidth(); ///< Get width.
 	const size_t GetHeight(); ///< Get height.
-	//static Tile* GMSpawnPoint;
+
 	Tile* GetGMSpawnPoint(); ///< Get the game master spawn point (centermost tile of first few rows).
 
 	void SetTileVisibility(bool);
+
+	/// <summary>
+	///	--- TODO: build a layer system for z-levels --- ///
+	/// </summary>
+	void AddLayer(); ///< Add a layer.
+	void LoadLayer(char*); ///< Load a layer.
+	void DrawLayer(eSprite); ///< Draw a layer.
+	void EditLayer(int layerToEdit); ///< Edit a layer.
 
 	const bool Visible(const Vector2&, const Vector2&, float) const; ///< Check visibility.
 	const bool CollideWithWall(BoundingSphere, Vector2&, float&) const; ///< Object-wall collision test.
