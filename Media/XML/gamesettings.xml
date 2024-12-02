@@ -9,7 +9,8 @@
    
 	<!--<sprite name ="pixelaebold" file="Media\Fonts\PixelAEBold.ttf" />
 	<sprite name ="pixelaeregular" file ="Media\Fonts\PixelAERegular.ttf" />-->
-    
+
+	<font file="Media\Fonts\Ticketing.spritefont"/>
 	<font file="Media\Fonts\AverageSans_24.spritefont"/>
 	<font file="Media\Fonts\PixelAEBold.ttf"/>
 	<font file="Media\Fonts\PixelAERegular.ttf"/>
@@ -18,12 +19,18 @@
    
     <sprites path="Media\Images">
 		
-	    <sprite name="tile" file="tile" ext ="png" frames="15"/>
+	    <sprite name="tile" file="tile" ext ="png" frames="16"/>
 	    <sprite name="grasstile" file="grasstile" ext ="png" frames="5"/>
 	    <sprite name="unit" file="unit" ext="png" frames="4"/>
 	    <sprite name="annoyingorange" file="annoyingorange" ext="png" frames="3"/>
 
         <sprite name="background" file="background0.jpg"/>
+		<sprite name="block" file="block" ext="png" frames="16"/>
+		<sprite name="bridge" file="bridge" ext="png" frames="4"/>
+		<sprite name="fence" file="fence" ext="png" frames="2"/>
+		<sprite name="water" file="water" ext="png" frames="8"/>
+		<sprite name="lagoon" file="lagoon" ext="png" frames="8"/>
+		
         <sprite name="player" file="player.png"/>
         <sprite name="turret" file="turret.png"/>
         <sprite name="bullet" file="bullet.png"/>

@@ -211,6 +211,12 @@ void CGame::LoadImages() {
 	m_pRenderer->Load(eSprite::Tile, "tile");
 	m_pRenderer->Load(eSprite::Unit, "unit");
 	m_pRenderer->Load(eSprite::AnnoyingOrange, "annoyingorange");
+	m_pRenderer->Load(eSprite::Block, "block");
+	m_pRenderer->Load(eSprite::Bridge, "bridge");
+	m_pRenderer->Load(eSprite::Fence, "fence");
+	m_pRenderer->Load(eSprite::Water, "water");
+	m_pRenderer->Load(eSprite::Lagoon, "lagoon");
+
 	m_pRenderer->Load(eSprite::Player, "player");
 	m_pRenderer->Load(eSprite::Bullet, "bullet");
 	m_pRenderer->Load(eSprite::Bullet2, "bullet2");
@@ -218,10 +224,6 @@ void CGame::LoadImages() {
 	m_pRenderer->Load(eSprite::Spark, "spark");
 	m_pRenderer->Load(eSprite::Background, "background");
 	m_pRenderer->Load(eSprite::Line, "greenline");
-	//m_pRenderer->Load(eFont::PixelAEBold, "pixelaebold");
-	//m_pRenderer->Load(eFont::PixelAERegular, "pixelaeregular");
-	//m_pRenderer->Load(eSprite::PixelAEBold, "pixelaebold");
-	//m_pRenderer->Load(eSprite::PixelAERegular, "pixelaeregular");
 
 	m_pRenderer->EndResourceUpload();
 } //LoadImages

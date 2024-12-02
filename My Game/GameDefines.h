@@ -32,8 +32,9 @@ enum class eFont : UINT {
 /// memory. `Size` must be last.
 
 enum class eSprite : UINT {
-	Background, Bullet, Bullet2, Player, Smoke, Tile, Spark, Line,
-	Wall, GrassTile, Unit, AnnoyingOrange,
+	Background, Bullet, Bullet2, Player, Smoke, Spark, Line,
+	Tile, GrassTile, Unit, AnnoyingOrange,
+	Block, Bridge, Fence, Water, Lagoon,
 	Size  //MUST BE LAST
 }; //eSprite
 
@@ -64,21 +65,22 @@ static std::unordered_map<char, TileInfo> CHAR_TO_TILE = {
 	{ 'W', { eSprite::GrassTile, 1 } },
 	{ 'T', { eSprite::GrassTile, 1 } },
 	{ 'P', { eSprite::GrassTile, 1 } },
-	{ '0', { eSprite::Tile, 0 } },
-	{ '1', { eSprite::Tile, 1 } },
-	{ '2', { eSprite::Tile, 2 } },
-	{ '3', { eSprite::Tile, 3 } },
-	{ '4', { eSprite::Tile, 4 } },
-	{ '5', { eSprite::Tile, 5 } },
-	{ '6', { eSprite::Tile, 6 } },
-	{ '7', { eSprite::Tile, 7 } },
-	{ '8', { eSprite::Tile, 8 } },
-	{ '9', { eSprite::Tile, 9 } },
-	{ 'A', { eSprite::Tile, 10 } },
-	{ 'B', { eSprite::Tile, 11 } },
-	{ 'C', { eSprite::Tile, 12 } },
-	{ 'D', { eSprite::Tile, 13 } },
-	{ 'E', { eSprite::Tile, 14 } },
+	{ '0', { eSprite::Tile, 0 } },		//	light brown paved tile
+	{ '1', { eSprite::Tile, 1 } },		//	purple paved tile
+	{ '2', { eSprite::Tile, 2 } },		//	dark brown paved tile
+	{ '3', { eSprite::Tile, 3 } },		//	light brown unpaved tile
+	{ '4', { eSprite::Tile, 4 } },		//	purple unpaved tile
+	{ '5', { eSprite::Tile, 5 } },		//	dark brown unpaved tile
+	{ '6', { eSprite::Tile, 6 } },		//	dead grass paved tile
+	{ '7', { eSprite::Tile, 7 } },		//	snow tile
+	{ '8', { eSprite::Tile, 8 } },		//	ice tile
+	{ '9', { eSprite::Tile, 9 } },		//	lava tile
+	{ 'A', { eSprite::Tile, 10 } },		//	dead grass tile
+	{ 'B', { eSprite::Tile, 11 } },		//	dirt tile
+	{ 'C', { eSprite::Tile, 12 } },		//	grass tile
+	{ 'D', { eSprite::Tile, 13 } },		//	purple water tile
+	{ 'E', { eSprite::Tile, 14 } },		//	orange water tile
+	{ 'F', { eSprite::Tile, 15 } },		//	brick tile
 };
 
 static std::unordered_map<char*, UnitInfo> CHAR_TO_UNIT = {
