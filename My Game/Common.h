@@ -17,6 +17,8 @@ class CPlayer;
 class Unit;
 class CUnitManager;
 class GameMaster;
+class Scene;
+class CSceneManager;
 
 /// \brief The common variables class.
 ///
@@ -47,6 +49,8 @@ protected:
 	static Unit* playerUnit; ///< Pointer to player character.
 	static Tile* playerTile; ///< Pointer to player tile.
 	static Tile* GMTile; ///< Pointer to game master tile.
+	static Scene* m_pScene; ///< Pointer to scene.
+	static CSceneManager* m_pSceneManager; ///< Pointer to scene manager.
 }; //CCommon
 
 #endif //__L4RC_GAME_COMMON_H__

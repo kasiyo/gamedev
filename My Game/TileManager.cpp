@@ -258,7 +258,7 @@ Tile* CTileManager::GetGMSpawnPoint() {
 	size_t centerX = m_nWidth / 2;
 	size_t centerY = 2;
 	Tile* t = nullptr;
-	if (GetTile(centerX - 1, 1, &t)) {
+	if (GetTile(centerX - (size_t)1, 1, &t)) {
 		return t;
 	}
 

@@ -7,10 +7,10 @@
 #include "Defines.h"
 #include <unordered_map>
 
-static const XMFLOAT4 DEFAULT_TILE_TINT = XMFLOAT4(0.8, 0.8, 0.8, 1);
-static const XMFLOAT4 HIGHLIGHT_TILE_TINT = XMFLOAT4(0.9, 1, 0.9, 1);
-static const XMFLOAT4 SELECTED_TILE_TINT = XMFLOAT4(1, 1.2, 1, 1);
-static const XMFLOAT4 DEFAULT_UNIT_TINT = XMFLOAT4(10, 1, 1, 1);
+static const XMFLOAT4 DEFAULT_TILE_TINT = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.f);
+static const XMFLOAT4 HIGHLIGHT_TILE_TINT = XMFLOAT4(0.9f, 1.f, 0.9f, 1.f);
+static const XMFLOAT4 SELECTED_TILE_TINT = XMFLOAT4(1.f, 1.2f, 1.f, 1.f);
+static const XMFLOAT4 DEFAULT_UNIT_TINT = XMFLOAT4(10.f, 1.f, 1.f, 1.f);
 
 static const float UPDATE_UNITS_IN_SECONDS = 0.5f;
 static const float UPDATE_CURRENCY_IN_SECONDS = 0.5f;
@@ -178,6 +178,7 @@ static std::unordered_map<GameMasterPhase, GMInfo> CHAR_TO_GM = {
 
 enum class eSound : UINT {
 	Start, Boom, Clang, Grunt, Gun, Ricochet,
+	BGM,
 	Size  //MUST BE LAST
 }; //eSound
 

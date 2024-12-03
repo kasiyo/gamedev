@@ -83,10 +83,10 @@ public:
 	/// <summary>
 	///	--- TODO: build a layer system for z-levels --- ///
 	/// </summary>
-	void AddLayer(); ///< Add a layer.
-	void LoadLayer(char*); ///< Load a layer.
-	void DrawLayer(eSprite); ///< Draw a layer.
-	void EditLayer(int layerToEdit); ///< Edit a layer.
+	//void AddLayer(); ///< Add a layer.
+	//void LoadLayer(char*); ///< Load a layer.
+	//void DrawLayer(eSprite); ///< Draw a layer.
+	//void EditLayer(int layerToEdit); ///< Edit a layer.
 
 	const bool Visible(const Vector2&, const Vector2&, float) const; ///< Check visibility.
 	const bool CollideWithWall(BoundingSphere, Vector2&, float&) const; ///< Object-wall collision test.

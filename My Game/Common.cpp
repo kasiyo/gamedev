@@ -21,3 +21,5 @@ Vector2 CCommon::m_vWorldSize = Vector2::Zero;
 Unit* CCommon::playerUnit = nullptr;
 Tile* CCommon::playerTile = nullptr;
 Tile* CCommon::GMTile = nullptr;
+Scene* CCommon::m_pScene = nullptr;
+CSceneManager* CCommon::m_pSceneManager = nullptr;

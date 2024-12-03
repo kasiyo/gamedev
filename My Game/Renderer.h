@@ -32,6 +32,8 @@ public:
 
 	//void LoadScreenFont(const char*);
 
+	void DrawScene(); ///< Draw the scene.
+
 private:
 	HWND currWindow;
 }; //CRenderer
