@@ -21,6 +21,7 @@ typedef struct Tile {
 	XMFLOAT4 tint = DEFAULT_TILE_TINT;
 	bool viewableByGameMaster = false;
 	bool isOccupied = false;
+	bool isWalkable = true;
 	int x;
 	int y;
 	Vector2 pos;

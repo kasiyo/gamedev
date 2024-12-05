@@ -15,6 +15,7 @@
 #include "Notification.h"
 #include "UnitManager.h"
 #include "GameMaster.h"
+#include <queue>
 
 /// \brief The game class.
 ///
@@ -52,7 +53,13 @@ private:
 	void UpdateUnits();
 	void UpdateNotifications();
 
+	void UpdatePlayerUnit();
+
 	void DrawNumFrames();
+	void ProcessPlayerInput(const WPARAM k);
+
+	std::queue<WPARAM> inputBuffer;
+	const int MAX_INPUTS_BUFFERED = 3;
 
 	void LoadImages(); ///< Load images.
 	void LoadSounds(); ///< Load sounds.
@@ -73,7 +80,8 @@ private:
 	void GameOver(); ///< Game over.
 	bool GameIsLost = false;
 	bool m_bDrawGameOver = false; ///< Player lost.
-	bool m_bPlayerGodMode = false; ///< God mode toggle.
+	bool m_bGodMode = false; ///< God mode toggle.
+	bool m_bPlayerIsMoving = false; ///< Player is moving.
 public:
 	~CGame(); ///< Destructor.
 

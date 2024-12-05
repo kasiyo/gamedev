@@ -18,7 +18,8 @@ int sound = 0;
 static size_t spriteSize = 0;
 static const float SPRITE_SCALE = 0.55f;
 
-
+static float inputTimer = 0.0f;
+static float currDelay = 0.0f;
 CGame::~CGame() {
 	delete m_pParticleEngine;
 	delete m_pObjectManager;
@@ -198,6 +199,16 @@ void CGame::UpdateNotifications() {
 	}
 }
 
+void CGame::UpdatePlayerUnit() {
+	float percentComplete = playerUnit->lerpInfo.currDuration / playerUnit->lerpInfo.maxDuration;
+	float progress_x = Math::lerp(playerUnit->lerpInfo.source.x, playerUnit->lerpInfo.target.x, percentComplete);
+	float progress_y = Math::lerp(playerUnit->lerpInfo.source.y, playerUnit->lerpInfo.target.y, percentComplete);
+
+
+}
+
+
+
 /// Load the specific images needed for this game. This is where `eSprite`
 /// values from `GameDefines.h` get tied to the names of sprite tags in
 /// `gamesettings.xml`. Those sprite tags contain the name of the corresponding
@@ -341,16 +352,16 @@ void CGame::KeyboardHandler() {
 	}
 
 	if (m_pKeyboard->TriggerDown('G')) {		// toggle god mode
-		if (m_bPlayerGodMode) {
-			m_bPlayerGodMode = false;
+		if (m_bGodMode) {
+			m_bGodMode = false;
 			if (m_pGameMaster != nullptr) {
-				m_pGameMaster->SetFriendlyMode(m_bPlayerGodMode);
+				m_pGameMaster->SetFriendlyMode(m_bGodMode);
 			}
 		}
 		else {
-			m_bPlayerGodMode = true;
+			m_bGodMode = true;
 			if (m_pGameMaster != nullptr) {
-				m_pGameMaster->SetFriendlyMode(m_bPlayerGodMode);
+				m_pGameMaster->SetFriendlyMode(m_bGodMode);
 			}
 		}
 	}
@@ -386,6 +397,7 @@ void CGame::KeyboardHandler() {
 	}
 
 	camera.MoveCamera(moveDirection * 50.f, m_pTimer->GetFrameTime());
+
 } //KeyboardHandler
 
 /// Poll the XBox controller state and respond to the controls there.
@@ -420,6 +432,87 @@ void CGame::DrawGodModeText() {
 	m_pRenderer->DrawScreenText("God Mode", pos); //draw to screen
 } //DrawGodModeText
 
+void CGame::ProcessPlayerInput(const WPARAM k) {
+	if (currDelay <= 0.0f) {
+		int dest_x = playerUnit->tile->x;		// destination coordinates start at player's current position
+		int dest_y = playerUnit->tile->y;
+
+		Tile* destTile = nullptr;		// destination tile to navigate to + update playerTile to
+		printf("processing player input\n");
+
+		switch (k) {
+		case VK_LEFT: {		// move left one tile
+			dest_x -= 1;
+			break;
+		}
+		case VK_RIGHT: {	// move right one tile
+			dest_x += 1;
+			break;
+		}
+		case VK_UP: {		// move up one tile
+			dest_y += 1;
+			break;
+		}
+		case VK_DOWN: {		// move down one tile
+			dest_y -= 1;
+			break;
+		}
+					/*default: {
+						// invalid key; print out an error message/play incorrect buzzer sound?
+						break;
+
+		}	// switch*/
+		}
+		/*if (m_pKeyboard->Down(VK_LEFT)) {
+			dest_x -= 1;
+		}
+		if (m_pKeyboard->Down(VK_RIGHT)) {
+			dest_x += 1;
+		}
+		if (m_pKeyboard->Down(VK_UP)) {
+			dest_y += 1;
+		}
+		if (m_pKeyboard->Down(VK_DOWN)) {
+			dest_y -= 1;
+		}
+*/
+		printf("playerUnit->tile->x: %d playerUnit->tile->y: %d\n", playerUnit->tile->x, playerUnit->tile->y);
+		printf("dest_x: %d dest_y: %d\n", dest_x, dest_y);
+
+
+		/// --- moves the player unit --- ///
+
+		if (m_pTileManager->GetTile(dest_x, dest_y, &destTile)) {
+			if (destTile->isWalkable) {
+				if (destTile->viewableByGameMaster) {
+					if (!m_bGodMode) {		//game over
+						m_bDrawGameOver = true;
+						m_pUnitManager->m_vecUnits.clear();
+					}	// if not in god mode
+					else {
+						printf("currDelay: %f\n", currDelay);
+						playerUnit->is_stationary = false;
+
+						playerUnit->moveTo(destTile->pos, currDelay);
+						playerUnit->tile = destTile;
+					}	// else in god mode
+
+				}	// if viewable by game master
+				else {
+					printf("currDelay: %f\n", currDelay);
+					playerUnit->is_stationary = false;	// player unit is moving
+					playerUnit->moveTo(destTile->pos, currDelay);
+					playerUnit->tile = destTile;
+				}	// else not viewable by game master
+
+			}	// if walkable
+		}	// if valid destination tile
+		printf("currDelay: %f\n", currDelay);
+		currDelay = WALK_DURATION;
+	}
+}
+
+
 /// Ask the object manager to draw the game objects. The renderer is notified of
 /// the start and end of the frame so that it can let Direct3D do its
 /// pipelining jiggery-pokery.
@@ -452,7 +545,7 @@ void CGame::RenderFrame() {
 	if (m_bDrawFrameRate)DrawFrameRateText(); //draw frame rate, if required
 	if (m_bGodMode)DrawGodModeText(); //draw god mode text, if required
 
-	DrawNumFrames(); //draw frame number
+	//DrawNumFrames(); //draw frame number
 
 	//draw notifications
 	for (int i = 0; i < notifications.size(); i++) {
@@ -465,7 +558,6 @@ void CGame::RenderFrame() {
 		Vector2 currentPos = Math::lerp(startPos, endPos, progress);
 		float alpha = Math::lerp(1.0f, 0.0f, progress);
 
-
 		m_pRenderer->DrawScreenText(
 			notif.text.c_str(),
 			currentPos,
@@ -473,9 +565,8 @@ void CGame::RenderFrame() {
 		);
 	}
 
-	if (GameIsLost == true) {
-		m_bDrawGameOver = true;
-	}
+	// draw player unit
+
 	if (m_bDrawGameOver) {
 		m_pRenderer->DrawGameOver();
 	}
@@ -499,10 +590,6 @@ void CGame::FollowCamera() {
 /// Move the game objects. Render a frame of animation. 
 
 static float accumulatorOfTime = 0.0f;
-static float deltaTime = 0.0f;
-static float inputTimer = 0.0f;
-static float currDelay = 0.0f;
-
 
 void CGame::ProcessFrame() {
 	KeyboardHandler(); //handle keyboard input
@@ -513,7 +600,6 @@ void CGame::ProcessFrame() {
 		frameCount++;
 		FollowCamera(); //make camera follow player
 		m_pObjectManager->move(); //move all objects
-
 		m_pParticleEngine->step(); //advance particle animation
 
 		accumulatorOfTime += m_pTimer->GetFrameTime();
@@ -530,171 +616,77 @@ void CGame::ProcessFrame() {
 			accumulatorOfTime -= 1.0f / 60.0f;
 		}
 
-		/// --- moves the player unit --- ///
-		Tile* dirTile = nullptr;
-
+		/// --- process player input --- ///
 		currDelay = currDelay - m_pTimer->GetFrameTime();
 		currDelay = (std::max)(currDelay, 0.0f);
+		if (playerUnit != nullptr) {
+			printf("playerUnit created at playerUnit->tile->x: %d playerUnit->tile->y: %d\n", playerUnit->tile->x, playerUnit->tile->y);
+			/*if (currDelay <= 0.f && !inputBuffer.empty()) {
 
-		if (!m_pUnitManager->m_vecUnits.empty()) {
-			playerUnit = m_pUnitManager->m_vecUnits[0];
-
-			if (currDelay <= 0.f) {
-				if (m_pKeyboard->Down(VK_RIGHT)) {
-					inputTimer += m_pTimer->GetTime();
-
-					//if (m_pTileManager->GetTile((int)playerUnit->x, (int)playerUnit->y, &playerTile)) {
-						// move right one tile
-					if (m_pTileManager->GetTile((int)playerUnit->x + 1, (int)playerUnit->y, &dirTile)) {
-						//playerTile->tint = DEFAULT_TILE_TINT;
-						if (dirTile->viewableByGameMaster && m_pGameMaster->FriendlyMode != true) {
-							m_bDrawGameOver = true;
-							GameIsLost = true;
-							m_pUnitManager->m_vecUnits.clear();
-						}
-						else {
-							playerUnit->x += 1;
-							const Vector2 newPos = dirTile->pos;
-							const Vector2 newPos2 = (dirTile->pos) / 2.0f;
-							const Vector2 newPos3 = Vector2((int)dirTile->x, (int)dirTile->y);
-
-							playerUnit->m_nCurrentFrame = 1;
-							playerUnit->desc.m_nCurrentFrame = 1;
-							//m_pUnitManager->MoveUnit(newPos, m_pTimer->GetTime());
-							printf("startPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
-
-							if (inputTimer > (1.0f / 60.0f) * 0.25f) {
-								playerUnit->moveTo(newPos, m_pTimer->GetFrameTime());
-								inputTimer = 0.0f;
-							}
-							//playerUnit->moveTo(newPos, m_pTimer->GetFrameTime());
-							playerUnit->x = dirTile->x;
-							playerUnit->y = dirTile->y;
-							//playerUnit->desc.m_vPos = newPos;
-							printf("endPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
-
-
-						}
-					}
-
-					//}
-				}
-				if (m_pKeyboard->Down(VK_LEFT)) {
-					const float TimeKeyPressed = m_pTimer->GetFrameTime();
-					inputTimer += m_pTimer->GetTime();
-
-					//if (m_pTileManager->GetTile((int)playerUnit->x, (int)playerUnit->y, &playerTile)) {
-						// move left one tile
-					if (m_pTileManager->GetTile((int)playerUnit->x - 1, (int)playerUnit->y, &dirTile)) {
-						//playerTile->tint = DEFAULT_TILE_TINT;
-						if (dirTile->viewableByGameMaster && m_bPlayerGodMode == false && m_pGameMaster->FriendlyMode != true) {
-							//game over
-
-							m_bDrawGameOver = true;
-							//m_eGameState = eGameState::GameOver;
-							m_pUnitManager->m_vecUnits.clear();
-
-							GameIsLost = true;
-						}
-						else {
-							playerUnit->x -= 1;
-							const Vector2 newPos = dirTile->pos;
-							const Vector2 newPos2 = (dirTile->pos) / 2;
-
-							playerUnit->m_nCurrentFrame = 3;
-							playerUnit->desc.m_nCurrentFrame = 3;
-							printf("startPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
-							if (inputTimer > (1.0f / 60.0f) * 0.25f) {
-								playerUnit->moveTo(newPos, m_pTimer->GetFrameTime());
-								inputTimer = 0.0f;
-							}
-							//playerUnit->moveTo(newPos, m_pTimer->GetFrameTime());
-							printf("endPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
-
-
-						}
-					}
-
-					//}
-				}
-				if (m_pKeyboard->Down(VK_UP)) {
-					const float TimeKeyPressed = m_pTimer->GetFrameTime();
-					inputTimer += m_pTimer->GetTime();
-
-					//if (m_pTileManager->GetTile((int)playerUnit->x, (int)playerUnit->y, &playerTile)) {
-						// move up one tile
-					if (m_pTileManager->GetTile((int)playerUnit->x, (int)playerUnit->y - 1, &dirTile)) {
-						//playerTile->tint = DEFAULT_TILE_TINT;
-						if (dirTile->viewableByGameMaster && m_bPlayerGodMode == false && m_pGameMaster->FriendlyMode != true) {
-							//game over
-
-							//m_eGameState = eGameState::GameOver;
-							m_bDrawGameOver = true;
-							m_pUnitManager->m_vecUnits.clear();
-
-							GameIsLost = true;
-						}
-						else {
-							playerUnit->y -= 1;
-							const Vector2 newPos = dirTile->pos;
-							const Vector2 newPos2 = (dirTile->pos) / 2;
-
-							playerUnit->m_nCurrentFrame = 2;
-							playerUnit->desc.m_nCurrentFrame = 2;
-							printf("startPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
-							if (inputTimer > (1.0f / 60.0f) * 0.25f) {
-								playerUnit->moveTo(newPos, m_pTimer->GetFrameTime());
-								inputTimer = 0.0f;
-							}
-							//playerUnit->moveTo(newPos, m_pTimer->GetFrameTime());
-							printf("endPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
-
-
-						}
-					}
-
-					//}
-				}
-				if (m_pKeyboard->Down(VK_DOWN)) {
-					const float TimeKeyPressed = m_pTimer->GetFrameTime();
-
-					inputTimer += m_pTimer->GetTime();
-					//if (m_pTileManager->GetTile((int)playerUnit->x, (int)playerUnit->y, &playerTile)) {
-						// move down one tile
-					if (m_pTileManager->GetTile((int)playerUnit->x, (int)playerUnit->y + 1, &dirTile)) {
-						//playerTile->tint = DEFAULT_TILE_TINT;
-						if (dirTile->viewableByGameMaster && m_bPlayerGodMode == false && m_pGameMaster->FriendlyMode != true) {
-							//game over
-
-							//m_eGameState = eGameState::GameOver;
-
-							m_bDrawGameOver = true;
-							m_pUnitManager->m_vecUnits.clear();
-							GameIsLost = true;
-						}
-						else {
-							playerUnit->y += 1;
-							const Vector2 newPos = dirTile->pos;
-							const Vector2 newPos2 = (dirTile->pos) / 2;
-
-
-							playerUnit->m_nCurrentFrame = 0;
-							playerUnit->desc.m_nCurrentFrame = 0;
-							printf("startPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
-							if (inputTimer > (1.0f / 60.0f) * 0.25f) {
-								playerUnit->moveTo(newPos, m_pTimer->GetFrameTime());
-								inputTimer = 0.0f;
-							}
-							//playerUnit->moveTo(newPos, m_pTimer->GetFrameTime());
-							printf("endPos: %f %f\n", playerUnit->desc.m_vPos.x, playerUnit->desc.m_vPos.y);
-
-
-						}
-					}
-					inputTimer += m_pTimer->GetTime();
-					//}
-				}
+				const WPARAM k = inputBuffer.front();
+				ProcessPlayerInput(k);
+				inputBuffer.pop();
+				currDelay = WALK_DURATION;
+				printf("inputBuffer.size(): %d > 0\n", inputBuffer.size());
 			}
+			else if (inputBuffer.size() < MAX_INPUTS_BUFFERED) {
+				printf("inputBuffer.size(): %d < MAX_INPUTS_BUFFERED\n", inputBuffer.size());
+				if (m_pKeyboard->Down(VK_LEFT)) {		// move left one tile
+					inputBuffer.push(VK_LEFT);
+				}
+				else if (m_pKeyboard->Down(VK_RIGHT)) {	// move right one tile
+					inputBuffer.push(VK_RIGHT);
+				}
+				else if (m_pKeyboard->Down(VK_UP)) {		// move up one tile
+					inputBuffer.push(VK_UP);
+				}
+				else if (m_pKeyboard->Down(VK_DOWN)) {		// move down one tile
+					inputBuffer.push(VK_DOWN);
+				}
+			}	// else if inputBuffer.size() < MAX_INPUTS_BUFFERED*/
+			int dest_x = playerUnit->tile->x;		// destination coordinates start at player's current position
+			int dest_y = playerUnit->tile->y;
+
+			Tile* destTile = nullptr;		// destination tile to navigate to + update playerTile to
+
+			if (m_pKeyboard->Down(VK_LEFT)) {
+				dest_x -= 1;
+			}
+			if (m_pKeyboard->Down(VK_RIGHT)) {
+				dest_x += 1;
+			}
+			if (m_pKeyboard->Down(VK_UP)) {
+				dest_y += 1;
+			}
+			if (m_pKeyboard->Down(VK_DOWN)) {
+				dest_y -= 1;
+			}
+
+			if (m_pTileManager->GetTile(dest_x, dest_y, &destTile)) {
+				if (destTile->isWalkable) {
+					if (destTile->viewableByGameMaster) {
+						if (!m_bGodMode) {		//game over
+							m_bDrawGameOver = true;
+							m_pUnitManager->m_vecUnits.clear();
+						}	// if not in god mode
+						else {
+							printf("currDelay: %f\n", currDelay);
+							playerUnit->is_stationary = false;
+
+							playerUnit->moveTo(destTile->pos, m_pTimer->GetFrameTime());
+							playerUnit->tile = destTile;
+						}	// else in god mode
+
+					}	// if viewable by game master
+					else {
+						printf("currDelay: %f\n", currDelay);
+						playerUnit->is_stationary = false;	// player unit is moving
+						playerUnit->moveTo(destTile->pos, m_pTimer->GetFrameTime());
+						playerUnit->tile = destTile;
+					}	// else not viewable by game master
+
+				}	// if walkable
+			}	// if valid destination tile
 
 			int nextPhaseNum = Math::RandomizePhase(2, accumulatorOfTime);
 
@@ -703,12 +695,16 @@ void CGame::ProcessFrame() {
 			}
 			else {
 				m_pGameMaster->desc.m_nCurrentFrame = m_pGameMaster->m_nCurrentFrame;
-			}
+			}	// else
+		}	// if unit manager is not empty
+		else {
+			printf("playerUnit is nullptr\n");
+			// draw frame that says select a tile to spawn a unit
+		}	// else
 
-		}
 		//update notifications
 		UpdateNotifications();
-		});
+		});		// m_pTimer->Tick
 	if (m_bDrawGameOver) {
 		if (m_pKeyboard->TriggerDown(VK_RETURN)) {
 			BeginGame();

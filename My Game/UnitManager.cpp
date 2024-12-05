@@ -30,10 +30,10 @@ void CUnitManager::AddUnit(struct Tile* t) {
 	unit->x = t->x;
 	unit->y = t->y;
 	unit->m_pTimer->GetFrameTime();
+	unit->tile = t;
 	m_vecUnits.push_back(unit);
 
 	playerUnit = unit;
-	playerTile = t;
 }
 
 void CUnitManager::EditUnit(Unit u) {

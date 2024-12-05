@@ -20,6 +20,8 @@ static const int CURRENCY_MAX = 100;
 
 static const float NOTIFICATION_DURATION = 1.0f;
 
+static const float WALK_DURATION = 0.5f;
+
 enum class eFont : UINT {
 	Normal, Large, Small, Title, Notification,
 	Size  //MUST BE LAST
@@ -64,7 +66,12 @@ struct GMInfo {
 	GameMasterPhase currentPhase;
 };
 
-
+struct LerpInfo {
+	Vector2 source;
+	Vector2 target;
+	float currDuration;
+	float maxDuration;
+};
 
 
 static std::unordered_map<char, TileInfo> CHAR_TO_TILE = {

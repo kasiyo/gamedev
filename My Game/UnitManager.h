@@ -18,6 +18,8 @@ public:
 	int health;
 	int damage;
 	int cost;
+	bool is_stationary = true;
+	Tile* tile = nullptr;
 
 	int x;
 	int y;
@@ -42,45 +44,42 @@ public:
 	float unitSpeed = 1.0f;
 	Vector2 currentAcceleration;
 
+	LerpInfo lerpInfo{
+		Vector2(0.0f, 0.0f),		// starting position
+		Vector2(0.0f, 0.0f),		// target position
+		0.0f,		// current duration in ms
+		(200.0f)	// max duration in ms
+	};
+
+
 	void move() {
 		// Move the unit.
 
 		const float delta = m_pTimer->GetFrameTime();
-		Vector2 currPos = Vector2(x, y);
-		Vector2 moveDirection = Vector2(0.0f, 0.0f);
-		Vector2 upVector = Vector2(0.0f, -1.0f);
-		Vector2 downVector = Vector2(0.0f, 1.0f);
-		Vector2 leftVector = Vector2(-1.0f, 0.0f);
-		Vector2 rightVector = Vector2(1.0f, 0.0f);
+
+		int dest_x = this->x;	// start at current tile position
+		int dest_y = this->y;	// start at current tile position
+
 		if (m_pKeyboard->Down(VK_LEFT)) {
-			moveDirection += leftVector;
+			dest_x -= 1;
 		}
 		if (m_pKeyboard->Down(VK_RIGHT)) {
-			moveDirection += rightVector;
+			dest_x += 1;
 		}
 		if (m_pKeyboard->Down(VK_UP)) {
-			moveDirection += upVector;
+			dest_y += 1;
 		}
 		if (m_pKeyboard->Down(VK_DOWN)) {
-			moveDirection += downVector;
+			dest_y -= 1;
 		}
-		Vector2 offset = -(moveDirection - currPos);
+
 
 		Tile* destTile = nullptr;
 
-		while (offset.x != 0.0f || offset.y != 0.0f) {
-			//moveTo(Vector2(x + offset.x, y + offset.y), delta);
-			float amount = delta * unitSpeed;
-			float deltaOffset = sqrt(offset.x * offset.x + offset.y * offset.y);
-			float total = (std::min)(amount, deltaOffset);
-			//offset.x = offset.x - (total * offset.x / deltaOffset);
-			//offset.y = offset.y - (total * offset.y / deltaOffset);
-			--offset.x;
-			--offset.y;
-			desc.m_vPos.x += offset.x;
-			desc.m_vPos.y += offset.y;
-		}
+		float currTime = m_pTimer->GetFrameTime();
 
+		float percentComplete = lerpInfo.currDuration / lerpInfo.maxDuration;
+		//float currProgress = Math::lerp(lerpInfo.source, lerpInfo.target, percentComplete);
 
 	};
 
@@ -101,46 +100,38 @@ public:
 
 	void moveTo(const Vector2 endPos, float deltaTime) {
 		// Move the unit to the tile.
-
-		float endTime = moveDuration + deltaTime;
-		float currTime = deltaTime; //
-
-		float movesToGo = 0.0f;
-		float amount = deltaTime * unitSpeed;
+		lerpInfo.source = desc.m_vPos;
+		lerpInfo.target = endPos;
 
 
-		//Vector2 offset(desc.m_vPos.x - endPos.x, desc.m_vPos.y - endPos.y);
-		printf("currPos (x, y) : %f, %f\n", desc.m_vPos.x, desc.m_vPos.y);
-		Vector2 offset = -(endPos - desc.m_vPos);
-		printf("offset (x, y) : %f, %f\n", offset.x, offset.y);
+
+		playerUnit->lerpInfo.currDuration += WALK_DURATION;
+
 		float progress = 1.0f - (float)pow(deltaTime, 0.1);
 		//float progress = currTime / moveDuration;
 		printf("deltaTime: %f\n", deltaTime);
-
-		printf("currTime: %f\n", currTime);
-		printf("endTime: %f\n", endTime);
 
 		float velocityX = Math::SmoothDamp(currentVelocity.x, endPos.x / 2, &currentAcceleration.x, smoothTime, maxSpeed, progress);
 		float velocityY = Math::SmoothDamp(currentVelocity.x, endPos.y / 2, &currentAcceleration.y, smoothTime, maxSpeed, progress);
 		currentVelocity = Vector2(velocityX, velocityY);
 
 		//desc.m_vPos += currentVelocity/* * deltaTime*/;
+		float percentComplete = playerUnit->lerpInfo.currDuration / playerUnit->lerpInfo.maxDuration;
 
-		printf("m_pTimer->m_nDelta: %f\n", m_pTimer->GetFrameTime());
-		int framesUntilCompletion = 0;
+		printf("playerUnit->lerpInfo.currDuration: %f\n", playerUnit->lerpInfo.currDuration);
+		printf("playerUnit->lerpInfo.maxDuration: %f\n", playerUnit->lerpInfo.maxDuration);
 
-		/*while (framesUntilCompletion < 2) {
-			++framesUntilCompletion;
-			desc.m_vPos.x = Math::lerp(desc.m_vPos.x, endPos.x, 1.0f - (float)framesUntilCompletion / 60.0f);
-			desc.m_vPos.y = Math::lerp(desc.m_vPos.y, endPos.y + 20.f, 1.0f - (float)framesUntilCompletion / 60.0f);
-			offset.x += progress;
-			offset.y += progress;
-			progress += deltaTime;
-			++framesUntilCompletion;
-		}*/
+		printf("percentComplete: %f\n", percentComplete);
 
-		desc.m_vPos.x = Math::lerp(desc.m_vPos.x, endPos.x, 1.0f - deltaTime);
-		desc.m_vPos.y = Math::lerp(desc.m_vPos.y, endPos.y + 20.0f, 1.0f - deltaTime);
+
+		//desc.m_vPos.x = Math::lerp(desc.m_vPos.x, endPos.x, 1.0f - deltaTime);
+		//desc.m_vPos.y = Math::lerp(desc.m_vPos.y, endPos.y + 20.0f, 1.0f - deltaTime);
+
+
+		desc.m_vPos.x = Math::lerp(desc.m_vPos.x, endPos.x, percentComplete);
+		desc.m_vPos.y = Math::lerp(desc.m_vPos.y, endPos.y, percentComplete);
+
+		playerUnit->lerpInfo.currDuration += deltaTime;
 	};
 };
 
