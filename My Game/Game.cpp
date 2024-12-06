@@ -499,6 +499,7 @@ void CGame::ProcessPlayerInput(const WPARAM k) {
 					playerUnit->moveTo(destTile->pos, m_pTimer->GetFrameTime());
 					//m_pUnitManager->MoveUnit(destTile);
 					playerUnit->tile = destTile;
+
 				}	// else in god mode
 
 			}	// if viewable by game master
@@ -509,14 +510,16 @@ void CGame::ProcessPlayerInput(const WPARAM k) {
 				printf("frame time: %f\n", m_pTimer->GetFrameTime());
 				playerUnit->lerpInfo.currDuration = 0;
 				playerUnit->moveTo(destTile->pos, m_pTimer->GetFrameTime());
-				//m_pUnitManager->MoveUnit(destTile);
+
 				playerUnit->tile = destTile;
+
 			}	// else not viewable by game master
 
 		}	// if walkable
 	}	// if valid destination tile
 	printf("currDelay: %f\n", currDelay);
 	currDelay = WALK_DURATION;
+
 }
 
 /// Process the player's input and update the game state.
@@ -532,6 +535,7 @@ void CGame::DetectPlayerInput() {
 			printf("; now processing\n");
 			ProcessPlayerInput(VK_LEFT);
 			currDelay = WALK_DURATION;
+
 		}
 		else if (inputBuffer.size() < MAX_INPUTS_BUFFERED) {
 			printf("; now buffering\n");
@@ -574,6 +578,7 @@ void CGame::DetectPlayerInput() {
 			inputBuffer.push(VK_DOWN);
 		}
 	}
+	playerUnit->update();
 }
 
 /// Ask the object manager to draw the game objects. The renderer is notified of
@@ -696,7 +701,6 @@ void CGame::ProcessFrame() {
 		currDelay = (std::max)(currDelay, 0.0f);
 		if (playerUnit != nullptr) {
 
-
 			if (currDelay <= 0.0f && !inputBuffer.empty()) {
 				printf("currDuration: %f\n", playerUnit->lerpInfo.currDuration);
 				printf("currDelay: %f\n", currDelay);
@@ -704,8 +708,10 @@ void CGame::ProcessFrame() {
 				ProcessPlayerInput(inputBuffer.front());
 				printf("processing inputBuffer.front: %p\n", inputBuffer.front());
 				inputBuffer.pop();
+
 			}
 			DetectPlayerInput();
+
 			printf("currDuration after detecting player input: %f\n", playerUnit->lerpInfo.currDuration);
 			printf("currDelay after detecting player input: %f\n", currDelay);
 			printf("frame time after detecting player input: %f\n", m_pTimer->GetFrameTime());
@@ -718,7 +724,7 @@ void CGame::ProcessFrame() {
 				}
 			}*/
 			//UpdatePlayerUnit();
-			playerUnit->update();
+			//playerUnit->update();
 		}
 
 		//update notifications

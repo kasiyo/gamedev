@@ -48,7 +48,7 @@ public:
 		Vector2(0.0f, 0.0f),		// starting position
 		Vector2(0.0f, 0.0f),		// target position
 		0.0f,		// current duration in ms
-		(100.0f)	// max duration in ms
+		(0.1f)	// max duration in ms
 	};
 
 
@@ -99,22 +99,26 @@ public:
 
 		//desc.m_vPos.x = Math::lerp(desc.m_vPos.x, endPos.x, 1.0f - deltaTime);
 		//desc.m_vPos.y = Math::lerp(desc.m_vPos.y, endPos.y + 20.0f, 1.0f - deltaTime);
-
+		lerpInfo.target = endPos;
 
 		desc.m_vPos.x = Math::lerp(desc.m_vPos.x, endPos.x, percentComplete);
-		desc.m_vPos.y = Math::lerp(desc.m_vPos.y, endPos.y + 20.f, percentComplete);
+		desc.m_vPos.y = Math::lerp(desc.m_vPos.y, endPos.y, percentComplete);
 	};
 
 	void update() {
 		if (!is_stationary) {
 			lerpInfo.currDuration += m_pTimer->GetFrameTime();
-			float percentComplete = (std::min)(lerpInfo.currDuration / lerpInfo.maxDuration, 1.0f);
-			desc.m_vPos = Math::lerp(desc.m_vPos, lerpInfo.target, percentComplete);
-
 			if (lerpInfo.currDuration >= lerpInfo.maxDuration) {
 				lerpInfo.currDuration = 0.0f;
+				desc.m_vPos = lerpInfo.target;
 				is_stationary = true;
 			}
+			float percentComplete = (std::min)(lerpInfo.currDuration / lerpInfo.maxDuration, 1.0f);
+			//desc.m_vPos = Math::lerp(desc.m_vPos, lerpInfo.target, percentComplete);
+			desc.m_vPos.x = Math::lerp(desc.m_vPos.x, lerpInfo.target.x, percentComplete);
+			desc.m_vPos.y = Math::lerp(desc.m_vPos.y, lerpInfo.target.y + 20.0f, percentComplete);
+			//lerpInfo.currDuration += m_pTimer->GetFrameTime();
+
 		}
 	};
 };
