@@ -57,6 +57,7 @@ private:
 
 	void DrawNumFrames();
 	void ProcessPlayerInput(const WPARAM k);
+	void DetectPlayerInput();
 
 	std::queue<WPARAM> inputBuffer;
 	const int MAX_INPUTS_BUFFERED = 3;
@@ -78,10 +79,11 @@ private:
 	//TileMap tileMap; ///< The tile map.
 
 	void GameOver(); ///< Game over.
-	bool GameIsLost = false;
+
 	bool m_bDrawGameOver = false; ///< Player lost.
 	bool m_bGodMode = false; ///< God mode toggle.
 	bool m_bPlayerIsMoving = false; ///< Player is moving.
+
 public:
 	~CGame(); ///< Destructor.
 

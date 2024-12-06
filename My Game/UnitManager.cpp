@@ -90,23 +90,35 @@ void CUnitManager::UpdateUnits() {
 	}
 }
 
-void CUnitManager::MoveUnit(Vector2 moveDirection, float deltaTime) {
+void CUnitManager::MoveUnit(Tile* destTile) {
 	for (int i = 0; i < m_vecUnits.size(); i++) {
 		//if (m_vecUnits[i].x == x && m_vecUnits[i].y == y) {
 		//	m_vecUnits[i].x = newX;
 		//	m_vecUnits[i].y = newY;
 		//}
 	}
-	float startTime = deltaTime;
-	float endTime = startTime + 2.0f;
-	float smoothTime = 1.0f;
-	float progress = (startTime - deltaTime) / (endTime - startTime);
-	float maxSpeed = 50.0f;
-	//float velocityX = Math::SmoothDamp(playerUnit->currentVelocity.x, moveDirection.x, &playerUnit->currentAcceleration.x, smoothTime, maxSpeed, deltaTime);
-	//float velocityY = Math::SmoothDamp(playerUnit->currentVelocity.y, moveDirection.y, &playerUnit->currentAcceleration.y, smoothTime, maxSpeed, deltaTime);
-	//playerUnit->currentVelocity = Vector2(velocityX, velocityY);
-	Vector2 currentPos = Math::lerp(playerUnit->m_vPos, moveDirection, progress);
-	playerUnit->m_vPos = currentPos;
+
+	//Vector2 currentPos = Math::lerp(playerUnit->m_vPos, moveDirection, progress);
+
+	//playerUnit->m_vPos = currentPos;
+
+	//playerUnit->m_vPos = currentPos;
+	Vector2 endPos = destTile->pos;
+	endPos.y += 20.0f;	// for offset
+
+
+
+	if (!playerUnit->is_stationary) {
+		playerUnit->lerpInfo.currDuration += m_pTimer->GetFrameTime();
+		float percentComplete = (std::min)(playerUnit->lerpInfo.currDuration / playerUnit->lerpInfo.maxDuration, 1.0f);
+		playerUnit->desc.m_vPos = Math::lerp(playerUnit->desc.m_vPos, endPos, percentComplete);
+
+		if (playerUnit->lerpInfo.currDuration >= playerUnit->lerpInfo.maxDuration) {
+
+			playerUnit->lerpInfo.currDuration = 0.0f;
+			playerUnit->is_stationary = true;
+		}
+	}
 }
 
 void CUnitManager::AttackUnit(int x, int y, int targetX, int targetY) {

@@ -25,7 +25,7 @@ CGame::~CGame() {
 	delete m_pObjectManager;
 	delete m_pUnitManager;
 	delete m_pTileManager;
-
+	delete m_pGameMaster;
 } //destructor
 
 /// Initialize the renderer, the tile manager and the object manager, load 
@@ -138,6 +138,7 @@ void CGame::SelectTile() {
 			if (!selectedTile->isOccupied) {    // if tile is NOT occupied
 				selectedTile->isOccupied = true;
 				m_pUnitManager->AddUnit(selectedTile);
+				printf("playerUnit created at playerUnit->tile->x: %d playerUnit->tile->y: %d\n", playerUnit->tile->x, playerUnit->tile->y);
 			}
 			tiles.push_back(selectedTile);
 
@@ -200,10 +201,22 @@ void CGame::UpdateNotifications() {
 }
 
 void CGame::UpdatePlayerUnit() {
-	float percentComplete = playerUnit->lerpInfo.currDuration / playerUnit->lerpInfo.maxDuration;
+	/*float percentComplete = playerUnit->lerpInfo.currDuration / playerUnit->lerpInfo.maxDuration;
 	float progress_x = Math::lerp(playerUnit->lerpInfo.source.x, playerUnit->lerpInfo.target.x, percentComplete);
 	float progress_y = Math::lerp(playerUnit->lerpInfo.source.y, playerUnit->lerpInfo.target.y, percentComplete);
 
+	playerUnit->desc.m_vPos = Vector2(progress_x, progress_y);*/
+	if (!playerUnit->is_stationary) {
+		playerUnit->lerpInfo.currDuration += m_pTimer->GetFrameTime();
+		float percentComplete = (std::min)(playerUnit->lerpInfo.currDuration / playerUnit->lerpInfo.maxDuration, 1.0f);
+		playerUnit->desc.m_vPos = Math::lerp(playerUnit->desc.m_vPos, playerUnit->lerpInfo.target, percentComplete);
+
+		if (playerUnit->lerpInfo.currDuration >= playerUnit->lerpInfo.maxDuration) {
+
+			playerUnit->lerpInfo.currDuration = 0.0f;
+			playerUnit->is_stationary = true;
+		}
+	}
 
 }
 
@@ -433,85 +446,135 @@ void CGame::DrawGodModeText() {
 } //DrawGodModeText
 
 void CGame::ProcessPlayerInput(const WPARAM k) {
-	if (currDelay <= 0.0f) {
-		int dest_x = playerUnit->tile->x;		// destination coordinates start at player's current position
-		int dest_y = playerUnit->tile->y;
+	int dest_x = playerUnit->tile->x;		// destination coordinates start at player's current position
+	int dest_y = playerUnit->tile->y;
 
-		Tile* destTile = nullptr;		// destination tile to navigate to + update playerTile to
-		printf("processing player input\n");
+	Tile* destTile = nullptr;		// destination tile to navigate to + update playerTile to
+	printf("processing player input\n");
 
-		switch (k) {
+	switch (k) {
 		case VK_LEFT: {		// move left one tile
+			printf("processing left key\n");
 			dest_x -= 1;
 			break;
 		}
 		case VK_RIGHT: {	// move right one tile
+			printf("processing right key\n");
 			dest_x += 1;
 			break;
 		}
 		case VK_UP: {		// move up one tile
-			dest_y += 1;
+			printf("processing up key\n");
+			dest_y -= 1;
 			break;
 		}
 		case VK_DOWN: {		// move down one tile
-			dest_y -= 1;
+			printf("processing down key\n");
+			dest_y += 1;
 			break;
 		}
-					/*default: {
-						// invalid key; print out an error message/play incorrect buzzer sound?
-						break;
+	}	// switch
 
-		}	// switch*/
-		}
-		/*if (m_pKeyboard->Down(VK_LEFT)) {
-			dest_x -= 1;
-		}
-		if (m_pKeyboard->Down(VK_RIGHT)) {
-			dest_x += 1;
-		}
-		if (m_pKeyboard->Down(VK_UP)) {
-			dest_y += 1;
-		}
-		if (m_pKeyboard->Down(VK_DOWN)) {
-			dest_y -= 1;
-		}
-*/
-		printf("playerUnit->tile->x: %d playerUnit->tile->y: %d\n", playerUnit->tile->x, playerUnit->tile->y);
-		printf("dest_x: %d dest_y: %d\n", dest_x, dest_y);
+	printf("playerUnit->tile->x: %d playerUnit->tile->y: %d\n", playerUnit->tile->x, playerUnit->tile->y);
+	printf("dest_x: %d dest_y: %d\n", dest_x, dest_y);
 
+	/// --- moves the player unit --- ///
+	playerUnit->is_stationary = false;
+	playerUnit->lerpInfo.source = playerUnit->desc.m_vPos;
 
-		/// --- moves the player unit --- ///
+	if (m_pTileManager->GetTile(dest_x, dest_y, &destTile)) {
 
-		if (m_pTileManager->GetTile(dest_x, dest_y, &destTile)) {
-			if (destTile->isWalkable) {
-				if (destTile->viewableByGameMaster) {
-					if (!m_bGodMode) {		//game over
-						m_bDrawGameOver = true;
-						m_pUnitManager->m_vecUnits.clear();
-					}	// if not in god mode
-					else {
-						printf("currDelay: %f\n", currDelay);
-						playerUnit->is_stationary = false;
-
-						playerUnit->moveTo(destTile->pos, currDelay);
-						playerUnit->tile = destTile;
-					}	// else in god mode
-
-				}	// if viewable by game master
+		if (destTile->isWalkable) {
+			playerUnit->lerpInfo.target = destTile->pos;
+			if (destTile->viewableByGameMaster) {
+				if (!m_bGodMode) {		//game over
+					m_bDrawGameOver = true;
+					m_pUnitManager->m_vecUnits.clear();
+				}	// if not in god mode
 				else {
+					printf("currDuration: %f\n", playerUnit->lerpInfo.currDuration);
 					printf("currDelay: %f\n", currDelay);
-					playerUnit->is_stationary = false;	// player unit is moving
-					playerUnit->moveTo(destTile->pos, currDelay);
+					printf("frame time: %f\n", m_pTimer->GetFrameTime());
+					playerUnit->lerpInfo.currDuration = 0;
+					playerUnit->moveTo(destTile->pos, m_pTimer->GetFrameTime());
+					//m_pUnitManager->MoveUnit(destTile);
 					playerUnit->tile = destTile;
-				}	// else not viewable by game master
+				}	// else in god mode
 
-			}	// if walkable
-		}	// if valid destination tile
-		printf("currDelay: %f\n", currDelay);
-		currDelay = WALK_DURATION;
-	}
+			}	// if viewable by game master
+			else {
+				playerUnit->is_stationary = false;	// player unit is moving
+				printf("currDuration: %f\n", playerUnit->lerpInfo.currDuration);
+				printf("currDelay: %f\n", currDelay);
+				printf("frame time: %f\n", m_pTimer->GetFrameTime());
+				playerUnit->lerpInfo.currDuration = 0;
+				playerUnit->moveTo(destTile->pos, m_pTimer->GetFrameTime());
+				//m_pUnitManager->MoveUnit(destTile);
+				playerUnit->tile = destTile;
+			}	// else not viewable by game master
+
+		}	// if walkable
+	}	// if valid destination tile
+	printf("currDelay: %f\n", currDelay);
+	currDelay = WALK_DURATION;
 }
 
+/// Process the player's input and update the game state.
+
+void CGame::DetectPlayerInput() {
+	if (playerUnit == nullptr) {
+		return;
+	}
+
+	if (m_pKeyboard->Down(VK_LEFT)) {	// process player input for left key
+		printf("left key detected");
+		if (currDelay <= 0.f) {
+			printf("; now processing\n");
+			ProcessPlayerInput(VK_LEFT);
+			currDelay = WALK_DURATION;
+		}
+		else if (inputBuffer.size() < MAX_INPUTS_BUFFERED) {
+			printf("; now buffering\n");
+			inputBuffer.push(VK_LEFT);
+		}
+	}
+	if (m_pKeyboard->Down(VK_RIGHT)) {	// process player input for right key
+		printf("right key detected");
+		if (currDelay <= 0.f) {
+			printf("; now processing\n");
+			ProcessPlayerInput(VK_RIGHT);
+			currDelay = WALK_DURATION;
+		}
+		else if (inputBuffer.size() < MAX_INPUTS_BUFFERED) {
+			printf("; now buffering\n");
+			inputBuffer.push(VK_RIGHT);
+		}
+	}
+	if (m_pKeyboard->Down(VK_UP)) {		// process player input for up key
+		printf("up key detected");
+		if (currDelay <= 0.f) {
+			printf("; now processing\n");
+			ProcessPlayerInput(VK_UP);
+			currDelay = WALK_DURATION;
+		}
+		else if (inputBuffer.size() < MAX_INPUTS_BUFFERED) {
+			printf("; now buffering\n");
+			inputBuffer.push(VK_UP);
+		}
+	}
+	if (m_pKeyboard->Down(VK_DOWN)) {	// process player input for down key
+		printf("down key detected");
+		if (currDelay <= 0.f) {
+			printf("; now processing\n");
+			ProcessPlayerInput(VK_DOWN);
+			currDelay = WALK_DURATION;
+		}
+		else if (inputBuffer.size() < MAX_INPUTS_BUFFERED) {
+			printf("; now buffering\n");
+			inputBuffer.push(VK_DOWN);
+		}
+	}
+}
 
 /// Ask the object manager to draw the game objects. The renderer is notified of
 /// the start and end of the frame so that it can let Direct3D do its
@@ -566,6 +629,18 @@ void CGame::RenderFrame() {
 	}
 
 	// draw player unit
+	/*if (playerUnit != nullptr) {
+		if (!playerUnit->is_stationary) {
+			playerUnit->lerpInfo.currDuration += m_pTimer->GetFrameTime();
+			float percentComplete = (std::min)(playerUnit->lerpInfo.currDuration / playerUnit->lerpInfo.maxDuration, 1.0f);
+			playerUnit->desc.m_vPos = Math::lerp(playerUnit->desc.m_vPos, playerUnit->lerpInfo.target, percentComplete);
+			if (playerUnit->lerpInfo.currDuration >= playerUnit->lerpInfo.maxDuration) {
+				playerUnit->lerpInfo.currDuration = 0;
+				playerUnit->is_stationary = true;
+			}
+		}
+	}*/
+
 
 	if (m_bDrawGameOver) {
 		m_pRenderer->DrawGameOver();
@@ -620,87 +695,31 @@ void CGame::ProcessFrame() {
 		currDelay = currDelay - m_pTimer->GetFrameTime();
 		currDelay = (std::max)(currDelay, 0.0f);
 		if (playerUnit != nullptr) {
-			printf("playerUnit created at playerUnit->tile->x: %d playerUnit->tile->y: %d\n", playerUnit->tile->x, playerUnit->tile->y);
-			/*if (currDelay <= 0.f && !inputBuffer.empty()) {
 
-				const WPARAM k = inputBuffer.front();
-				ProcessPlayerInput(k);
+
+			if (currDelay <= 0.0f && !inputBuffer.empty()) {
+				printf("currDuration: %f\n", playerUnit->lerpInfo.currDuration);
+				printf("currDelay: %f\n", currDelay);
+				printf("frame time: %f\n", m_pTimer->GetFrameTime());
+				ProcessPlayerInput(inputBuffer.front());
+				printf("processing inputBuffer.front: %p\n", inputBuffer.front());
 				inputBuffer.pop();
-				currDelay = WALK_DURATION;
-				printf("inputBuffer.size(): %d > 0\n", inputBuffer.size());
 			}
-			else if (inputBuffer.size() < MAX_INPUTS_BUFFERED) {
-				printf("inputBuffer.size(): %d < MAX_INPUTS_BUFFERED\n", inputBuffer.size());
-				if (m_pKeyboard->Down(VK_LEFT)) {		// move left one tile
-					inputBuffer.push(VK_LEFT);
+			DetectPlayerInput();
+			printf("currDuration after detecting player input: %f\n", playerUnit->lerpInfo.currDuration);
+			printf("currDelay after detecting player input: %f\n", currDelay);
+			printf("frame time after detecting player input: %f\n", m_pTimer->GetFrameTime());
+
+			/*if (!playerUnit->is_stationary) {
+				playerUnit->lerpInfo.currDuration += m_pTimer->GetFrameTime();
+				if (playerUnit->lerpInfo.currDuration >= playerUnit->lerpInfo.maxDuration) {
+					playerUnit->lerpInfo.currDuration = 0;
+					playerUnit->is_stationary = true;
 				}
-				else if (m_pKeyboard->Down(VK_RIGHT)) {	// move right one tile
-					inputBuffer.push(VK_RIGHT);
-				}
-				else if (m_pKeyboard->Down(VK_UP)) {		// move up one tile
-					inputBuffer.push(VK_UP);
-				}
-				else if (m_pKeyboard->Down(VK_DOWN)) {		// move down one tile
-					inputBuffer.push(VK_DOWN);
-				}
-			}	// else if inputBuffer.size() < MAX_INPUTS_BUFFERED*/
-			int dest_x = playerUnit->tile->x;		// destination coordinates start at player's current position
-			int dest_y = playerUnit->tile->y;
-
-			Tile* destTile = nullptr;		// destination tile to navigate to + update playerTile to
-
-			if (m_pKeyboard->Down(VK_LEFT)) {
-				dest_x -= 1;
-			}
-			if (m_pKeyboard->Down(VK_RIGHT)) {
-				dest_x += 1;
-			}
-			if (m_pKeyboard->Down(VK_UP)) {
-				dest_y += 1;
-			}
-			if (m_pKeyboard->Down(VK_DOWN)) {
-				dest_y -= 1;
-			}
-
-			if (m_pTileManager->GetTile(dest_x, dest_y, &destTile)) {
-				if (destTile->isWalkable) {
-					if (destTile->viewableByGameMaster) {
-						if (!m_bGodMode) {		//game over
-							m_bDrawGameOver = true;
-							m_pUnitManager->m_vecUnits.clear();
-						}	// if not in god mode
-						else {
-							printf("currDelay: %f\n", currDelay);
-							playerUnit->is_stationary = false;
-
-							playerUnit->moveTo(destTile->pos, m_pTimer->GetFrameTime());
-							playerUnit->tile = destTile;
-						}	// else in god mode
-
-					}	// if viewable by game master
-					else {
-						printf("currDelay: %f\n", currDelay);
-						playerUnit->is_stationary = false;	// player unit is moving
-						playerUnit->moveTo(destTile->pos, m_pTimer->GetFrameTime());
-						playerUnit->tile = destTile;
-					}	// else not viewable by game master
-
-				}	// if walkable
-			}	// if valid destination tile
-
-			int nextPhaseNum = Math::RandomizePhase(2, accumulatorOfTime);
-
-			if (frameCount % (int)(60.0f * 1.5f) == 0) {
-				m_pGameMaster->SwitchPhases(nextPhaseNum);
-			}
-			else {
-				m_pGameMaster->desc.m_nCurrentFrame = m_pGameMaster->m_nCurrentFrame;
-			}	// else
-		}	// if unit manager is not empty
-		else {
-			printf("playerUnit is nullptr\n");
-			// draw frame that says select a tile to spawn a unit
-		}	// else
+			}*/
+			//UpdatePlayerUnit();
+			playerUnit->update();
+		}
 
 		//update notifications
 		UpdateNotifications();
@@ -710,7 +729,6 @@ void CGame::ProcessFrame() {
 			BeginGame();
 			m_eGameState = eGameState::Playing;
 			m_bDrawGameOver = false;
-			GameIsLost = false;
 		}
 	}
 	RenderFrame(); //render a frame of animation
@@ -718,18 +736,14 @@ void CGame::ProcessFrame() {
 } //ProcessFrame
 
 void CGame::GameOver() {
-	//m_pRenderer->BeginFrame();
 	XMVECTORF32 black = { 0.0f, 0.0f, 0.0f, 1.0f };
 	XMVECTORF32 white = { 1.0f, 1.0f, 1.0f, 1.0f };
 	while (!m_pKeyboard->TriggerDown(VK_RETURN)) {
 		BeginGame();
 		m_eGameState = eGameState::Playing;
 		m_pRenderer->SetBgColor(black); //black background
-		//m_pRenderer->DrawScreenText("Game Over", Vector2(300.0f, 300.0f), white);
 	}
 
-
-	//m_pRenderer->EndFrame();
 }
 
 /// Take action appropriate to the current game state. If the game is currently
@@ -741,18 +755,18 @@ void CGame::ProcessGameState() {
 	static float t = 0; //time at start of game
 
 	switch (m_eGameState) {
-	case eGameState::Playing:
-		break;
+		case eGameState::Playing:
+			break;
 
-	case eGameState::Waiting:
-		break;
+		case eGameState::Waiting:
+			break;
 
-	case eGameState::GameOver: {
-		//GameOver();
-		break;
-	}
+		case eGameState::GameOver: {
+			//GameOver();
+			break;
+		}
 
-	case eGameState::GameWon:
-		break;
+		case eGameState::GameWon:
+			break;
 	} //switch
 } //CheckForEndOfGame
