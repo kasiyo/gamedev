@@ -481,11 +481,15 @@ void CGame::ProcessPlayerInput(const WPARAM k) {
 	/// --- moves the player unit --- ///
 	playerUnit->is_stationary = false;
 	playerUnit->lerpInfo.source = playerUnit->desc.m_vPos;
-
+	printf("lerpInfo.source = %f\n", playerUnit->lerpInfo.source);
+	printf("lerpInfo.target = %f\n", playerUnit->lerpInfo.target);
 	if (m_pTileManager->GetTile(dest_x, dest_y, &destTile)) {
 
 		if (destTile->isWalkable) {
 			playerUnit->lerpInfo.target = destTile->pos;
+			printf("destTile->pos = %f\n", destTile->pos);
+			printf("destTile (x, y): (%f, %f)\n", destTile->pos.x, destTile->pos.y);
+			printf("initializing lerpInfo.target to destTile->pos = %f\n", playerUnit->lerpInfo.target);
 			if (destTile->viewableByGameMaster) {
 				if (!m_bGodMode) {		//game over
 					m_bDrawGameOver = true;
@@ -497,7 +501,6 @@ void CGame::ProcessPlayerInput(const WPARAM k) {
 					printf("frame time: %f\n", m_pTimer->GetFrameTime());
 					playerUnit->lerpInfo.currDuration = 0;
 					playerUnit->moveTo(destTile->pos, m_pTimer->GetFrameTime());
-					//m_pUnitManager->MoveUnit(destTile);
 					playerUnit->tile = destTile;
 
 				}	// else in god mode
@@ -578,7 +581,7 @@ void CGame::DetectPlayerInput() {
 			inputBuffer.push(VK_DOWN);
 		}
 	}
-	playerUnit->update();
+	//playerUnit->update();
 }
 
 /// Ask the object manager to draw the game objects. The renderer is notified of
@@ -725,8 +728,15 @@ void CGame::ProcessFrame() {
 			}*/
 			//UpdatePlayerUnit();
 			//playerUnit->update();
-		}
 
+			int nextPhase = Math::RandomizePhase(2, currDelay);
+		}
+		else {
+			m_pGameMaster->desc.m_nCurrentFrame = m_pGameMaster->m_nCurrentFrame;
+		}
+		if (playerUnit != nullptr) {
+			playerUnit->update();
+		}
 		//update notifications
 		UpdateNotifications();
 		});		// m_pTimer->Tick

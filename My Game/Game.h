@@ -60,7 +60,7 @@ private:
 	void DetectPlayerInput();
 
 	std::queue<WPARAM> inputBuffer;
-	const int MAX_INPUTS_BUFFERED = 3;
+	const int MAX_INPUTS_BUFFERED = 1;
 
 	void LoadImages(); ///< Load images.
 	void LoadSounds(); ///< Load sounds.

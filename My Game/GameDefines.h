@@ -20,7 +20,7 @@ static const int CURRENCY_MAX = 100;
 
 static const float NOTIFICATION_DURATION = 1.0f;
 
-static const float WALK_DURATION = 0.025f;
+static const float WALK_DURATION = 0.25f;
 
 enum class eFont : UINT {
 	Normal, Large, Small, Title, Notification,
