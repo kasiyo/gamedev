@@ -31,8 +31,6 @@ HWND CRenderer::GetWindow() {
 	return m_Hwnd;
 }
 
-
-
 LBaseCamera* CRenderer::GetCamera() {
 	return this->m_pCamera;
 }
@@ -73,18 +71,34 @@ void CRenderer::DrawGameOver() {
 	Vector2 camPos(this->m_pCamera->GetPos().x, this->m_pCamera->GetPos().y);
 	Draw(eSprite::Background, Vector2(this->m_pCamera->GetPos().x, this->m_pCamera->GetPos().y));
 
-	//LoadScreenFont(eFont::PixelAERegular);
 	const wchar_t* text = L"Game Over";
 	if (m_pFont == nullptr) {
 		return;
 	}
-	//m_pFont->DrawString(m_pSpriteBatch.get(), text, camPos, white, 0.0f, Vector2::Zero, 1.0f);
 
-	DrawCenteredText("Game Over", white);
+	DrawCenteredText("loser.", white);
 	DrawScreenText("press enter to replay", bottomLeft, white);
 	//DrawScreenText("Game Over", 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f);
-	//LoadScreenFont();
+}
 
+/// Draw win.
+void CRenderer::DrawWin() {
+	XMVECTORF32 color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	XMVECTORF32 black = { 0.0f, 0.0f, 0.0f, 1.0f };
+	XMVECTORF32 white = { 1.0f, 1.0f, 1.0f, 1.0f };
+	Vector2 bottomLeft(25.0f, 700.0f);
+
+	Vector2 camPos(this->m_pCamera->GetPos().x, this->m_pCamera->GetPos().y);
+	Draw(eSprite::Background, Vector2(this->m_pCamera->GetPos().x, this->m_pCamera->GetPos().y));
+
+	const wchar_t* text = L"Game Over";
+	if (m_pFont == nullptr) {
+		return;
+	}
+
+	DrawCenteredText("u win.", white);
+	DrawScreenText("press enter to replay", bottomLeft, white);
+	//DrawScreenText("Game Over", 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 void CRenderer::LoadTextSprites() {

@@ -75,7 +75,7 @@ struct LerpInfo {
 
 
 static std::unordered_map<char, TileInfo> CHAR_TO_TILE = {
-	{ '`', { eSprite::GrassTile, 0 } },
+	{ '`', { eSprite::GrassTile, 0, true } },	// black-and-white checkered block
 	//{ 'W', { eSprite::GrassTile, 1 } },
 	//{ 'T', { eSprite::GrassTile, 1 } },
 	//{ 'P', { eSprite::GrassTile, 1 } },

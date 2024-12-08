@@ -27,6 +27,7 @@ public:
 	void CalculateIso(int i, int j, float scale, float descSize, Vector2&); ///< Calculate isometric projection.
 
 	void DrawGameOver(); ///< Draw game over.
+	void DrawWin(); ///< Draw win.
 
 	void LoadTextSprites();
 

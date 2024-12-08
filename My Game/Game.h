@@ -81,6 +81,8 @@ private:
 	void GameOver(); ///< Game over.
 
 	bool m_bDrawGameOver = false; ///< Player lost.
+	bool m_bDrawWin = false; ///< Player won.
+
 	bool m_bGodMode = false; ///< God mode toggle.
 	bool m_bPlayerIsMoving = false; ///< Player is moving.
 
