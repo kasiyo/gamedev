@@ -106,8 +106,6 @@ void CUnitManager::MoveUnit(Tile* destTile) {
 	Vector2 endPos = destTile->pos;
 	endPos.y += 20.0f;	// for offset
 
-
-
 	if (!playerUnit->is_stationary) {
 		playerUnit->lerpInfo.currDuration += m_pTimer->GetFrameTime();
 		float percentComplete = (std::min)(playerUnit->lerpInfo.currDuration / playerUnit->lerpInfo.maxDuration, 1.0f);

@@ -118,6 +118,17 @@ void CTileManager::LoadMap(char* filename) {
 				m_chMap[i][j].alpha = 0.0f;
 			}
 
+			if (m_chMap[i][j].info.isFullHeight) {
+				m_chMap[i][j].y_offset = 50.0f;
+				printf("m_chMap[%zu][%zu].y_offset = %f\n", i, j, m_chMap[i][j].y_offset);
+				m_chMap[i][j].x_offset = m_chMap[i][j].desc.m_vPos.x;
+				//m_chMap[i][j].x_offset = (m_pRenderer->GetHeight(eSprite::GrassTile) * 0.55f) / 2.0f;
+				//printf("m_chMap[%zu][%zu].x_offset = %f\n", i, j, m_chMap[i][j].x_offset);
+			}
+			else {
+				m_chMap[i][j].y_offset = 20.0f;
+			}
+
 			m_chMap[i][j].x = j; //x coordinate
 			m_chMap[i][j].y = i; //y coordinate
 

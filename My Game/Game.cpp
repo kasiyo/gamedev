@@ -202,7 +202,7 @@ void CGame::UpdateNotifications() {
 
 void CGame::UpdatePlayerUnit() {
 	if (playerUnit == nullptr) { return; }
-	playerUnit->update();
+	playerUnit->move();
 }
 
 
@@ -293,7 +293,7 @@ void CGame::BeginGame() {
 	//m_pTileManager->LoadMap("Media\\Maps\\basefloor.txt");
 	//m_pTileManager->LoadMap("Media\\Maps\\bwfloor.txt");
 	//m_pTileManager->LoadMap("Media\\Maps\\tilefloor.txt");
-	m_pTileManager->LoadMap("Media\\Maps\\betamap.txt");
+	m_pTileManager->LoadMap("Media\\Maps\\betamap01.txt");
 	m_pObjectManager->clear(); //clear old objects
 	CreateObjects(); //create new objects (must be after map is loaded) 
 	if (m_pTileManager->GetMap() != nullptr) {
@@ -302,14 +302,14 @@ void CGame::BeginGame() {
 	}
 
 	m_pAudio->stop(); //stop all  currently playing sounds
-	if (sound < 1) {
+	/*if (sound < 1) {
 		m_pAudio->play(eSound::Start); //play start-of-game sound
 		sound++;
-	}
+	}*/
 	m_eGameState = eGameState::Playing; //now playing
 
 	/// --- TODO: update bgm.mp3 into .wav filetype. --- ///
-	m_pAudio->loop(eSound::BGM); //play background music
+	//m_pAudio->loop(eSound::BGM); //play background music
 } //BeginGame
 
 void CGame::MouseHandler() {
@@ -370,7 +370,6 @@ void CGame::KeyboardHandler() {
 	HighlightTile();
 
 	Vector2 moveDirection;
-
 
 	/// camera movement
 	Vector2 downVector(0, 1);      //  pan down
@@ -475,7 +474,7 @@ void CGame::ProcessPlayerInput(const WPARAM k) {
 				}	// if not in god mode
 				else {
 					playerUnit->lerpInfo.currDuration = 0;
-					playerUnit->moveTo(destTile->pos, k);
+					playerUnit->moveTo(destTile, k);
 					printf("playerUnit->tile->x: %d playerUnit->tile->y: %d\n", playerUnit->tile->x, playerUnit->tile->y);
 					playerUnit->tile = destTile;
 
@@ -483,7 +482,7 @@ void CGame::ProcessPlayerInput(const WPARAM k) {
 			}	// if viewable by game master
 			else {
 				playerUnit->lerpInfo.currDuration = 0;
-				playerUnit->moveTo(destTile->pos, k);
+				playerUnit->moveTo(destTile, k);
 				printf("playerUnit->tile->x: %d playerUnit->tile->y: %d\n", playerUnit->tile->x, playerUnit->tile->y);
 				playerUnit->tile = destTile;
 			}	// else not viewable by game master
@@ -659,7 +658,7 @@ void CGame::ProcessFrame() {
 			DetectPlayerInput();
 
 			if (!playerUnit->is_stationary) {
-				playerUnit->update();
+				playerUnit->move();
 			}
 
 			int nextPhase = Math::RandomizePhase(2, currDelay);

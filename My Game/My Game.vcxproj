@@ -175,6 +175,7 @@
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="TileManager.cpp" />
     <ClCompile Include="TileMap.cpp" />
+    <ClCompile Include="Unit.cpp" />
     <ClCompile Include="UnitManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -192,6 +193,7 @@
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="TileManager.h" />
     <ClInclude Include="TileMap.h" />
+    <ClInclude Include="Unit.h" />
     <ClInclude Include="UnitManager.h" />
   </ItemGroup>
   <ItemGroup>

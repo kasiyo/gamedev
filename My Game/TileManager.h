@@ -26,6 +26,9 @@ typedef struct Tile {
 	int x;
 	int y;
 	Vector2 pos;
+	float y_offset = 0;
+	float x_offset = 0;
+	LSpriteDesc2D desc;
 } Tile;
 
 
