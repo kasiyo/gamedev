@@ -202,17 +202,6 @@ void CGame::UpdateNotifications() {
 
 void CGame::UpdatePlayerUnit() {
 	if (playerUnit == nullptr) { return; }
-
-	/*if (!playerUnit->is_stationary) {
-		playerUnit->lerpInfo.currDuration += m_pTimer->GetFrameTime();
-		float percentComplete = (std::min)(playerUnit->lerpInfo.currDuration / playerUnit->lerpInfo.maxDuration, 1.0f);
-		playerUnit->desc.m_vPos = Math::lerp(playerUnit->desc.m_vPos, playerUnit->lerpInfo.target, percentComplete);
-
-		if (playerUnit->lerpInfo.currDuration >= playerUnit->lerpInfo.maxDuration) {
-			playerUnit->lerpInfo.currDuration = 0.0f;
-			playerUnit->is_stationary = true;
-		}
-	}*/
 	playerUnit->update();
 }
 
@@ -441,6 +430,10 @@ void CGame::DrawGodModeText() {
 	m_pRenderer->DrawScreenText("God Mode", pos); //draw to screen
 } //DrawGodModeText
 
+
+/// <summary>
+/// Move player unit according to user input.
+/// </summary>
 void CGame::ProcessPlayerInput(const WPARAM k) {
 	int dest_x = playerUnit->tile->x;		// destination coordinates start at player's current position
 	int dest_y = playerUnit->tile->y;
@@ -450,33 +443,24 @@ void CGame::ProcessPlayerInput(const WPARAM k) {
 
 	switch (k) {
 		case VK_LEFT: {		// move left one tile
-			printf("processing left key\n");
 			dest_x -= 1;
 			break;
 		}
 		case VK_RIGHT: {	// move right one tile
-			printf("processing right key\n");
 			dest_x += 1;
 			break;
 		}
 		case VK_UP: {		// move up one tile
-			printf("processing up key\n");
 			dest_y -= 1;
 			break;
 		}
 		case VK_DOWN: {		// move down one tile
-			printf("processing down key\n");
 			dest_y += 1;
 			break;
 		}
 	}	// switch
 
-	printf("playerUnit->tile->x: %d playerUnit->tile->y: %d\n", playerUnit->tile->x, playerUnit->tile->y);
-	printf("dest_x: %d dest_y: %d\n", dest_x, dest_y);
-
-	/// --- moves the player unit --- ///
-
-
+	/// --- check if movement is possible before moving the player unit --- ///
 	if (m_pTileManager->GetTile(dest_x, dest_y, &destTile)) {
 
 		playerUnit->is_stationary = false;
@@ -484,46 +468,33 @@ void CGame::ProcessPlayerInput(const WPARAM k) {
 
 		if (destTile->isWalkable) {
 			playerUnit->lerpInfo.target = destTile->pos;
-			printf("destTile->pos = %f\n", destTile->pos);
-			printf("destTile->pos (x, y): (%f, %f)\n", destTile->pos.x, destTile->pos.y);
-			printf("destTile (x, y): (%d, %d)\n", destTile->x, destTile->y);
-			printf("initializing lerpInfo.target to destTile->pos = %f\n", playerUnit->lerpInfo.target);
+
 			if (destTile->viewableByGameMaster) {
 				if (!m_bGodMode) {		//game over
 					m_bDrawGameOver = true;
 					m_pUnitManager->m_vecUnits.clear();
 				}	// if not in god mode
 				else {
-					printf("currDuration: %f\n", playerUnit->lerpInfo.currDuration);
-					printf("currDelay: %f\n", currDelay);
-					printf("frame time: %f\n", m_pTimer->GetFrameTime());
 					playerUnit->lerpInfo.currDuration = 0;
 					playerUnit->moveTo(destTile->pos, k);
 					printf("playerUnit->tile->x: %d playerUnit->tile->y: %d\n", playerUnit->tile->x, playerUnit->tile->y);
 					playerUnit->tile = destTile;
 
 				}	// else in god mode
-
 			}	// if viewable by game master
 			else {
-				playerUnit->is_stationary = false;	// player unit is moving
-				printf("currDuration: %f\n", playerUnit->lerpInfo.currDuration);
-				printf("currDelay: %f\n", currDelay);
-				printf("frame time: %f\n", m_pTimer->GetFrameTime());
 				playerUnit->lerpInfo.currDuration = 0;
 				playerUnit->moveTo(destTile->pos, k);
 				printf("playerUnit->tile->x: %d playerUnit->tile->y: %d\n", playerUnit->tile->x, playerUnit->tile->y);
 				playerUnit->tile = destTile;
-
 			}	// else not viewable by game master
-
 		}	// if walkable
 	}	// if valid destination tile
 
 	currDelay = WALK_DURATION;
 }
 
-/// Process the player's input and update the game state.
+/// Detect the player input and either process or push to input buffer.
 
 void CGame::DetectPlayerInput() {
 	if (playerUnit == nullptr) {
@@ -592,14 +563,7 @@ void CGame::RenderFrame() {
 
 	/// get window size for zoom
 	RECT windowRect;
-	/*if (GetWindowRect(m_pRenderer->GetWindow(), &windowRect)) {
-		//printf("%ld %ld %ld %ld\n", windowRect.top, windowRect.bottom, windowRect.left, windowRect.right);
-		m_pRenderer->GetCamera()->SetOrthographic(
-			std::abs(windowRect.right - windowRect.left),
-			std::abs(windowRect.top - windowRect.bottom), 0.25f, 45.0f);  // changing values from 0.1 to 0.25f
-	}                                                                     // and 100.0 to 45.0f works better after tile resizing
-																		  // for some reason...
-	*/
+
 	m_pTileManager->Draw(eSprite::GrassTile); //draw tiles
 	m_pObjectManager->draw(); //draw objects
 	m_pGameMaster->draw();
@@ -689,24 +653,15 @@ void CGame::ProcessFrame() {
 		if (playerUnit != nullptr) {
 
 			if (currDelay <= 0.0f && !inputBuffer.empty()) {
-				printf("currDuration: %f\n", playerUnit->lerpInfo.currDuration);
-				printf("currDelay: %f\n", currDelay);
-				printf("frame time: %f\n", m_pTimer->GetFrameTime());
 				ProcessPlayerInput(inputBuffer.front());
-				printf("processing inputBuffer.front: %p\n", inputBuffer.front());
 				inputBuffer.pop();
-
 			}
 
 			DetectPlayerInput();
 
-			printf("currDuration after detecting player input: %f\n", playerUnit->lerpInfo.currDuration);
-			printf("currDelay after detecting player input: %f\n", currDelay);
-			printf("frame time after detecting player input: %f\n", m_pTimer->GetFrameTime());
-
-			/*if (!playerUnit->is_stationary) {
+			if (!playerUnit->is_stationary) {
 				playerUnit->update();
-			}*/
+			}
 
 			int nextPhase = Math::RandomizePhase(2, currDelay);
 
@@ -718,7 +673,7 @@ void CGame::ProcessFrame() {
 			}
 		}
 
-		UpdatePlayerUnit();
+		//UpdatePlayerUnit();
 
 		//update notifications
 		UpdateNotifications();

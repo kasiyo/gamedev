@@ -188,11 +188,6 @@ void CTileManager::Draw(eSprite t) {
 
 	for (int i = 0; i < m_nHeight; i += 1) {
 		for (int j = 0; j < m_nWidth; j += 1) {
-			/*const int top = std::max(0, (int)m_nHeight - (int)round(origin.y / (m_fTileSize * 0.25f)) + 1); //index of top tile
-			const int bottom = std::min(top + h + 1, (int)m_nHeight - 1); //index of bottom tile
-
-			const int left = std::max(0, (int)round(origin.x /m_fTileSize) - 1); //index of left tile
-			const int right = std::min(left + w, (int)m_nWidth - 1); //index of right tile*/
 
 			// make sure indices are within bounds.
 			if (i >= m_nHeight || j >= m_nWidth || i < 0 || j < 0) {
