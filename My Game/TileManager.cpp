@@ -95,8 +95,9 @@ void CTileManager::LoadMap(char* filename) {
 
 	m_chMap = new Tile * [m_nHeight];
 
-	for (size_t i = 0; i < m_nHeight; i++)
+	for (size_t i = 0; i < m_nHeight; i++) {
 		m_chMap[i] = new Tile[m_nWidth];
+	}
 
 	//load the map information from the buffer to the map
 
@@ -110,8 +111,11 @@ void CTileManager::LoadMap(char* filename) {
 				m_chMap[i][j].info = CHAR_TO_TILE.at(c);
 			}
 			else {
+				printf("char_to_tile does not contain %c\n", c);
+				printf("m_chMap[%zu][%zu].info.baseSprite = eSprite::GrassTile\n", i, j);
 				m_chMap[i][j].info.baseSprite = eSprite::GrassTile;
 				m_chMap[i][j].info.frameIndex = 0;
+				m_chMap[i][j].alpha = 0.0f;
 			}
 
 			m_chMap[i][j].x = j; //x coordinate
@@ -214,6 +218,8 @@ void CTileManager::Draw(eSprite t) {
 
 			m_pRenderer->CalculateIso(i, j, scale, m_fTileSize, desc.m_vPos);
 			desc.m_f4Tint = m_chMap[i][j].tint;
+			desc.m_fAlpha = m_chMap[i][j].alpha;
+
 
 			Tile& t = m_chMap[i][j];
 

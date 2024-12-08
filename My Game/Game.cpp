@@ -271,7 +271,6 @@ void CGame::CreateObjects() {
 	m_pTileManager->GetObjects(turretpos, playerpos); //get positions
 
 	//m_pPlayer = (CPlayer*)m_pObjectManager->create(eSprite::Player, playerpos);
-
 } //CreateObjects
 
 /// Call this function to start a new game. This should be re-entrant so that

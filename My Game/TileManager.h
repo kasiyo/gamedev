@@ -19,6 +19,7 @@
 typedef struct Tile {
 	TileInfo info;
 	XMFLOAT4 tint = DEFAULT_TILE_TINT;
+	float alpha = DEFAULT_TILE_ALPHA;
 	bool viewableByGameMaster = false;
 	bool isOccupied = false;
 	bool isWalkable = true;

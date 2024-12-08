@@ -7,6 +7,7 @@
 #include "Defines.h"
 #include <unordered_map>
 
+static const float DEFAULT_TILE_ALPHA = 1.0f;
 static const XMFLOAT4 DEFAULT_TILE_TINT = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.f);
 static const XMFLOAT4 HIGHLIGHT_TILE_TINT = XMFLOAT4(0.9f, 1.f, 0.9f, 1.f);
 static const XMFLOAT4 SELECTED_TILE_TINT = XMFLOAT4(1.f, 1.2f, 1.f, 1.f);
