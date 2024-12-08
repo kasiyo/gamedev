@@ -20,7 +20,7 @@ static const int CURRENCY_MAX = 100;
 
 static const float NOTIFICATION_DURATION = 1.0f;
 
-static const float WALK_DURATION = 0.25f;
+static const float WALK_DURATION = 0.025f;
 
 enum class eFont : UINT {
 	Normal, Large, Small, Title, Notification,
@@ -165,10 +165,10 @@ static std::unordered_map<char, BlockInfo> CHAR_TO_BLOCK = {
 };
 
 static std::unordered_map<char*, UnitInfo> CHAR_TO_UNIT = {
-	{ "FL", { eSprite::Unit, 0 } },	// front facing left
-	{ "FR", { eSprite::Unit, 1 } }, // front facing right
-	{ "BR", { eSprite::Unit, 2 } }, // back facing right
-	{ "BL", { eSprite::Unit, 3 } }, // back facing left
+	{ "DOWN", { eSprite::Unit, 0 } },		// front facing left	/ down
+	{ "RIGHT", { eSprite::Unit, 1 } },		// front facing right	/ right
+	{ "UP", { eSprite::Unit, 2 } },			// back facing right	/ up
+	{ "LEFT", { eSprite::Unit, 3 } },		// back facing left		/ left
 };
 
 static std::unordered_map<GameMasterPhase, GMInfo> CHAR_TO_GM = {

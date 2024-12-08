@@ -201,23 +201,19 @@ void CGame::UpdateNotifications() {
 }
 
 void CGame::UpdatePlayerUnit() {
-	/*float percentComplete = playerUnit->lerpInfo.currDuration / playerUnit->lerpInfo.maxDuration;
-	float progress_x = Math::lerp(playerUnit->lerpInfo.source.x, playerUnit->lerpInfo.target.x, percentComplete);
-	float progress_y = Math::lerp(playerUnit->lerpInfo.source.y, playerUnit->lerpInfo.target.y, percentComplete);
+	if (playerUnit == nullptr) { return; }
 
-	playerUnit->desc.m_vPos = Vector2(progress_x, progress_y);*/
-	if (!playerUnit->is_stationary) {
+	/*if (!playerUnit->is_stationary) {
 		playerUnit->lerpInfo.currDuration += m_pTimer->GetFrameTime();
 		float percentComplete = (std::min)(playerUnit->lerpInfo.currDuration / playerUnit->lerpInfo.maxDuration, 1.0f);
 		playerUnit->desc.m_vPos = Math::lerp(playerUnit->desc.m_vPos, playerUnit->lerpInfo.target, percentComplete);
 
 		if (playerUnit->lerpInfo.currDuration >= playerUnit->lerpInfo.maxDuration) {
-
 			playerUnit->lerpInfo.currDuration = 0.0f;
 			playerUnit->is_stationary = true;
 		}
-	}
-
+	}*/
+	playerUnit->update();
 }
 
 
@@ -479,16 +475,18 @@ void CGame::ProcessPlayerInput(const WPARAM k) {
 	printf("dest_x: %d dest_y: %d\n", dest_x, dest_y);
 
 	/// --- moves the player unit --- ///
-	playerUnit->is_stationary = false;
-	playerUnit->lerpInfo.source = playerUnit->desc.m_vPos;
-	printf("lerpInfo.source = %f\n", playerUnit->lerpInfo.source);
-	printf("lerpInfo.target = %f\n", playerUnit->lerpInfo.target);
+
+
 	if (m_pTileManager->GetTile(dest_x, dest_y, &destTile)) {
+
+		playerUnit->is_stationary = false;
+		playerUnit->lerpInfo.source = playerUnit->desc.m_vPos;
 
 		if (destTile->isWalkable) {
 			playerUnit->lerpInfo.target = destTile->pos;
 			printf("destTile->pos = %f\n", destTile->pos);
-			printf("destTile (x, y): (%f, %f)\n", destTile->pos.x, destTile->pos.y);
+			printf("destTile->pos (x, y): (%f, %f)\n", destTile->pos.x, destTile->pos.y);
+			printf("destTile (x, y): (%d, %d)\n", destTile->x, destTile->y);
 			printf("initializing lerpInfo.target to destTile->pos = %f\n", playerUnit->lerpInfo.target);
 			if (destTile->viewableByGameMaster) {
 				if (!m_bGodMode) {		//game over
@@ -500,7 +498,8 @@ void CGame::ProcessPlayerInput(const WPARAM k) {
 					printf("currDelay: %f\n", currDelay);
 					printf("frame time: %f\n", m_pTimer->GetFrameTime());
 					playerUnit->lerpInfo.currDuration = 0;
-					playerUnit->moveTo(destTile->pos, m_pTimer->GetFrameTime());
+					playerUnit->moveTo(destTile->pos, k);
+					printf("playerUnit->tile->x: %d playerUnit->tile->y: %d\n", playerUnit->tile->x, playerUnit->tile->y);
 					playerUnit->tile = destTile;
 
 				}	// else in god mode
@@ -512,17 +511,16 @@ void CGame::ProcessPlayerInput(const WPARAM k) {
 				printf("currDelay: %f\n", currDelay);
 				printf("frame time: %f\n", m_pTimer->GetFrameTime());
 				playerUnit->lerpInfo.currDuration = 0;
-				playerUnit->moveTo(destTile->pos, m_pTimer->GetFrameTime());
-
+				playerUnit->moveTo(destTile->pos, k);
+				printf("playerUnit->tile->x: %d playerUnit->tile->y: %d\n", playerUnit->tile->x, playerUnit->tile->y);
 				playerUnit->tile = destTile;
 
 			}	// else not viewable by game master
 
 		}	// if walkable
 	}	// if valid destination tile
-	printf("currDelay: %f\n", currDelay);
-	currDelay = WALK_DURATION;
 
+	currDelay = WALK_DURATION;
 }
 
 /// Process the player's input and update the game state.
@@ -532,7 +530,7 @@ void CGame::DetectPlayerInput() {
 		return;
 	}
 
-	if (m_pKeyboard->Down(VK_LEFT)) {	// process player input for left key
+	if (m_pKeyboard->TriggerDown(VK_LEFT)) {	// process player input for left key
 		printf("left key detected");
 		if (currDelay <= 0.f) {
 			printf("; now processing\n");
@@ -545,7 +543,7 @@ void CGame::DetectPlayerInput() {
 			inputBuffer.push(VK_LEFT);
 		}
 	}
-	if (m_pKeyboard->Down(VK_RIGHT)) {	// process player input for right key
+	if (m_pKeyboard->TriggerDown(VK_RIGHT)) {	// process player input for right key
 		printf("right key detected");
 		if (currDelay <= 0.f) {
 			printf("; now processing\n");
@@ -557,7 +555,7 @@ void CGame::DetectPlayerInput() {
 			inputBuffer.push(VK_RIGHT);
 		}
 	}
-	if (m_pKeyboard->Down(VK_UP)) {		// process player input for up key
+	if (m_pKeyboard->TriggerDown(VK_UP)) {		// process player input for up key
 		printf("up key detected");
 		if (currDelay <= 0.f) {
 			printf("; now processing\n");
@@ -569,7 +567,7 @@ void CGame::DetectPlayerInput() {
 			inputBuffer.push(VK_UP);
 		}
 	}
-	if (m_pKeyboard->Down(VK_DOWN)) {	// process player input for down key
+	if (m_pKeyboard->TriggerDown(VK_DOWN)) {	// process player input for down key
 		printf("down key detected");
 		if (currDelay <= 0.f) {
 			printf("; now processing\n");
@@ -581,7 +579,7 @@ void CGame::DetectPlayerInput() {
 			inputBuffer.push(VK_DOWN);
 		}
 	}
-	//playerUnit->update();
+
 }
 
 /// Ask the object manager to draw the game objects. The renderer is notified of
@@ -635,20 +633,6 @@ void CGame::RenderFrame() {
 			XMVECTORF32({ 1.f, 0.843137324f, 0.f, alpha })
 		);
 	}
-
-	// draw player unit
-	/*if (playerUnit != nullptr) {
-		if (!playerUnit->is_stationary) {
-			playerUnit->lerpInfo.currDuration += m_pTimer->GetFrameTime();
-			float percentComplete = (std::min)(playerUnit->lerpInfo.currDuration / playerUnit->lerpInfo.maxDuration, 1.0f);
-			playerUnit->desc.m_vPos = Math::lerp(playerUnit->desc.m_vPos, playerUnit->lerpInfo.target, percentComplete);
-			if (playerUnit->lerpInfo.currDuration >= playerUnit->lerpInfo.maxDuration) {
-				playerUnit->lerpInfo.currDuration = 0;
-				playerUnit->is_stationary = true;
-			}
-		}
-	}*/
-
 
 	if (m_bDrawGameOver) {
 		m_pRenderer->DrawGameOver();
@@ -713,6 +697,7 @@ void CGame::ProcessFrame() {
 				inputBuffer.pop();
 
 			}
+
 			DetectPlayerInput();
 
 			printf("currDuration after detecting player input: %f\n", playerUnit->lerpInfo.currDuration);
@@ -720,23 +705,21 @@ void CGame::ProcessFrame() {
 			printf("frame time after detecting player input: %f\n", m_pTimer->GetFrameTime());
 
 			/*if (!playerUnit->is_stationary) {
-				playerUnit->lerpInfo.currDuration += m_pTimer->GetFrameTime();
-				if (playerUnit->lerpInfo.currDuration >= playerUnit->lerpInfo.maxDuration) {
-					playerUnit->lerpInfo.currDuration = 0;
-					playerUnit->is_stationary = true;
-				}
+				playerUnit->update();
 			}*/
-			//UpdatePlayerUnit();
-			//playerUnit->update();
 
 			int nextPhase = Math::RandomizePhase(2, currDelay);
+
+			if (frameCount % (int)(60.0f * 1.5f) == 0) {
+				m_pGameMaster->SwitchPhases(nextPhase);
+			}
+			else {
+				m_pGameMaster->desc.m_nCurrentFrame = m_pGameMaster->m_nCurrentFrame;
+			}
 		}
-		else {
-			m_pGameMaster->desc.m_nCurrentFrame = m_pGameMaster->m_nCurrentFrame;
-		}
-		if (playerUnit != nullptr) {
-			playerUnit->update();
-		}
+
+		UpdatePlayerUnit();
+
 		//update notifications
 		UpdateNotifications();
 		});		// m_pTimer->Tick
