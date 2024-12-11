@@ -31,6 +31,7 @@ void CUnitManager::AddUnit(struct Tile *t) {
 	unit->y = t->y;
 	unit->m_pTimer->GetFrameTime();
 	unit->tile = t;
+	unit->draw_index = t->draw_index + 1;
 	m_vecUnits.push_back(unit);
 
 	playerUnit = unit;

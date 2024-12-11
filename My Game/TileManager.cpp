@@ -129,6 +129,7 @@ void CTileManager::LoadMap(char *filename) {
 
 			m_chMap[i][j].x = j; //x coordinate
 			m_chMap[i][j].y = i; //y coordinate
+			m_chMap[i][j].draw_index = 0; //draw index
 
 			index++; //next index
 		} //for

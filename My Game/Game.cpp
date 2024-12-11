@@ -426,9 +426,8 @@ void CGame::DrawGodModeText() {
 } //DrawGodModeText
 
 
-/// <summary>
 /// Move player unit according to user input.
-/// </summary>
+
 void CGame::ProcessPlayerInput(const WPARAM k) {
 	int dest_x = playerUnit->tile->x;		// destination coordinates start at player's current position
 	int dest_y = playerUnit->tile->y;
@@ -665,8 +664,6 @@ void CGame::ProcessFrame() {
 				m_pGameMaster->desc.m_nCurrentFrame = m_pGameMaster->m_nCurrentFrame;
 			}
 		}
-
-		//UpdatePlayerUnit();
 
 		//update notifications
 		UpdateNotifications();
