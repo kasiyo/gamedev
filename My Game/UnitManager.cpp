@@ -22,7 +22,7 @@ void CUnitManager::AddUnit(struct Tile *t) {
 	unit->desc.m_nCurrentFrame = 2;
 	unit->desc.m_vPos = t->pos;
 
-	unit->desc.m_vPos.y += 20.0f;	// hardcode y-offset.
+	unit->desc.m_vPos.y += t->y_offset;	// hardcode y-offset.
 	//printf("unit->desc.m_nSpriteIndex: %d\n", unit->desc.m_nSpriteIndex);
 	//printf("unit->desc.m_nCurrentFrame: %d\n", unit->desc.m_nCurrentFrame);
 	//printf("tile->pos: %f, %f\n", t->pos.x, t->pos.y);
