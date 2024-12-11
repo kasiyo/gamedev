@@ -236,24 +236,14 @@ void CTileManager::Draw(eSprite t) {
 			desc.m_nSpriteIndex = (UINT)t.info.baseSprite;
 			desc.m_nCurrentFrame = t.info.frameIndex;
 
+			m_chMap[i][j].desc = desc; //store the descriptor in the tile
+
 			m_chMap[i][j].pos = desc.m_vPos; //store the position of the tile
 
-			LSpriteDesc3D desc3D(desc, 1.0f);
-
-			m_pRenderer->Draw(&desc); //finally we can draw a tile
+			m_pRenderer->Draw(&m_chMap[i][j].desc); //finally we can draw a tile
 		} //for
 	} //for
 } //Draw
-
-float CTileManager::GetMapWidth() {
-	return m_vWorldSize.x;
-	//return m_nWidth;
-}
-
-float CTileManager::GetMapHeight() {
-	return m_vWorldSize.y;
-	//return m_nHeight;
-}
 
 float CTileManager::GetTileSize() {
 	return m_fTileSize;

@@ -23,6 +23,8 @@ typedef struct Tile {
 	bool viewableByGameMaster = false;
 	bool isOccupied = false;
 	bool isWalkable = true;
+	bool isNull = true;
+
 	int x;
 	int y;
 	int z;
@@ -35,13 +37,6 @@ typedef struct Tile {
 } Tile;
 
 
-/// <summary>
-///  --- TODO: variable row/column size for each layer --- ///
-/// </summary>
-typedef struct TileLayer {
-	Tile **tiles = nullptr;
-	int layerLevel = -1;
-} TileLayer;
 
 class CTileManager :
 	public CCommon,
@@ -63,7 +58,7 @@ private:
 	float mapWidth = 0.0f;
 	float mapHeight = 0.0f;
 	std::vector<Vector2> TilesInScreenSpace; ///< Tiles in screen space.
-	std::vector <TileLayer> m_vecTileLayers; ///< Tile layers.
+
 public:
 	CTileManager(size_t); ///< Constructor.
 	~CTileManager(); ///< Destructor.
@@ -74,8 +69,6 @@ public:
 	void GetObjects(std::vector<Vector2> &, Vector2 &); ///< Get objects.
 	bool GetTile(int x, int y, Tile **refval); ///< Get a tile.
 
-	float GetMapWidth();
-	float GetMapHeight();
 	float GetTileSize();
 
 	Tile **GetMap(); ///< Get the map.

@@ -155,7 +155,6 @@ void CGame::SelectTile() {
 		notifications.push_back(errNotification);
 	}
 
-	printf("map width: %f map height: %f\n", m_pTileManager->GetMapWidth(), m_pTileManager->GetMapHeight());
 	printf("tilemanager width: %zu tilemanager height: %zu\n", m_pTileManager->GetWidth(), m_pTileManager->GetHeight());
 }
 
