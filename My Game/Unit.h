@@ -10,16 +10,19 @@ class Unit : public CCommon, public LBaseObject {
 	friend class CUnitManager;
 private:
 public:
-	Unit(eSprite t, const Vector2& p) : LBaseObject(t, p) {};
+	Unit(eSprite t, const Vector2 &p) : LBaseObject(t, p) {};
 	UnitInfo info;
 	int cost;
 	bool is_stationary = true;
-	Tile* tile = nullptr;
+	Tile *tile = nullptr;
 
 	int x;
 	int y;
+
+	int z;
+	int draw_index = -1;
 	LSpriteDesc2D desc;
-	Unit& operator=(const Unit& rhs) {
+	Unit &operator=(const Unit &rhs) {
 		if (this != &rhs) {
 			desc = rhs.desc;
 		}
@@ -28,7 +31,7 @@ public:
 
 	void draw();	// Draw the unit.
 
-	LerpInfo lerpInfo{
+	LerpInfo lerpInfo {
 		Vector2(0.0f, 0.0f),		// starting position
 		Vector2(0.0f, 0.0f),		// target position
 		0.0f,		// current duration in ms
@@ -38,7 +41,7 @@ public:
 	void move();
 
 
-	void moveTo(Tile* t, const WPARAM k);
+	void moveTo(Tile *t, const WPARAM k);
 
 
 	/*void update() {

@@ -6,6 +6,11 @@
 #include "GameDefines.h"
 #include "SpriteRenderer.h"
 #include "ComponentIncludes.h"
+#include "Unit.h"
+#include "UnitManager.h"
+#include "GameMaster.h"
+#include "Common.h"
+#include "TileManager.h"
 
 /// \brief The renderer.
 ///
@@ -19,13 +24,15 @@ public:
 	void LoadImages(); ///< Load images.
 	HWND GetWindow();
 
-	LBaseCamera* GetCamera();
+	LBaseCamera *GetCamera();
 	int GetWindowWidth();
 	int GetWindowHeight();
 	float GetWindowScaleFromBase();
 
-	void CalculateIso(int i, int j, float scale, float descSize, Vector2&); ///< Calculate isometric projection.
+	void CalculateIso(int i, int j, float scale, float descSize, Vector2 &); ///< Calculate isometric projection.
 
+
+	void DrawSpriteOrder();
 	void DrawGameOver(); ///< Draw game over.
 	void DrawWin(); ///< Draw win.
 

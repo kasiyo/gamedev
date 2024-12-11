@@ -6,8 +6,7 @@
 #include "Abort.h"
 
 CRenderer::CRenderer() :
-	LSpriteRenderer(eSpriteMode::Batched2D) {
-} //constructor
+	LSpriteRenderer(eSpriteMode::Unbatched2D) {} //constructor
 
 /// Load the specific images needed for this game.
 /// This is where eSpriteType values from GameDefines.h get
@@ -31,7 +30,7 @@ HWND CRenderer::GetWindow() {
 	return m_Hwnd;
 }
 
-LBaseCamera* CRenderer::GetCamera() {
+LBaseCamera *CRenderer::GetCamera() {
 	return this->m_pCamera;
 }
 
@@ -48,7 +47,7 @@ float CRenderer::GetWindowScaleFromBase() {
 }
 
 /// Calculate isometric projection.
-void CRenderer::CalculateIso(int i, int j, float scale, float descSize, Vector2& v) {
+void CRenderer::CalculateIso(int i, int j, float scale, float descSize, Vector2 &v) {
 	const float diagonalShift = 0.5f;
 	const float isoXScale = 1.5f;
 	const float isoYScale = 0.75f;
@@ -71,7 +70,7 @@ void CRenderer::DrawGameOver() {
 	Vector2 camPos(this->m_pCamera->GetPos().x, this->m_pCamera->GetPos().y);
 	Draw(eSprite::Background, Vector2(this->m_pCamera->GetPos().x, this->m_pCamera->GetPos().y));
 
-	const wchar_t* text = L"Game Over";
+	const wchar_t *text = L"Game Over";
 	if (m_pFont == nullptr) {
 		return;
 	}
@@ -91,7 +90,7 @@ void CRenderer::DrawWin() {
 	Vector2 camPos(this->m_pCamera->GetPos().x, this->m_pCamera->GetPos().y);
 	Draw(eSprite::Background, Vector2(this->m_pCamera->GetPos().x, this->m_pCamera->GetPos().y));
 
-	const wchar_t* text = L"Game Over";
+	const wchar_t *text = L"Game Over";
 	if (m_pFont == nullptr) {
 		return;
 	}
@@ -113,3 +112,8 @@ void CRenderer::LoadTextSprites() {
 	LoadScreenFont(c);
 	//return nullptr;
 }*/
+
+void CRenderer::DrawSpriteOrder() {
+	Tile *t = nullptr;
+
+}

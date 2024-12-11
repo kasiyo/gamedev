@@ -25,6 +25,9 @@ typedef struct Tile {
 	bool isWalkable = true;
 	int x;
 	int y;
+	int z;
+
+	int draw_index = -1;
 	Vector2 pos;
 	float y_offset = 0;
 	float x_offset = 0;
@@ -36,21 +39,20 @@ typedef struct Tile {
 ///  --- TODO: variable row/column size for each layer --- ///
 /// </summary>
 typedef struct TileLayer {
-	Tile** tiles = nullptr;
+	Tile **tiles = nullptr;
 	int layerLevel = -1;
 } TileLayer;
 
 class CTileManager :
 	public CCommon,
-	public LSettings
-{
+	public LSettings {
 private:
 	size_t m_nWidth = 0; ///< Number of tiles wide.
 	size_t m_nHeight = 0; ///< Number of tiles high.
 
 	float m_fTileSize = 0.0f; ///< Tile width and height.
 
-	Tile** m_chMap = nullptr; ///< The tile map.
+	Tile **m_chMap = nullptr; ///< The tile map.
 
 	std::vector<BoundingBox> m_vecWalls; ///< AABBs for the walls.
 	std::vector<Vector2> m_vecTurrets; ///< Turret positions.
@@ -66,22 +68,22 @@ public:
 	CTileManager(size_t); ///< Constructor.
 	~CTileManager(); ///< Destructor.
 
-	void LoadMap(char*); ///< Load a map.
+	void LoadMap(char *); ///< Load a map.
 	void Draw(eSprite); ///< Draw the map with a given tile.
 	void DrawBoundingBoxes(eSprite); ///< Draw the bounding boxes.
-	void GetObjects(std::vector<Vector2>&, Vector2&); ///< Get objects.
-	bool GetTile(int x, int y, Tile** refval); ///< Get a tile.
+	void GetObjects(std::vector<Vector2> &, Vector2 &); ///< Get objects.
+	bool GetTile(int x, int y, Tile **refval); ///< Get a tile.
 
 	float GetMapWidth();
 	float GetMapHeight();
 	float GetTileSize();
 
-	Tile** GetMap(); ///< Get the map.
+	Tile **GetMap(); ///< Get the map.
 
 	const size_t GetWidth(); ///< Get width.
 	const size_t GetHeight(); ///< Get height.
 
-	Tile* GetGMSpawnPoint(); ///< Get the game master spawn point (centermost tile of first few rows).
+	Tile *GetGMSpawnPoint(); ///< Get the game master spawn point (centermost tile of first few rows).
 
 	void SetTileVisibility(bool);
 
@@ -93,8 +95,8 @@ public:
 	//void DrawLayer(eSprite); ///< Draw a layer.
 	//void EditLayer(int layerToEdit); ///< Edit a layer.
 
-	const bool Visible(const Vector2&, const Vector2&, float) const; ///< Check visibility.
-	const bool CollideWithWall(BoundingSphere, Vector2&, float&) const; ///< Object-wall collision test.
+	const bool Visible(const Vector2 &, const Vector2 &, float) const; ///< Check visibility.
+	const bool CollideWithWall(BoundingSphere, Vector2 &, float &) const; ///< Object-wall collision test.
 }; //CTileManager
 
 #endif //__L4RC_GAME_TILEMANAGER_H__

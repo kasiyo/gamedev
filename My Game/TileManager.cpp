@@ -37,7 +37,7 @@ CTileManager::~CTileManager() {
 /// the new map, and read it from a text file.
 /// \param filename Name of the map file.
 
-void CTileManager::LoadMap(char* filename) {
+void CTileManager::LoadMap(char *filename) {
 	if (m_chMap != nullptr) { //unload any previous maps
 		for (size_t i = 0; i < m_nHeight; i++)
 			delete[] m_chMap[i];
@@ -47,7 +47,7 @@ void CTileManager::LoadMap(char* filename) {
 
 	m_vecTurrets.clear(); //clear out the turret list
 
-	FILE* input; //input file handle
+	FILE *input; //input file handle
 
 	fopen_s(&input, filename, "rb"); //open the map file
 	if (input == nullptr) {//abort if it's missing
@@ -60,7 +60,7 @@ void CTileManager::LoadMap(char* filename) {
 	const size_t n = ftell(input); //get file size in bytes
 	rewind(input); //seek to start of file
 
-	char* buffer = new char[n + 1]; //temporary character buffer
+	char *buffer = new char[n + 1]; //temporary character buffer
 	if (buffer == nullptr) {
 		fprintf(stderr, "Memory allocation failed\n");
 		fclose(input);
@@ -109,8 +109,7 @@ void CTileManager::LoadMap(char* filename) {
 
 			if (CHAR_TO_TILE.count(c) > 0) {
 				m_chMap[i][j].info = CHAR_TO_TILE.at(c);
-			}
-			else {
+			} else {
 				printf("char_to_tile does not contain %c\n", c);
 				printf("m_chMap[%zu][%zu].info.baseSprite = eSprite::GrassTile\n", i, j);
 				m_chMap[i][j].info.baseSprite = eSprite::GrassTile;
@@ -124,8 +123,7 @@ void CTileManager::LoadMap(char* filename) {
 				m_chMap[i][j].x_offset = m_chMap[i][j].desc.m_vPos.x;
 				//m_chMap[i][j].x_offset = (m_pRenderer->GetHeight(eSprite::GrassTile) * 0.55f) / 2.0f;
 				//printf("m_chMap[%zu][%zu].x_offset = %f\n", i, j, m_chMap[i][j].x_offset);
-			}
-			else {
+			} else {
 				m_chMap[i][j].y_offset = 20.0f;
 			}
 
@@ -147,14 +145,14 @@ void CTileManager::LoadMap(char* filename) {
 /// \param turrets [out] Vector of turret positions
 /// \param player [out] Player position.
 
-void CTileManager::GetObjects(std::vector<Vector2>& walls, Vector2& player) {
+void CTileManager::GetObjects(std::vector<Vector2> &walls, Vector2 &player) {
 	//turrets = m_vecTurrets;
 	walls = m_vecTurrets;
 	player = m_vPlayer;
 } //GetObjects
 
 /// Get the tile at a given position.
-bool CTileManager::GetTile(int x, int y, Tile** refval) {
+bool CTileManager::GetTile(int x, int y, Tile **refval) {
 	if (x < 0 || x >= m_nWidth || y < 0 || y >= m_nHeight) {
 		return false;
 	}
@@ -163,7 +161,7 @@ bool CTileManager::GetTile(int x, int y, Tile** refval) {
 }
 
 /// Get the map.
-Tile** CTileManager::GetMap() {
+Tile **CTileManager::GetMap() {
 	return m_chMap;
 }
 
@@ -172,7 +170,7 @@ Tile** CTileManager::GetMap() {
 /// \param t Line sprite to be stretched to draw the line.
 
 void CTileManager::DrawBoundingBoxes(eSprite t) {
-	for (auto& p : m_vecWalls)
+	for (auto &p : m_vecWalls)
 		m_pRenderer->DrawBoundingBox(t, p);
 } //DrawBoundingBoxes
 
@@ -232,12 +230,14 @@ void CTileManager::Draw(eSprite t) {
 			desc.m_fAlpha = m_chMap[i][j].alpha;
 
 
-			Tile& t = m_chMap[i][j];
+			Tile &t = m_chMap[i][j];
 
 			desc.m_nSpriteIndex = (UINT)t.info.baseSprite;
 			desc.m_nCurrentFrame = t.info.frameIndex;
 
 			m_chMap[i][j].pos = desc.m_vPos; //store the position of the tile
+
+			LSpriteDesc3D desc3D(desc, 1.0f);
 
 			m_pRenderer->Draw(&desc); //finally we can draw a tile
 		} //for
@@ -266,10 +266,10 @@ const size_t CTileManager::GetHeight() {
 	return m_nHeight;
 } //GetHeight
 
-Tile* CTileManager::GetGMSpawnPoint() {
+Tile *CTileManager::GetGMSpawnPoint() {
 	size_t centerX = m_nWidth / 2;
 	size_t centerY = 2;
-	Tile* t = nullptr;
+	Tile *t = nullptr;
 	if (GetTile(centerX - (size_t)1, 1, &t)) {
 		return t;
 	}
@@ -285,8 +285,7 @@ void CTileManager::SetTileVisibility(bool b) {
 				m_chMap[i][j].viewableByGameMaster = true;
 			}
 		}
-	}
-	else {
+	} else {
 		for (size_t i = 0; i < m_nHeight; i++) {
 			for (size_t j = 0; j < m_nWidth; j++) {
 				m_chMap[i][j].viewableByGameMaster = false;
@@ -305,7 +304,7 @@ void CTileManager::SetTileVisibility(bool b) {
 /// \param r Radius of circle.
 /// \return true If the circle is visible from the point.
 
-const bool CTileManager::Visible(const Vector2& p0, const Vector2& p1, float r) const {
+const bool CTileManager::Visible(const Vector2 &p0, const Vector2 &p1, float r) const {
 	bool visible = true;
 
 	for (auto i = m_vecWalls.begin(); i != m_vecWalls.end() && visible; i++) {
@@ -338,12 +337,11 @@ const bool CTileManager::Visible(const Vector2& p0, const Vector2& p1, float r) 
 /// \return true if the bounding sphere overlaps a wall.
 
 const bool CTileManager::CollideWithWall(
-	BoundingSphere s, Vector2& norm, float& d) const
-{
+	BoundingSphere s, Vector2 &norm, float &d) const {
 	bool hit = false; //return result, true if there is a collision with a wall
 
 	for (auto i = m_vecWalls.begin(); i != m_vecWalls.end() && !hit; i++) {
-		const BoundingBox& aabb = *i; //shorthand
+		const BoundingBox &aabb = *i; //shorthand
 
 		Vector3 corner[8]; //for corners of aabb
 		aabb.GetCorners(corner);  //get corners of aabb

@@ -28,7 +28,7 @@ void Unit::move() {
 };
 
 /// --- Move the unit to the tile. --- ///
-void Unit::moveTo(Tile* t, const WPARAM k) {
+void Unit::moveTo(Tile *t, const WPARAM k) {
 	printf("running moveTo function\n");
 
 	float percentComplete = (std::min)(lerpInfo.currDuration / lerpInfo.maxDuration, 1.0f);
@@ -55,4 +55,10 @@ void Unit::moveTo(Tile* t, const WPARAM k) {
 			break;
 		}
 	}
+
+	tile = t;
+	x = t->x;
+	y = t->y;
+	z = t->z;
+	draw_index = t->z + 1; // draw on top of tile
 };

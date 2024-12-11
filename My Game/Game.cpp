@@ -93,7 +93,7 @@ void CGame::HighlightTile() {
 	}*/
 
 
-	Tile* highlightedTile = 0;
+	Tile *highlightedTile = 0;
 	if (m_pTileManager->GetTile(selectedX, selectedY, &highlightedTile)) {
 		if (prevHighlightedTile && prevHighlightedTile != prevSelectedTile) {
 			prevHighlightedTile->tint = DEFAULT_TILE_TINT;
@@ -130,8 +130,8 @@ void CGame::SelectTile() {
 
 	//spawning (delete later)
 	if (currency >= 10) {
-		Tile* selectedTile = nullptr;
-		Unit* newUnit = (Unit*)malloc(sizeof(Unit));
+		Tile *selectedTile = nullptr;
+		Unit *newUnit = (Unit *)malloc(sizeof(Unit));
 
 		if (m_pTileManager->GetTile(selectedX, selectedY, &selectedTile)) {
 			selectedTile->tint = DEFAULT_UNIT_TINT;
@@ -145,8 +145,7 @@ void CGame::SelectTile() {
 			units.push_back(newUnit);
 		}
 		currency -= 10;
-	}
-	else {
+	} else {
 		Notification errNotification = {};
 		char text[64];
 		sprintf_s(text, "Not enough currency to buy unit!");
@@ -171,13 +170,12 @@ void CGame::UpdateUnits() {
 	for (int i = 0; i < tiles.size(); i++) {
 		int nextY = tiles[i]->y - 1;
 
-		Tile* nextTile = nullptr;
+		Tile *nextTile = nullptr;
 		if (m_pTileManager->GetTile(tiles[i]->x, nextY, &nextTile)) {
 			tiles[i]->tint = DEFAULT_TILE_TINT;
 			nextTile->tint = DEFAULT_UNIT_TINT;
 			tiles[i] = nextTile;
-		}
-		else {
+		} else {
 			tiles[i]->tint = DEFAULT_TILE_TINT;
 			tiles.erase(tiles.begin() + i);
 			i -= 1;
@@ -187,7 +185,7 @@ void CGame::UpdateUnits() {
 
 void CGame::UpdateNotifications() {
 	for (int i = 0; i < notifications.size(); i++) {
-		Notification& notif = notifications[i];
+		Notification &notif = notifications[i];
 		float currentTime = m_pTimer->GetTime();
 		float progress = (currentTime - notif.startTime) / (notif.endTime - notif.startTime);
 
@@ -293,7 +291,7 @@ void CGame::BeginGame() {
 	//m_pTileManager->LoadMap("Media\\Maps\\basefloor.txt");
 	//m_pTileManager->LoadMap("Media\\Maps\\bwfloor.txt");
 	//m_pTileManager->LoadMap("Media\\Maps\\tilefloor.txt");
-	m_pTileManager->LoadMap("Media\\Maps\\betamap01.txt");
+	m_pTileManager->LoadMap("Media\\Maps\\betamap02.txt");
 	m_pObjectManager->clear(); //clear old objects
 	CreateObjects(); //create new objects (must be after map is loaded) 
 	if (m_pTileManager->GetMap() != nullptr) {
@@ -354,8 +352,7 @@ void CGame::KeyboardHandler() {
 			if (m_pGameMaster != nullptr) {
 				m_pGameMaster->SetFriendlyMode(m_bGodMode);
 			}
-		}
-		else {
+		} else {
 			m_bGodMode = true;
 			if (m_pGameMaster != nullptr) {
 				m_pGameMaster->SetFriendlyMode(m_bGodMode);
@@ -436,7 +433,7 @@ void CGame::ProcessPlayerInput(const WPARAM k) {
 	int dest_x = playerUnit->tile->x;		// destination coordinates start at player's current position
 	int dest_y = playerUnit->tile->y;
 
-	Tile* destTile = nullptr;		// destination tile to navigate to + update playerTile to
+	Tile *destTile = nullptr;		// destination tile to navigate to + update playerTile to
 	printf("processing player input\n");
 
 	switch (k) {
@@ -506,8 +503,7 @@ void CGame::DetectPlayerInput() {
 			ProcessPlayerInput(VK_LEFT);
 			currDelay = WALK_DURATION;
 
-		}
-		else if (inputBuffer.size() < MAX_INPUTS_BUFFERED) {
+		} else if (inputBuffer.size() < MAX_INPUTS_BUFFERED) {
 			printf("; now buffering\n");
 			inputBuffer.push(VK_LEFT);
 		}
@@ -518,8 +514,7 @@ void CGame::DetectPlayerInput() {
 			printf("; now processing\n");
 			ProcessPlayerInput(VK_RIGHT);
 			currDelay = WALK_DURATION;
-		}
-		else if (inputBuffer.size() < MAX_INPUTS_BUFFERED) {
+		} else if (inputBuffer.size() < MAX_INPUTS_BUFFERED) {
 			printf("; now buffering\n");
 			inputBuffer.push(VK_RIGHT);
 		}
@@ -530,8 +525,7 @@ void CGame::DetectPlayerInput() {
 			printf("; now processing\n");
 			ProcessPlayerInput(VK_UP);
 			currDelay = WALK_DURATION;
-		}
-		else if (inputBuffer.size() < MAX_INPUTS_BUFFERED) {
+		} else if (inputBuffer.size() < MAX_INPUTS_BUFFERED) {
 			printf("; now buffering\n");
 			inputBuffer.push(VK_UP);
 		}
@@ -542,8 +536,7 @@ void CGame::DetectPlayerInput() {
 			printf("; now processing\n");
 			ProcessPlayerInput(VK_DOWN);
 			currDelay = WALK_DURATION;
-		}
-		else if (inputBuffer.size() < MAX_INPUTS_BUFFERED) {
+		} else if (inputBuffer.size() < MAX_INPUTS_BUFFERED) {
 			printf("; now buffering\n");
 			inputBuffer.push(VK_DOWN);
 		}
@@ -566,6 +559,9 @@ void CGame::RenderFrame() {
 	m_pObjectManager->draw(); //draw objects
 	m_pGameMaster->draw();
 	m_pUnitManager->Draw(); //draw units
+
+
+
 	m_pParticleEngine->Draw(); //draw particles
 
 	//draw currency
@@ -580,7 +576,7 @@ void CGame::RenderFrame() {
 
 	//draw notifications
 	for (int i = 0; i < notifications.size(); i++) {
-		Notification& notif = notifications[i];
+		Notification &notif = notifications[i];
 
 		float progress = notif.progress;
 		Vector2 startPos = Vector2(10.0f, 600.0f);
@@ -665,8 +661,7 @@ void CGame::ProcessFrame() {
 
 			if (frameCount % (int)(60.0f * 1.5f) == 0) {
 				m_pGameMaster->SwitchPhases(nextPhase);
-			}
-			else {
+			} else {
 				m_pGameMaster->desc.m_nCurrentFrame = m_pGameMaster->m_nCurrentFrame;
 			}
 		}

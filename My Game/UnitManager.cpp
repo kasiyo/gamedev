@@ -12,8 +12,8 @@ CUnitManager::~CUnitManager() {
 	}
 }
 
-void CUnitManager::AddUnit(struct Tile* t) {
-	Unit* unit = nullptr;
+void CUnitManager::AddUnit(struct Tile *t) {
+	Unit *unit = nullptr;
 
 	unit = new Unit(eSprite::Unit, t->pos);
 	unit->desc.m_fXScale = 1.0f;
@@ -52,11 +52,11 @@ void CUnitManager::RemoveUnit(int x, int y) {
 	}
 }
 
-std::vector<Unit*> CUnitManager::GetUnits() {
+std::vector<Unit *> CUnitManager::GetUnits() {
 	return m_vecUnits;
 }
 
-bool CUnitManager::GetUnit(int x, int y, Unit** refval) {
+bool CUnitManager::GetUnit(int x, int y, Unit **refval) {
 	if (x < 0 || x >= m_pTileManager->GetWidth() || y < 0 || y >= m_pTileManager->GetHeight()) {
 		return false;
 	}
@@ -90,19 +90,7 @@ void CUnitManager::UpdateUnits() {
 	}
 }
 
-void CUnitManager::MoveUnit(Tile* destTile) {
-	for (int i = 0; i < m_vecUnits.size(); i++) {
-		//if (m_vecUnits[i].x == x && m_vecUnits[i].y == y) {
-		//	m_vecUnits[i].x = newX;
-		//	m_vecUnits[i].y = newY;
-		//}
-	}
-
-	//Vector2 currentPos = Math::lerp(playerUnit->m_vPos, moveDirection, progress);
-
-	//playerUnit->m_vPos = currentPos;
-
-	//playerUnit->m_vPos = currentPos;
+void CUnitManager::MoveUnit(Tile *destTile) {
 	Vector2 endPos = destTile->pos;
 	endPos.y += 20.0f;	// for offset
 

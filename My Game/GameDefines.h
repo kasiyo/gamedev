@@ -8,6 +8,8 @@
 #include <unordered_map>
 
 static const float DEFAULT_TILE_ALPHA = 1.0f;
+static const float TRANSLUCENT_TILE_ALPHA = 0.5f;
+static const float TRANSPARENT_TILE_ALPHA = 0.0f;
 static const XMFLOAT4 DEFAULT_TILE_TINT = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.f);
 static const XMFLOAT4 HIGHLIGHT_TILE_TINT = XMFLOAT4(0.9f, 1.f, 0.9f, 1.f);
 static const XMFLOAT4 SELECTED_TILE_TINT = XMFLOAT4(1.f, 1.2f, 1.f, 1.f);
@@ -76,10 +78,8 @@ struct LerpInfo {
 
 
 static std::unordered_map<char, TileInfo> CHAR_TO_TILE = {
-	{ '`', { eSprite::GrassTile, 0, true } },	// black-and-white checkered block
-	//{ 'W', { eSprite::GrassTile, 1 } },
-	//{ 'T', { eSprite::GrassTile, 1 } },
-	//{ 'P', { eSprite::GrassTile, 1 } },
+	{ '*', { eSprite::GrassTile, 0, true } },	// black-and-white checkered block
+
 	{ '0', { eSprite::Tile, 0, false } },		//	light brown paved tile
 	{ '1', { eSprite::Tile, 1, false } },		//	purple paved tile
 	{ '2', { eSprite::Tile, 2, false } },		//	dark brown paved tile
@@ -165,7 +165,7 @@ static std::unordered_map<char, BlockInfo> CHAR_TO_BLOCK = {
 	{ 'W', { eSprite::Block, 8 } },		//	wood block
 };
 
-static std::unordered_map<char*, UnitInfo> CHAR_TO_UNIT = {
+static std::unordered_map<char *, UnitInfo> CHAR_TO_UNIT = {
 	{ "DOWN", { eSprite::Unit, 0 } },		// front facing left	/ down
 	{ "RIGHT", { eSprite::Unit, 1 } },		// front facing right	/ right
 	{ "UP", { eSprite::Unit, 2 } },			// back facing right	/ up
