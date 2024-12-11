@@ -424,6 +424,27 @@ void CGame::DrawGodModeText() {
 	m_pRenderer->DrawScreenText("God Mode", pos); //draw to screen
 } //DrawGodModeText
 
+/// Draw the sprites to the screen.
+
+void CGame::DrawSprites() {
+	for (int i = 0; i < z_layers; i++) {
+		for (int j = 0; j < m_pTileManager->GetHeight(); j++) {
+			for (int k = 0; k < m_pTileManager->GetWidth(); k++) {
+				Tile *tile;
+				if (m_pTileManager->GetTile(k, j, &tile)) {
+					m_pRenderer->Draw(&tile->desc);
+
+					if (playerUnit != nullptr) {
+						if (playerUnit->tile->x == k && playerUnit->tile->y == j) {
+							m_pUnitManager->Draw();
+						}	// if player unit is on this tile
+					}	// if player unit isn't nullptr
+
+				}	// if valid tile
+			}	// for k
+		}	// for j
+	}	// for i
+} //DrawSprites
 
 /// Move player unit according to user input.
 
@@ -553,10 +574,11 @@ void CGame::RenderFrame() {
 	/// get window size for zoom
 	RECT windowRect;
 
-	m_pTileManager->Draw(eSprite::GrassTile); //draw tiles
+	//m_pTileManager->Draw(eSprite::GrassTile); //draw tiles
 	m_pObjectManager->draw(); //draw objects
+	DrawSprites(); //draw sprites
 	m_pGameMaster->draw();
-	m_pUnitManager->Draw(); //draw units
+	//m_pUnitManager->Draw(); //draw units
 
 
 

@@ -57,7 +57,6 @@ private:
 
 	float mapWidth = 0.0f;
 	float mapHeight = 0.0f;
-	std::vector<Vector2> TilesInScreenSpace; ///< Tiles in screen space.
 
 public:
 	CTileManager(size_t); ///< Constructor.

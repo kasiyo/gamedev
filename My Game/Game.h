@@ -35,10 +35,10 @@ private:
 	bool m_bDrawFrameRate = true; ///< Draw the frame rate.
 	eGameState m_eGameState = eGameState::Playing; ///< Game state.
 	int m_nNextLevel = 0; ///< Current level number.
-	Tile* prevSelectedTile;
-	Tile* prevHighlightedTile;
-	std::vector<Tile*> tiles;
-	std::vector<Unit*> units;
+	Tile *prevSelectedTile;
+	Tile *prevHighlightedTile;
+	std::vector<Tile *> tiles;
+	std::vector<Unit *> units;
 	std::vector<Vector2> unitPositions;
 
 	unsigned int frameCount = 0;
@@ -71,6 +71,9 @@ private:
 	void RenderFrame(); ///< Render an animation frame.
 	void DrawFrameRateText(); ///< Draw frame rate text to screen.
 	void DrawGodModeText(); ///< Draw god mode text if in god mode.
+
+	void DrawSprites(); ///< Draw sprites.
+
 	void CreateObjects(); ///< Create game objects.
 	void FollowCamera(); ///< Make camera follow player character.
 	void ProcessGameState(); ///< Process game state.
@@ -86,6 +89,7 @@ private:
 	bool m_bGodMode = false; ///< God mode toggle.
 	bool m_bPlayerIsMoving = false; ///< Player is moving.
 
+	const int z_layers = 3; ///< Number of z layers.
 public:
 	~CGame(); ///< Destructor.
 
