@@ -308,7 +308,7 @@ void CGame::BeginGame() {
 
 	//m_pTileManager->LoadMap("Media\\Maps\\small.txt");
 
-	m_pTileManager->LoadMap("Media\\Maps\\betamap02.txt");
+	m_pTileManager->LoadMap("Media\\Maps\\betamap03.txt");
 	m_pObjectManager->clear(); //clear old objects
 	CreateObjects(); //create new objects (must be after map is loaded) 
 	if (m_pTileManager->GetMap() != nullptr) {
@@ -496,12 +496,10 @@ void CGame::DrawStartPrompt() {
 
 /// Draw the camera prompt to the screen.
 void CGame::DrawCameraPrompt() {
-
 	const Vector2 pos(650.0f, 730.0f); //hard-coded position
 	XMVECTORF32 orangeColor = { 1.0f, 0.5f, 0.0f, 1.0f };
 	XMVECTORF32 red = { 1.0f, 0.0f, 0.0f, 1.0f };
 	const wchar_t *text = L"WASD to pan the camera around.";
-	//m_pRenderer->DrawScreenText("WASD to pan the camera around.", pos, red); //draw to screen
 
 	m_pRenderer->DrawScaledText(text, pos, 0.75f, red); //draw to screen
 } //DrawCameraPrompt
@@ -521,7 +519,6 @@ void CGame::DrawSprites() {
 							m_pUnitManager->Draw();
 						}	// if player unit is on this tile
 					}	// if player unit isn't nullptr
-
 				}	// if valid tile
 			}	// for k
 		}	// for j
@@ -578,9 +575,7 @@ void CGame::ProcessPlayerInput(const WPARAM k) {
 
 					if (destTile->isWinTile) {
 						m_bDrawWin = true;
-						//m_pUnitManager->m_vecUnits.clear();
 					}	// if win tile
-
 				}	// else in god mode
 			}	// if viewable by game master
 			else {
