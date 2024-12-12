@@ -6,7 +6,7 @@
 #include "Abort.h"
 
 CRenderer::CRenderer() :
-	LSpriteRenderer(eSpriteMode::Unbatched2D) {} //constructor
+	LSpriteRenderer(eSpriteMode::Batched2D) {} //constructor
 
 /// Load the specific images needed for this game.
 /// This is where eSpriteType values from GameDefines.h get
