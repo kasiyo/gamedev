@@ -129,7 +129,7 @@ void CGame::SelectTile() {
 	int selectedY = (int)selected.y;
 
 	//spawning (delete later)
-	if (currency >= 10) {
+	if (/*currency >= 10*/m_pUnitManager->canSpawn) {
 		Tile *selectedTile = nullptr;
 		Unit *newUnit = (Unit *)malloc(sizeof(Unit));
 
@@ -148,7 +148,8 @@ void CGame::SelectTile() {
 	} else {
 		Notification errNotification = {};
 		char text[64];
-		sprintf_s(text, "Not enough currency to buy unit!");
+		//sprintf_s(text, "Not enough currency to buy unit!");
+		sprintf_s(text, "player has already been spawned!");
 		errNotification.text = std::string(text);
 		errNotification.endTime = m_pTimer->GetTime() + NOTIFICATION_DURATION;
 		errNotification.startTime = m_pTimer->GetTime();

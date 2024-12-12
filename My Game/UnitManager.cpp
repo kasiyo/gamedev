@@ -13,28 +13,37 @@ CUnitManager::~CUnitManager() {
 }
 
 void CUnitManager::AddUnit(struct Tile *t) {
-	Unit *unit = nullptr;
+	if (!m_vecUnits.empty()) {
+		canSpawn = false;
+	} else {
+		canSpawn = true;
+	}
 
-	unit = new Unit(eSprite::Unit, t->pos);
-	unit->desc.m_fXScale = 1.0f;
-	unit->desc.m_fYScale = 1.0f;
-	unit->desc.m_nSpriteIndex = UINT(eSprite::Unit);
-	unit->desc.m_nCurrentFrame = 2;
-	unit->desc.m_vPos = t->pos;
+	if (canSpawn) {
+		Unit *unit = nullptr;
 
-	unit->desc.m_vPos.y += t->y_offset;	// hardcode y-offset.
-	//printf("unit->desc.m_nSpriteIndex: %d\n", unit->desc.m_nSpriteIndex);
-	//printf("unit->desc.m_nCurrentFrame: %d\n", unit->desc.m_nCurrentFrame);
-	//printf("tile->pos: %f, %f\n", t->pos.x, t->pos.y);
-	//printf("unit->desc.m_vPos: %f, %f\n", unit->desc.m_vPos.x, unit->desc.m_vPos.y);
-	unit->x = t->x;
-	unit->y = t->y;
-	unit->m_pTimer->GetFrameTime();
-	unit->tile = t;
-	unit->draw_index = t->draw_index + 1;
-	m_vecUnits.push_back(unit);
+		unit = new Unit(eSprite::Unit, t->pos);
+		unit->desc.m_fXScale = 1.0f;
+		unit->desc.m_fYScale = 1.0f;
+		unit->desc.m_nSpriteIndex = UINT(eSprite::Unit);
+		unit->desc.m_nCurrentFrame = 2;
+		unit->desc.m_vPos = t->pos;
 
-	playerUnit = unit;
+		unit->desc.m_vPos.y += t->y_offset;	// hardcode y-offset.
+		//printf("unit->desc.m_nSpriteIndex: %d\n", unit->desc.m_nSpriteIndex);
+		//printf("unit->desc.m_nCurrentFrame: %d\n", unit->desc.m_nCurrentFrame);
+		//printf("tile->pos: %f, %f\n", t->pos.x, t->pos.y);
+		//printf("unit->desc.m_vPos: %f, %f\n", unit->desc.m_vPos.x, unit->desc.m_vPos.y);
+		unit->x = t->x;
+		unit->y = t->y;
+		unit->m_pTimer->GetFrameTime();
+		unit->tile = t;
+		unit->draw_index = t->draw_index + 1;
+		m_vecUnits.push_back(unit);
+
+		playerUnit = unit;
+	}
+
 }
 
 void CUnitManager::EditUnit(Unit u) {
