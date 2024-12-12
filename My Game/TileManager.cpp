@@ -101,12 +101,13 @@ void CTileManager::LoadMap(char *filename) {
 
 	//load the map information from the buffer to the map
 
+	printf("m_nHeight = %zu\nm_nWidth = %zu\n", m_nHeight, m_nWidth);
 	size_t index = 0; //index into character buffer
 
 	for (size_t i = 0; i < m_nHeight; i++) {
 		for (size_t j = 0; j < m_nWidth; j++) {
 			const char c = buffer[index];
-
+			m_chMap[i][j].isStartTile = false;
 			//int tile_index = (
 			if (CHAR_TO_TILE.count(c) > 0) {
 				m_chMap[i][j].info = CHAR_TO_TILE.at(c);
@@ -135,6 +136,12 @@ void CTileManager::LoadMap(char *filename) {
 			m_chMap[i][j].x = j; //x coordinate
 			m_chMap[i][j].y = i; //y coordinate
 			m_chMap[i][j].draw_index = 0; //draw index
+
+			if (j == m_nWidth - 1) {
+				printf("m_chMap[%zu][%zu] is a starting tile\n", i, j);
+				m_chMap[i][j].isStartTile = true;
+				StartTiles.push_back(&m_chMap[i][j]);
+			}
 
 			index++; //next index
 		} //for

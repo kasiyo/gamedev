@@ -25,6 +25,7 @@ typedef struct Tile {
 	bool isWalkable = true;
 	bool isWinTile = false;
 	bool isNull = true;
+	bool isStartTile = false;
 
 	int x;
 	int y;
@@ -64,6 +65,7 @@ public:
 	~CTileManager(); ///< Destructor.
 
 	std::vector<Tile *> WorldMap; ///< World map.
+	std::vector<Tile *> StartTiles; ///< Start tiles.
 
 	void LoadMap(char *); ///< Load a map.
 	void Draw(eSprite); ///< Draw the map with a given tile.

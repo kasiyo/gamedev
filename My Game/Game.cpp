@@ -131,18 +131,36 @@ void CGame::SelectTile() {
 	//spawning (delete later)
 	if (/*currency >= 10*/m_pUnitManager->canSpawn) {
 		Tile *selectedTile = nullptr;
-		Unit *newUnit = (Unit *)malloc(sizeof(Unit));
 
 		if (m_pTileManager->GetTile(selectedX, selectedY, &selectedTile)) {
 			selectedTile->tint = DEFAULT_UNIT_TINT;
 			if (!selectedTile->isOccupied) {    // if tile is NOT occupied
-				selectedTile->isOccupied = true;
-				m_pUnitManager->AddUnit(selectedTile);
-				printf("playerUnit created at playerUnit->tile->x: %d playerUnit->tile->y: %d\n", playerUnit->tile->x, playerUnit->tile->y);
-			}
+
+				if (m_bGodMode) {	// can spawn anywhere in god mode
+					selectedTile->isOccupied = true;
+					m_pUnitManager->AddUnit(selectedTile);
+					printf("playerUnit created at playerUnit->tile->x: %d playerUnit->tile->y: %d\n", playerUnit->tile->x, playerUnit->tile->y);
+
+				} else {
+					if (selectedTile->y == m_pTileManager->GetHeight() - 1) {	// can only spawn on start tile in normal mode
+
+						selectedTile->isOccupied = true;
+						m_pUnitManager->AddUnit(selectedTile);
+						printf("playerUnit created at playerUnit->tile->x: %d playerUnit->tile->y: %d\n", playerUnit->tile->x, playerUnit->tile->y);
+					} else {
+						Notification errNotification = {};
+						char text[64];
+						sprintf_s(text, "you can't spawn there!");
+						errNotification.text = std::string(text);
+						errNotification.endTime = m_pTimer->GetTime() + NOTIFICATION_DURATION;
+						errNotification.startTime = m_pTimer->GetTime();
+						notifications.push_back(errNotification);
+					}	// else not start tile
+				}	// else not god mode
+			}	// if tile is NOT occupied
 			tiles.push_back(selectedTile);
 
-			units.push_back(newUnit);
+			units.push_back(playerUnit);
 		}
 		currency -= 10;
 	} else {
