@@ -462,6 +462,18 @@ void CGame::DrawDebugMenu() {
 	m_pRenderer->DrawScreenText("- 'G' for god mode.", pos + Vector2(0.0f, 96.0f)); //draw to screen
 } //DrawDebugMenu
 
+/// Draw the start prompt to the screen.
+void CGame::DrawStartPrompt() {
+	if (playerUnit == nullptr) {
+		const Vector2 pos(64.0f, 64.0f); //hard-coded position
+		XMVECTORF32 orangeColor = { 1.0f, 0.5f, 0.0f, 1.0f };
+		m_pRenderer->DrawScreenText("make it to the finish line without the orange seeing u.", pos + Vector2(0.0f, 20.0f), orangeColor);
+		m_pRenderer->DrawScreenText("designate any tile in the first row as your spawn point.", pos, orangeColor); //draw to screen
+
+	}
+
+} //DrawStartPrompt
+
 /// Draw the sprites to the screen.
 
 void CGame::DrawSprites() {
@@ -637,6 +649,7 @@ void CGame::RenderFrame() {
 	if (m_bDrawFrameRate)DrawFrameRateText(); //draw frame rate, if required
 	if (m_bGodMode)DrawGodModeText(); //draw god mode text, if required
 	if (m_bDrawDebugMenu)DrawDebugMenu(); //draw debug menu, if required
+	DrawStartPrompt(); //draw start prompt
 
 	//DrawNumFrames(); //draw frame number
 

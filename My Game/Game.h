@@ -72,6 +72,7 @@ private:
 	void DrawFrameRateText(); ///< Draw frame rate text to screen.
 	void DrawGodModeText(); ///< Draw god mode text if in god mode.
 	void DrawDebugMenu(); ///< Draw debug menu.
+	void DrawStartPrompt(); ///< Draw start prompt.
 
 	void DrawSprites(); ///< Draw sprites.
 
