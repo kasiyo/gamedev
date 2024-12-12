@@ -4,7 +4,7 @@
 
 <settings>
 	
-    <game name="kaia wanted to do a visual novel but ended up with an rts!" />
+    <game name="kaia's last group project." />
     <renderer width="1024" height="768"/>
    
 	<!--<sprite name ="pixelaebold" file="Media\Fonts\PixelAEBold.ttf" />

@@ -608,8 +608,6 @@ void CGame::RenderFrame() {
 	m_pGameMaster->draw();
 	//m_pUnitManager->Draw(); //draw units
 
-
-
 	m_pParticleEngine->Draw(); //draw particles
 
 	//draw currency
