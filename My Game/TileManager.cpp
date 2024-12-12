@@ -20,7 +20,7 @@ CTileManager::CTileManager(size_t n) :
 	//m_fTileSize((float)n) {
 	printf("TileManager::TileManager(%1.f)\n", m_fTileSize);
 	//Tile* CTileManager::GMSpawnPoint = nullptr;
-
+	WorldMap.resize(numLayers * numRows * numCols, nullptr);
 } //constructor
 
 /// Delete the memory used for storing the map.
@@ -107,15 +107,20 @@ void CTileManager::LoadMap(char *filename) {
 		for (size_t j = 0; j < m_nWidth; j++) {
 			const char c = buffer[index];
 
+			//int tile_index = (
 			if (CHAR_TO_TILE.count(c) > 0) {
 				m_chMap[i][j].info = CHAR_TO_TILE.at(c);
+
+				if (c == '*') {
+					m_chMap[i][j].isWinTile = true;
+				}
 			} else {
 				printf("char_to_tile does not contain %c\n", c);
 				printf("m_chMap[%zu][%zu].info.baseSprite = eSprite::GrassTile\n", i, j);
 				m_chMap[i][j].info.baseSprite = eSprite::GrassTile;
 				m_chMap[i][j].info.frameIndex = 0;
 				m_chMap[i][j].alpha = 0.0f;
-			}
+			}	// else c not found in CHAR_TO_TILE
 
 			if (m_chMap[i][j].info.isFullHeight) {
 				m_chMap[i][j].y_offset = 50.0f;
@@ -158,6 +163,16 @@ bool CTileManager::GetTile(int x, int y, Tile **refval) {
 		return false;
 	}
 	*refval = &m_chMap[y][x];
+	return true;
+}
+
+bool CTileManager::GetIndex(int x, int y, int z, Tile **refval) {
+	if (x < 0 || x >= numCols || y < 0 || y >= numRows || z < 0 || z >= numLayers) {
+		return false;
+	}
+
+	int index = z * (numRows * numCols) + y * numCols + x;
+	*refval = WorldMap[index];
 	return true;
 }
 

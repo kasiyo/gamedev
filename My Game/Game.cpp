@@ -424,6 +424,7 @@ void CGame::DrawGodModeText() {
 	m_pRenderer->DrawScreenText("God Mode", pos); //draw to screen
 } //DrawGodModeText
 
+
 /// Draw the sprites to the screen.
 
 void CGame::DrawSprites() {
@@ -494,6 +495,11 @@ void CGame::ProcessPlayerInput(const WPARAM k) {
 					printf("playerUnit->tile->x: %d playerUnit->tile->y: %d\n", playerUnit->tile->x, playerUnit->tile->y);
 					playerUnit->tile = destTile;
 
+					if (destTile->isWinTile) {
+						m_bDrawWin = true;
+						//m_pUnitManager->m_vecUnits.clear();
+					}	// if win tile
+
 				}	// else in god mode
 			}	// if viewable by game master
 			else {
@@ -501,6 +507,10 @@ void CGame::ProcessPlayerInput(const WPARAM k) {
 				playerUnit->moveTo(destTile, k);
 				printf("playerUnit->tile->x: %d playerUnit->tile->y: %d\n", playerUnit->tile->x, playerUnit->tile->y);
 				playerUnit->tile = destTile;
+
+				if (destTile->isWinTile) {
+					m_bDrawWin = true;
+				}	// if win tile
 			}	// else not viewable by game master
 		}	// if walkable
 	}	// if valid destination tile
@@ -615,6 +625,9 @@ void CGame::RenderFrame() {
 	if (m_bDrawGameOver) {
 		m_pRenderer->DrawGameOver();
 	}
+	if (m_bDrawWin) {
+		m_pRenderer->DrawWin();
+	}
 	m_pRenderer->EndFrame(); //required after rendering
 } //RenderFrame
 
@@ -694,6 +707,15 @@ void CGame::ProcessFrame() {
 			BeginGame();
 			m_eGameState = eGameState::Playing;
 			m_bDrawGameOver = false;
+		}
+	}
+
+	if (m_bDrawWin) {
+		if (m_pKeyboard->TriggerDown(VK_RETURN)) {
+			m_pUnitManager->m_vecUnits.clear();
+			BeginGame();
+			m_eGameState = eGameState::Playing;
+			m_bDrawWin = false;
 		}
 	}
 	RenderFrame(); //render a frame of animation

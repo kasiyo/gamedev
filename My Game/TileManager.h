@@ -23,6 +23,7 @@ typedef struct Tile {
 	bool viewableByGameMaster = false;
 	bool isOccupied = false;
 	bool isWalkable = true;
+	bool isWinTile = false;
 	bool isNull = true;
 
 	int x;
@@ -35,8 +36,6 @@ typedef struct Tile {
 	float x_offset = 0;
 	LSpriteDesc2D desc;
 } Tile;
-
-
 
 class CTileManager :
 	public CCommon,
@@ -57,16 +56,21 @@ private:
 
 	float mapWidth = 0.0f;
 	float mapHeight = 0.0f;
-
+	const int numRows = 30;
+	const int numCols = 30;
+	const int numLayers = 1;
 public:
 	CTileManager(size_t); ///< Constructor.
 	~CTileManager(); ///< Destructor.
+
+	std::vector<Tile *> WorldMap; ///< World map.
 
 	void LoadMap(char *); ///< Load a map.
 	void Draw(eSprite); ///< Draw the map with a given tile.
 	void DrawBoundingBoxes(eSprite); ///< Draw the bounding boxes.
 	void GetObjects(std::vector<Vector2> &, Vector2 &); ///< Get objects.
 	bool GetTile(int x, int y, Tile **refval); ///< Get a tile.
+	bool GetIndex(int x, int y, int z, Tile **refval); ///< Get an index.
 
 	float GetTileSize();
 

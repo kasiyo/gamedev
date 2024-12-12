@@ -153,18 +153,6 @@ static std::unordered_map<char, TileInfo> CHAR_TO_TILE = {
 	{ '$', { eSprite::Nature, 11, true } },		//	fire
 };
 
-static std::unordered_map<char, BlockInfo> CHAR_TO_BLOCK = {
-	{ 'B', { eSprite::Block, 0 } },		//	brick block
-	{ 'C', { eSprite::Block, 1 } },		//	crate block
-	{ 'D', { eSprite::Block, 2 } },		//	dirt block
-	{ 'G', { eSprite::Block, 3 } },		//	grass block
-	{ 'L', { eSprite::Block, 4 } },		//	lava block
-	{ 'M', { eSprite::Block, 5 } },		//	metal block
-	{ 'P', { eSprite::Block, 6 } },		//	purple block
-	{ 'S', { eSprite::Block, 7 } },		//	snow block
-	{ 'W', { eSprite::Block, 8 } },		//	wood block
-};
-
 static std::unordered_map<char *, UnitInfo> CHAR_TO_UNIT = {
 	{ "DOWN", { eSprite::Unit, 0 } },		// front facing left	/ down
 	{ "RIGHT", { eSprite::Unit, 1 } },		// front facing right	/ right
