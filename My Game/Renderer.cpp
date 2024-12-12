@@ -78,7 +78,6 @@ void CRenderer::DrawGameOver() {
 
 	DrawCenteredText("loser.", white);
 	DrawScreenText("press enter to replay", bottomLeft, white);
-	//DrawScreenText("Game Over", 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 /// Draw win.
@@ -98,7 +97,6 @@ void CRenderer::DrawWin() {
 
 	DrawCenteredText("u win.", black);
 	DrawScreenText("press enter to replay", bottomLeft, white);
-	//DrawScreenText("Game Over", 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 void CRenderer::LoadTextSprites() {

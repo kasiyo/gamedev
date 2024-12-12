@@ -288,9 +288,7 @@ void CGame::BeginGame() {
 	} //switch*/
 
 	//m_pTileManager->LoadMap("Media\\Maps\\small.txt");
-	//m_pTileManager->LoadMap("Media\\Maps\\basefloor.txt");
-	//m_pTileManager->LoadMap("Media\\Maps\\bwfloor.txt");
-	//m_pTileManager->LoadMap("Media\\Maps\\tilefloor.txt");
+
 	m_pTileManager->LoadMap("Media\\Maps\\betamap02.txt");
 	m_pObjectManager->clear(); //clear old objects
 	CreateObjects(); //create new objects (must be after map is loaded) 
@@ -300,6 +298,7 @@ void CGame::BeginGame() {
 	}
 
 	m_pAudio->stop(); //stop all  currently playing sounds
+
 	/*if (sound < 1) {
 		m_pAudio->play(eSound::Start); //play start-of-game sound
 		sound++;
@@ -307,7 +306,8 @@ void CGame::BeginGame() {
 	m_eGameState = eGameState::Playing; //now playing
 
 	/// --- TODO: update bgm.mp3 into .wav filetype. --- ///
-	//m_pAudio->loop(eSound::BGM); //play background music
+	m_pAudio->loop(eSound::BGM, camera.GetPos() - Vector2(1200.0f, 1200.0f)); //play background music
+	m_pAudio->SetScale(0.00000000000025f); //set volume scale
 } //BeginGame
 
 void CGame::MouseHandler() {
