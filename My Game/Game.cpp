@@ -306,8 +306,8 @@ void CGame::BeginGame() {
 	m_eGameState = eGameState::Playing; //now playing
 
 	/// --- TODO: update bgm.mp3 into .wav filetype. --- ///
-	m_pAudio->loop(eSound::BGM, camera.GetPos() - Vector2(1200.0f, 1200.0f)); //play background music
-	m_pAudio->SetScale(0.00000000000025f); //set volume scale
+	//m_pAudio->loop(eSound::BGM, camera.GetPos() - Vector2(1200.0f, 1200.0f)); //play background music
+	//m_pAudio->SetScale(0.00000000000025f); //set volume scale
 } //BeginGame
 
 void CGame::MouseHandler() {
@@ -319,6 +319,14 @@ void CGame::MouseHandler() {
 
 void CGame::KeyboardHandler() {
 	m_pKeyboard->GetState(); //get current keyboard state
+
+	if (m_pKeyboard->TriggerDown(VK_TAB)) { //if tab key is triggered
+		if (m_bDrawDebugMenu) {
+			m_bDrawDebugMenu = false;
+		} else {
+			m_bDrawDebugMenu = true;
+		}
+	} //if
 
 	if (m_pKeyboard->TriggerDown(VK_RETURN)) {
 		m_nNextLevel = (m_nNextLevel + 1) % 4;
@@ -425,6 +433,15 @@ void CGame::DrawGodModeText() {
 	m_pRenderer->DrawScreenText("God Mode", pos); //draw to screen
 } //DrawGodModeText
 
+
+/// Draw the debug menu to the screen.
+void CGame::DrawDebugMenu() {
+	const Vector2 pos(64.0f, 64.0f); //hard-coded position
+	m_pRenderer->DrawScreenText("Debug Menu", pos); //draw to screen
+	m_pRenderer->DrawScreenText("- WASD to move camera", pos + Vector2(0.0f, 32.0f)); //draw to screen
+	m_pRenderer->DrawScreenText("- arrow keys to move player", pos + Vector2(0.0f, 64.0f)); //draw to screen
+	m_pRenderer->DrawScreenText("- 'G' for god mode.", pos + Vector2(0.0f, 96.0f)); //draw to screen
+} //DrawDebugMenu
 
 /// Draw the sprites to the screen.
 
@@ -602,6 +619,7 @@ void CGame::RenderFrame() {
 	m_pRenderer->DrawScreenText(text, Vector2(10.0f, 10.0f), XMVECTORF32({ 1.f, 0.843137324f, 0.f, 1.f }));
 	if (m_bDrawFrameRate)DrawFrameRateText(); //draw frame rate, if required
 	if (m_bGodMode)DrawGodModeText(); //draw god mode text, if required
+	if (m_bDrawDebugMenu)DrawDebugMenu(); //draw debug menu, if required
 
 	//DrawNumFrames(); //draw frame number
 

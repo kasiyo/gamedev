@@ -71,6 +71,7 @@ private:
 	void RenderFrame(); ///< Render an animation frame.
 	void DrawFrameRateText(); ///< Draw frame rate text to screen.
 	void DrawGodModeText(); ///< Draw god mode text if in god mode.
+	void DrawDebugMenu(); ///< Draw debug menu.
 
 	void DrawSprites(); ///< Draw sprites.
 
@@ -86,6 +87,7 @@ private:
 	bool m_bDrawGameOver = false; ///< Player lost.
 	bool m_bDrawWin = false; ///< Player won.
 
+	bool m_bDrawDebugMenu = false; ///< Debug menu toggle.
 	bool m_bGodMode = false; ///< God mode toggle.
 	bool m_bPlayerIsMoving = false; ///< Player is moving.
 
