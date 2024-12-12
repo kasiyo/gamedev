@@ -339,39 +339,47 @@ void CGame::MouseHandler() {
 void CGame::KeyboardHandler() {
 	m_pKeyboard->GetState(); //get current keyboard state
 
-	if (m_pKeyboard->TriggerDown(VK_TAB)) { //if tab key is triggered
+	if (m_pKeyboard->TriggerDown(VK_TAB)) { //if tab key is triggered, toggle debug menu
 		if (m_bDrawDebugMenu) {
 			m_bDrawDebugMenu = false;
 		} else {
 			m_bDrawDebugMenu = true;
 		}
-	} //if
+	} // if tab key
+
+	if (m_pKeyboard->TriggerDown('C')) {	//if 'C' key is triggered, toggle free camera
+		if (m_bFreeCamera) {
+			m_bFreeCamera = false;
+		} else {
+			m_bFreeCamera = true;
+		}
+	} // if 'C' key
 
 	if (m_pKeyboard->TriggerDown(VK_RETURN)) {
 		m_nNextLevel = (m_nNextLevel + 1) % 4;
 		BeginGame();
-	} //if
+	} // if enter key
 
 	if (m_pKeyboard->TriggerDown(VK_F1)) {	//help
 		ShellExecute(0, 0, "https://larc.unt.edu/code/topdown/", 0, 0, SW_SHOW);
-	}
+	} // if F1 key
 
 	if (m_pKeyboard->TriggerDown(VK_F2)) {		// toggle frame rate
 		m_bDrawFrameRate = !m_bDrawFrameRate;
-	}
+	} // if F2 key
 
 	if (m_pKeyboard->TriggerDown(VK_F3)) {		// toggle AABB drawing
 		m_bDrawAABBs = !m_bDrawAABBs;
-	}
+	} // if F3 key
 
 	if (m_pKeyboard->TriggerDown(VK_F4)) {		// move to next level
 		m_nNextLevel = (m_nNextLevel + 1) % 3;
 		BeginGame();
-	}
+	} // if F4 key
 
 	if (m_pKeyboard->TriggerDown(VK_BACK)) {	// start game
 		BeginGame();
-	}
+	} // if backspace key
 
 	if (m_pKeyboard->TriggerDown('G')) {		// toggle god mode
 		if (m_bGodMode) {
@@ -385,34 +393,38 @@ void CGame::KeyboardHandler() {
 				m_pGameMaster->SetFriendlyMode(m_bGodMode);
 			}
 		}
-	}
+	} // if 'G' key
 
-	if (m_pKeyboard->TriggerDown(VK_LBUTTON)) { // left click
+	if (m_pKeyboard->TriggerDown(VK_LBUTTON)) { // select tile for player spawn point
 		SelectTile();
-	};
+	}; //if left click
 
-	HighlightTile();
+	HighlightTile();	// highlight tile under cursor on default
 
 	Vector2 moveDirection;
 
 	/// camera movement
 	Vector2 downVector(0, 1);      //  pan down
 	if (m_pKeyboard->Down('W') /* || m_pKeyboard->Down(VK_UP)*/) {
+		m_bDrawCameraPrompt = false;
 		moveDirection += downVector;
 	}
 
 	Vector2 rightVector(-1, 0);     //  pan right
 	if (m_pKeyboard->Down('A') /* || m_pKeyboard->Down(VK_LEFT)*/) {
+		m_bDrawCameraPrompt = false;
 		moveDirection += rightVector;
 	}
 
 	Vector2 leftVector(1, 0);   //  pan left
 	if (m_pKeyboard->Down('D') /* || m_pKeyboard->Down(VK_RIGHT)*/) {
+		m_bDrawCameraPrompt = false;
 		moveDirection += leftVector;
 	}
 
 	Vector2 upVector(0, -1);     //  pan up
 	if (m_pKeyboard->Down('S') /* || m_pKeyboard->Down(VK_DOWN)*/) {
+		m_bDrawCameraPrompt = false;
 		moveDirection += upVector;
 	}
 
@@ -455,24 +467,44 @@ void CGame::DrawGodModeText() {
 
 /// Draw the debug menu to the screen.
 void CGame::DrawDebugMenu() {
-	const Vector2 pos(64.0f, 64.0f); //hard-coded position
-	m_pRenderer->DrawScreenText("Debug Menu", pos); //draw to screen
-	m_pRenderer->DrawScreenText("- WASD to move camera", pos + Vector2(0.0f, 32.0f)); //draw to screen
-	m_pRenderer->DrawScreenText("- arrow keys to move player", pos + Vector2(0.0f, 64.0f)); //draw to screen
-	m_pRenderer->DrawScreenText("- 'G' for god mode.", pos + Vector2(0.0f, 96.0f)); //draw to screen
+	XMVECTORF32 redColor = { 1.0f, 0.0f, 0.0f, 1.0f };
+	const Vector2 pos(64.0f, 96.0f); //hard-coded position
+	m_pRenderer->DrawScreenText("Debug Menu", pos, redColor); //draw to screen
+	m_pRenderer->DrawScreenText("- WASD to move camera", pos + Vector2(0.0f, 32.0f), redColor); //draw to screen
+	m_pRenderer->DrawScreenText("- arrow keys to move player", pos + Vector2(0.0f, 64.0f), redColor); //draw to screen
+	m_pRenderer->DrawScreenText("- 'G' for god mode.", pos + Vector2(0.0f, 96.0f), redColor); //draw to screen
 } //DrawDebugMenu
 
 /// Draw the start prompt to the screen.
 void CGame::DrawStartPrompt() {
 	if (playerUnit == nullptr) {
 		const Vector2 pos(64.0f, 64.0f); //hard-coded position
-		XMVECTORF32 orangeColor = { 1.0f, 0.5f, 0.0f, 1.0f };
-		m_pRenderer->DrawScreenText("make it to the finish line without the orange seeing u.", pos + Vector2(0.0f, 20.0f), orangeColor);
-		m_pRenderer->DrawScreenText("designate any tile in the first row as your spawn point.", pos, orangeColor); //draw to screen
+		const Vector2 center(m_pRenderer->GetWindowWidth() / 2.0f, m_pRenderer->GetWindowHeight() / 2.0f); //center of screen
+		const Vector2 pos2(256.0f, 350.0f);
+		const wchar_t *text0 = L"make it to the finish line without the orange seeing u.";
+		const wchar_t *text1 = L"designate any tile in the first row as your spawn point.";
+		XMVECTORF32 orangeColor = { 1.0f, 0.5f, 0.25f, 1.0f };
+		//m_pRenderer->DrawScreenText("make it to the finish line without the orange seeing u.", pos + Vector2(0.0f, 20.0f), orangeColor);
+		//m_pRenderer->DrawScreenText("designate any tile in the first row as your spawn point.", pos, orangeColor); //draw to screen
+
+		m_pRenderer->DrawScaledText(text0, Vector2((m_pRenderer->GetWindowWidth() - wcslen(text0)) / 5.25f, 350.0f), 0.875f, orangeColor);
+		m_pRenderer->DrawScaledText(text1, Vector2((m_pRenderer->GetWindowWidth() - wcslen(text0)) / 5.25f, 375.0f), 0.875f, orangeColor);
 
 	}
 
 } //DrawStartPrompt
+
+/// Draw the camera prompt to the screen.
+void CGame::DrawCameraPrompt() {
+
+	const Vector2 pos(650.0f, 730.0f); //hard-coded position
+	XMVECTORF32 orangeColor = { 1.0f, 0.5f, 0.0f, 1.0f };
+	XMVECTORF32 red = { 1.0f, 0.0f, 0.0f, 1.0f };
+	const wchar_t *text = L"WASD to pan the camera around.";
+	//m_pRenderer->DrawScreenText("WASD to pan the camera around.", pos, red); //draw to screen
+
+	m_pRenderer->DrawScaledText(text, pos, 0.75f, red); //draw to screen
+} //DrawCameraPrompt
 
 /// Draw the sprites to the screen.
 
@@ -649,6 +681,7 @@ void CGame::RenderFrame() {
 	if (m_bDrawFrameRate)DrawFrameRateText(); //draw frame rate, if required
 	if (m_bGodMode)DrawGodModeText(); //draw god mode text, if required
 	if (m_bDrawDebugMenu)DrawDebugMenu(); //draw debug menu, if required
+	if (m_bDrawCameraPrompt)DrawCameraPrompt(); //draw camera prompt at start
 	DrawStartPrompt(); //draw start prompt
 
 	//DrawNumFrames(); //draw frame number
@@ -687,7 +720,6 @@ void CGame::RenderFrame() {
 void CGame::FollowCamera() {
 	Vector3 newPos(camera.GetPos());
 	m_pRenderer->SetCameraPos(newPos); //camera to player
-
 } //FollowCamera
 
 /// This function will be called regularly to process and render a frame

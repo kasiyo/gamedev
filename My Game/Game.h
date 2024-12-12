@@ -73,6 +73,7 @@ private:
 	void DrawGodModeText(); ///< Draw god mode text if in god mode.
 	void DrawDebugMenu(); ///< Draw debug menu.
 	void DrawStartPrompt(); ///< Draw start prompt.
+	void DrawCameraPrompt(); ///< Draw camera prompt.
 
 	void DrawSprites(); ///< Draw sprites.
 
@@ -89,8 +90,10 @@ private:
 	bool m_bDrawWin = false; ///< Player won.
 
 	bool m_bDrawDebugMenu = false; ///< Debug menu toggle.
+	bool m_bDrawCameraPrompt = true; ///< Camera prompt toggle.
 	bool m_bGodMode = false; ///< God mode toggle.
 	bool m_bPlayerIsMoving = false; ///< Player is moving.
+	bool m_bFreeCamera = false; ///< Free camera toggle.
 
 	const int z_layers = 3; ///< Number of z layers.
 public:

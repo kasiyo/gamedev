@@ -31,6 +31,7 @@ public:
 
 	void CalculateIso(int i, int j, float scale, float descSize, Vector2 &); ///< Calculate isometric projection.
 
+	void DrawScaledText(const wchar_t *text, const Vector2 &p, float scale, XMVECTORF32 color); ///< Draw scaled text.
 
 	void DrawSpriteOrder();
 	void DrawGameOver(); ///< Draw game over.

@@ -61,6 +61,15 @@ void CRenderer::CalculateIso(int i, int j, float scale, float descSize, Vector2 
 	v.y = (m_nWinHeight / 2) + (-isoY * scale);
 }
 
+/// Draw scaled text.
+void CRenderer::DrawScaledText(const wchar_t *text, const Vector2 &p, float scale, XMVECTORF32 color) {
+	if (m_pFont == nullptr) {
+		return;
+	}
+
+	m_pFont->DrawString(m_pSpriteBatch.get(), text, p, color, 0.0f, Vector2(0.0f, 0.0f), scale);
+}
+
 /// Draw game over.
 void CRenderer::DrawGameOver() {
 	XMVECTORF32 color = { 1.0f, 1.0f, 1.0f, 1.0f };
