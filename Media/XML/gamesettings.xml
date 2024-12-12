@@ -23,7 +23,8 @@
 	    <sprite name="unit" file="unit" ext="png" frames="4"/>
 	    <sprite name="annoyingorange" file="annoyingorange" ext="png" frames="3"/>
 
-        <sprite name="background" file="background0.jpg"/>
+        <sprite name="black" file="bg_black.jpg"/>
+		<sprite name="orange" file="bg_orange.jpg"/>
 		<sprite name="block" file="block" ext="png" frames="16"/>
 		<sprite name="bridge" file="bridge" ext="png" frames="4"/>
 		<sprite name="fence" file="fence" ext="png" frames="2"/>

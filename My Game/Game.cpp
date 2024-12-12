@@ -229,7 +229,8 @@ void CGame::LoadImages() {
 	m_pRenderer->Load(eSprite::Bullet2, "bullet2");
 	m_pRenderer->Load(eSprite::Smoke, "smoke");
 	m_pRenderer->Load(eSprite::Spark, "spark");
-	m_pRenderer->Load(eSprite::Background, "background");
+	m_pRenderer->Load(eSprite::Black, "black");
+	m_pRenderer->Load(eSprite::Orange, "orange");
 	m_pRenderer->Load(eSprite::Line, "greenline");
 
 	m_pRenderer->EndResourceUpload();

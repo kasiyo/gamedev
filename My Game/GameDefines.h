@@ -37,7 +37,7 @@ enum class eFont : UINT {
 /// memory. `Size` must be last.
 
 enum class eSprite : UINT {
-	Background, Bullet, Bullet2, Player, Smoke, Spark, Line,
+	Black, Orange, Bullet, Bullet2, Player, Smoke, Spark, Line,
 	Tile, GrassTile, Unit, AnnoyingOrange,
 	Block, Bridge, Fence, Water, Lagoon, Nature,
 	Size  //MUST BE LAST

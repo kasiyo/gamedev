@@ -20,8 +20,9 @@ CRenderer::CRenderer() :
 void CRenderer::LoadImages() {
 	BeginResourceUpload();
 
-	Load(eSprite::Background, "background");
-
+	//Load(eSprite::Background, "background");
+	Load(eSprite::Black, "black");
+	Load(eSprite::Orange, "orange");
 
 	EndResourceUpload();
 } //LoadImages
@@ -68,7 +69,7 @@ void CRenderer::DrawGameOver() {
 	Vector2 bottomLeft(25.0f, 700.0f);
 
 	Vector2 camPos(this->m_pCamera->GetPos().x, this->m_pCamera->GetPos().y);
-	Draw(eSprite::Background, Vector2(this->m_pCamera->GetPos().x, this->m_pCamera->GetPos().y));
+	Draw(eSprite::Black, Vector2(this->m_pCamera->GetPos().x, this->m_pCamera->GetPos().y));
 
 	const wchar_t *text = L"Game Over";
 	if (m_pFont == nullptr) {
@@ -88,14 +89,14 @@ void CRenderer::DrawWin() {
 	Vector2 bottomLeft(25.0f, 700.0f);
 
 	Vector2 camPos(this->m_pCamera->GetPos().x, this->m_pCamera->GetPos().y);
-	Draw(eSprite::Background, Vector2(this->m_pCamera->GetPos().x, this->m_pCamera->GetPos().y));
+	Draw(eSprite::Orange, Vector2(this->m_pCamera->GetPos().x, this->m_pCamera->GetPos().y));
 
 	const wchar_t *text = L"Game Over";
 	if (m_pFont == nullptr) {
 		return;
 	}
 
-	DrawCenteredText("u win.", white);
+	DrawCenteredText("u win.", black);
 	DrawScreenText("press enter to replay", bottomLeft, white);
 	//DrawScreenText("Game Over", 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f);
 }
