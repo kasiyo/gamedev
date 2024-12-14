@@ -325,8 +325,8 @@ void CGame::BeginGame() {
 	m_eGameState = eGameState::Playing; //now playing
 
 	/// --- TODO: update bgm.mp3 into .wav filetype. --- ///
-	//m_pAudio->loop(eSound::BGM, camera.GetPos() - Vector2(1200.0f, 1200.0f)); //play background music
-	//m_pAudio->SetScale(0.00000000000025f); //set volume scale
+	m_pAudio->loop(eSound::BGM, camera.GetPos() - Vector2(1200.0f, 1200.0f)); //play background music
+	m_pAudio->SetScale(0.00000000000025f); //set volume scale
 } //BeginGame
 
 void CGame::MouseHandler() {
